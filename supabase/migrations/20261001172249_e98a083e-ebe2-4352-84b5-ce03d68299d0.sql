@@ -1,0 +1,4 @@
+CREATE POLICY "portal assets read" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'portal-assets');
+CREATE POLICY "portal assets admin write" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'portal-assets' AND public.has_role(auth.uid(),'admin'));
+CREATE POLICY "portal assets admin update" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'portal-assets' AND public.has_role(auth.uid(),'admin'));
+CREATE POLICY "portal assets admin delete" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'portal-assets' AND public.has_role(auth.uid(),'admin'));

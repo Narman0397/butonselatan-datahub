@@ -131,30 +131,36 @@ export type Database = {
       portal_settings: {
         Row: {
           address: string | null
+          bupati_photo_url: string | null
           contact_email: string | null
           contact_phone: string | null
           id: number
           portal_name: string
           tagline: string | null
           updated_at: string
+          wabup_photo_url: string | null
         }
         Insert: {
           address?: string | null
+          bupati_photo_url?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           id?: number
           portal_name?: string
           tagline?: string | null
           updated_at?: string
+          wabup_photo_url?: string | null
         }
         Update: {
           address?: string | null
+          bupati_photo_url?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           id?: number
           portal_name?: string
           tagline?: string | null
           updated_at?: string
+          wabup_photo_url?: string | null
         }
         Relationships: []
       }
