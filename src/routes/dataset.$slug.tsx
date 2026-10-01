@@ -124,7 +124,7 @@ function Detail() {
                 >
                   <BarChart data={chartData}>
                     <CartesianGrid vertical={false} />
-                    <XAxis dataKey={sample.columns[0]} tickLine={false} axisLine={false} fontSize={11} />
+                    <XAxis dataKey={sample.columns[0] ?? ""} tickLine={false} axisLine={false} fontSize={11} />
                     <YAxis tickLine={false} axisLine={false} width={60} fontSize={11} />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     {chartCols.map((c, i) => <Bar key={c} dataKey={c} fill={`var(--chart-${i + 1})`} radius={[4, 4, 0, 0]} />)}

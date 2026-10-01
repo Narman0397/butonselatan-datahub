@@ -38,8 +38,8 @@ function OrgAdmin() {
         ? { name: row.name, acronym: row.acronym ?? null, description: row.description ?? null, slug: slug(row.acronym || row.name) }
         : { name: row.name, description: row.description ?? null, slug: slug(row.name) };
     const { error } = row.id
-      ? await supabase.from(kind).update(payload).eq("id", row.id)
-      : await supabase.from(kind).insert(payload);
+      ? await supabase.from(kind as "organizations").update(payload as { name: string }).eq("id", row.id)
+      : await supabase.from(kind as "organizations").insert(payload as { name: string; slug: string });
     if (error) { toast.error(error.message); return; }
     toast.success("Tersimpan");
     setEdit(null);
