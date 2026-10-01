@@ -75,11 +75,24 @@ function Catalog() {
 
   const active = s.opd || s.topik || s.format || s.lisensi || s.q;
 
+  const Filters = () => (
+    <>
+          <FilterGroup title="Organisasi / OPD" value={s.opd} onChange={(v) => set({ opd: v })}
+            options={orgs.map((o) => ({ v: o.slug, l: o.acronym ?? o.name, n: all.filter((d) => d.organization_id === o.id).length }))} />
+          <FilterGroup title="Topik" value={s.topik} onChange={(v) => set({ topik: v })}
+            options={topics.map((t) => ({ v: t.slug, l: t.name, n: all.filter((d) => d.topic_id === t.id).length }))} />
+          <FilterGroup title="Format" value={s.format} onChange={(v) => set({ format: v })}
+            options={FORMATS.map((f) => ({ v: f, l: f, n: all.filter((d) => d.format === f).length }))} />
+          <FilterGroup title="Lisensi" value={s.lisensi} onChange={(v) => set({ lisensi: v })}
+            options={LICENSES.map((f) => ({ v: f, l: f, n: all.filter((d) => d.license === f).length })).filter((o) => o.n > 0)} />
+        </>
+  );
+
   return (
     <PublicLayout>
       <div className="border-b bg-secondary/50">
-        <div className="mx-auto max-w-7xl px-4 py-10">
-          <h1 className="text-3xl font-bold">Katalog Dataset</h1>
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:py-10">
+          <h1 className="text-2xl font-bold sm:text-3xl">Katalog Dataset</h1>
           <p className="mt-1 text-muted-foreground">{all.length} dataset terbuka dari OPD Kabupaten Buton Selatan</p>
           <div className="relative mt-6 max-w-2xl">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -92,18 +105,11 @@ function Catalog() {
           </div>
         </div>
       </div>
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[240px_1fr]">
-        <aside className="space-y-6">
-          <FilterGroup title="Organisasi / OPD" value={s.opd} onChange={(v) => set({ opd: v })}
-            options={orgs.map((o) => ({ v: o.slug, l: o.acronym ?? o.name, n: all.filter((d) => d.organization_id === o.id).length }))} />
-          <FilterGroup title="Topik" value={s.topik} onChange={(v) => set({ topik: v })}
-            options={topics.map((t) => ({ v: t.slug, l: t.name, n: all.filter((d) => d.topic_id === t.id).length }))} />
-          <FilterGroup title="Format" value={s.format} onChange={(v) => set({ format: v })}
-            options={FORMATS.map((f) => ({ v: f, l: f, n: all.filter((d) => d.format === f).length }))} />
-          <FilterGroup title="Lisensi" value={s.lisensi} onChange={(v) => set({ lisensi: v })}
-            options={LICENSES.map((f) => ({ v: f, l: f, n: all.filter((d) => d.license === f).length })).filter((o) => o.n > 0)} />
-        </aside>
-        <div>
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:py-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-8">
+        <details className="group rounded-2xl border bg-card p-4 shadow-soft lg:hidden"><summary className="cursor-pointer list-none text-sm font-semibold">Filter dataset {active ? "• aktif" : ""}<span className="float-right text-muted-foreground group-open:rotate-180">▾</span></summary><div className="mt-4 space-y-6"><Filters /></div></details>
+        <aside className="hidden space-y-6 lg:sticky lg:top-20 lg:block lg:self-start"><Filters /></aside>
+        
+        <div className="min-w-0">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span><b className="text-foreground">{list.length}</b> hasil</span>
@@ -114,7 +120,7 @@ function Catalog() {
               )}
             </div>
             <Select value={s.urut ?? ALL} onValueChange={(v) => set({ urut: v === ALL ? undefined : (v as "populer") })}>
-              <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-44"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value={ALL}>Terbaru</SelectItem>
                 <SelectItem value="populer">Paling banyak diunduh</SelectItem>

@@ -69,12 +69,12 @@ function DashboardLayout() {
         </div>
       </aside>
       {open && <div className="fixed inset-0 z-40 bg-foreground/30 lg:hidden" onClick={() => setOpen(false)} />}
-      <div className="flex-1 lg:pl-64">
+      <div className="min-w-0 flex-1 lg:pl-64">
         <div className="sticky top-0 z-30 flex h-14 items-center border-b bg-background px-4 lg:hidden">
           <Button size="icon" variant="ghost" onClick={() => setOpen(true)} aria-label="Menu"><Menu className="h-5 w-5" /></Button>
           <span className="ml-2 font-display font-semibold">Dashboard</span>
         </div>
-        <main className="mx-auto max-w-6xl p-4 md:p-8"><Outlet /></main>
+        <main className="mx-auto max-w-6xl min-w-0 p-4 md:p-8"><Outlet /></main>
       </div>
     </div>
   );

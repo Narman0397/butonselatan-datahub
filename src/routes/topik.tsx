@@ -26,8 +26,8 @@ function Topics() {
   const { data: ds = [] } = useQuery(publishedQuery);
   return (
     <PublicLayout>
-      <div className="mx-auto max-w-7xl px-4 py-12">
-        <h1 className="text-3xl font-bold">Topik Sektoral</h1>
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
+        <h1 className="text-2xl font-bold sm:text-3xl">Topik Sektoral</h1>
         <p className="mt-1 text-muted-foreground">Kelompok data menurut urusan pemerintahan</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {topics.map((t) => {

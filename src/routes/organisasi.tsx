@@ -21,8 +21,8 @@ function Orgs() {
   const { data: ds = [] } = useQuery(publishedQuery);
   return (
     <PublicLayout>
-      <div className="mx-auto max-w-7xl px-4 py-12">
-        <h1 className="text-3xl font-bold">Direktori Organisasi</h1>
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
+        <h1 className="text-2xl font-bold sm:text-3xl">Direktori Organisasi</h1>
         <p className="mt-1 text-muted-foreground">{orgs.length} OPD produsen data di Kabupaten Buton Selatan</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {orgs.map((o) => {
