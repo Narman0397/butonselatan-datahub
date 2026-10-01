@@ -53,7 +53,7 @@ function OrgAdmin() {
   }
 
   const table = (kind: "organizations" | "topics", rows: Row[]) => (
-    <div className="overflow-hidden rounded-2xl border bg-card shadow-soft">
+    <div className="max-w-full overflow-x-auto rounded-2xl border bg-card shadow-soft">
       <div className="flex justify-end border-b p-3">
         <Button size="sm" onClick={() => setEdit({ kind, row: { name: "" } })}><Plus className="h-4 w-4" /> Tambah</Button>
       </div>
