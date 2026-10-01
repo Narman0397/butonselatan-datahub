@@ -8,7 +8,7 @@ import { DatasetCard } from "@/components/dataset-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { orgsQuery, publishedQuery, topicsQuery } from "@/lib/data";
+import { leaderPhotosQuery, orgsQuery, publishedQuery, topicsQuery } from "@/lib/data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,6 +30,7 @@ function Home() {
   const { data: datasets = [] } = useQuery(publishedQuery);
   const { data: orgs = [] } = useQuery(orgsQuery);
   const { data: topics = [] } = useQuery(topicsQuery);
+  const { data: leaders } = useQuery(leaderPhotosQuery);
 
   const totalDownloads = datasets.reduce((a, d) => a + d.downloads, 0);
   const activeOrgs = new Set(datasets.map((d) => d.organization_id)).size;
@@ -96,9 +97,13 @@ function Home() {
             <div className="absolute -right-3 -top-3 h-24 w-24 rounded-2xl bg-accent/30" aria-hidden />
             <div className="relative rounded-3xl border bg-card p-4 shadow-floating">
               <div className="grid grid-cols-2 gap-3 rounded-2xl bg-sea p-6 text-ocean-foreground">
-                {[{ i: "BP", t: "Bupati" }, { i: "WB", t: "Wakil Bupati" }].map((p) => (
+                {[{ i: "BP", t: "Bupati", photo: leaders?.bupati }, { i: "WB", t: "Wakil Bupati", photo: leaders?.wabup }].map((p) => (
                   <div key={p.t} className="flex flex-col items-center text-center">
-                    <div className="grid aspect-square w-full max-w-[150px] place-items-center rounded-2xl bg-ocean-foreground/10 text-3xl font-extrabold">{p.i}</div>
+                    {p.photo ? (
+                      <img src={p.photo} alt={`Foto ${p.t} Buton Selatan`} className="aspect-square w-full max-w-[150px] rounded-2xl object-cover" loading="lazy" />
+                    ) : (
+                      <div className="grid aspect-square w-full max-w-[150px] place-items-center rounded-2xl bg-ocean-foreground/10 text-3xl font-extrabold">{p.i}</div>
+                    )}
                     <div className="mt-3 text-sm font-bold">Nama {p.t}</div>
                     <div className="text-xs text-ocean-foreground/70">{p.t} Buton Selatan</div>
                   </div>
