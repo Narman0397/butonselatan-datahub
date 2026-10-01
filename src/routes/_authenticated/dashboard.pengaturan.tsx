@@ -26,6 +26,7 @@ function Settings() {
   const [f, setF] = useState({ portal_name: "", tagline: "", contact_email: "", contact_phone: "", address: "" });
   const [photos, setPhotos] = useState<Record<LeaderKey, string | null>>({ bupati_photo_url: null, wabup_photo_url: null });
   const [uploading, setUploading] = useState<LeaderKey | null>(null);
+  const [previews, setPreviews] = useState<Partial<Record<LeaderKey, string>>>({});
   useEffect(() => {
     if (data) {
       const row = data as typeof data & { bupati_photo_url?: string | null; wabup_photo_url?: string | null };
@@ -45,6 +46,7 @@ function Settings() {
     setUploading(null);
     if (error) { toast.error(error.message); return; }
     setPhotos((p) => ({ ...p, [key]: path }));
+    setPreviews((p) => ({ ...p, [key]: URL.createObjectURL(file) }));
     toast.success("Foto diunggah — jangan lupa Simpan");
   }
 
@@ -109,8 +111,8 @@ function Settings() {
           <p className="mb-3 text-sm font-semibold">Foto Pimpinan Daerah</p>
           <p className="mb-4 text-xs text-muted-foreground">Foto ini tampil di seksi Sambutan Pimpinan Daerah pada beranda. Format gambar (JPG/PNG), maksimal 5 MB.</p>
           <div className="grid gap-6 sm:grid-cols-2">
-            {photoField("bupati_photo_url", "Foto Bupati", leaders?.bupati ?? null)}
-            {photoField("wabup_photo_url", "Foto Wakil Bupati", leaders?.wabup ?? null)}
+            {photoField("bupati_photo_url", "Foto Bupati", previews.bupati_photo_url ?? (photos.bupati_photo_url ? leaders?.bupati ?? null : null))}
+            {photoField("wabup_photo_url", "Foto Wakil Bupati", previews.wabup_photo_url ?? (photos.wabup_photo_url ? leaders?.wabup ?? null : null))}
           </div>
         </div>
         <div className="flex justify-end"><Button onClick={save}>Simpan</Button></div>
