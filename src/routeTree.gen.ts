@@ -10,33 +10,91 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as OrganisasiRouteImport } from './routes/organisasi'
+import { Route as TopikRouteImport } from './routes/topik'
+import { Route as DatasetIndexRouteImport } from './routes/dataset.index'
+import { Route as DatasetSlugRouteImport } from './routes/dataset.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganisasiRoute = OrganisasiRouteImport.update({
+  id: '/organisasi',
+  path: '/organisasi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TopikRoute = TopikRouteImport.update({
+  id: '/topik',
+  path: '/topik',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatasetIndexRoute = DatasetIndexRouteImport.update({
+  id: '/dataset/',
+  path: '/dataset/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatasetSlugRoute = DatasetSlugRouteImport.update({
+  id: '/dataset/$slug',
+  path: '/dataset/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/organisasi': typeof OrganisasiRoute
+  '/topik': typeof TopikRoute
+  '/dataset/$slug': typeof DatasetSlugRoute
+  '/dataset/': typeof DatasetIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/organisasi': typeof OrganisasiRoute
+  '/topik': typeof TopikRoute
+  '/dataset/$slug': typeof DatasetSlugRoute
+  '/dataset': typeof DatasetIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/organisasi': typeof OrganisasiRoute
+  '/topik': typeof TopikRoute
+  '/dataset/$slug': typeof DatasetSlugRoute
+  '/dataset/': typeof DatasetIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/auth' | '/organisasi' | '/topik' | '/dataset/$slug' | '/dataset/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/auth' | '/organisasi' | '/topik' | '/dataset/$slug' | '/dataset'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/organisasi'
+    | '/topik'
+    | '/dataset/$slug'
+    | '/dataset/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  OrganisasiRoute: typeof OrganisasiRoute
+  TopikRoute: typeof TopikRoute
+  DatasetSlugRoute: typeof DatasetSlugRoute
+  DatasetIndexRoute: typeof DatasetIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +106,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organisasi': {
+      id: '/organisasi'
+      path: '/organisasi'
+      fullPath: '/organisasi'
+      preLoaderRoute: typeof OrganisasiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/topik': {
+      id: '/topik'
+      path: '/topik'
+      fullPath: '/topik'
+      preLoaderRoute: typeof TopikRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dataset/': {
+      id: '/dataset/'
+      path: '/dataset'
+      fullPath: '/dataset/'
+      preLoaderRoute: typeof DatasetIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dataset/$slug': {
+      id: '/dataset/$slug'
+      path: '/dataset/$slug'
+      fullPath: '/dataset/$slug'
+      preLoaderRoute: typeof DatasetSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  OrganisasiRoute: OrganisasiRoute,
+  TopikRoute: TopikRoute,
+  DatasetSlugRoute: DatasetSlugRoute,
+  DatasetIndexRoute: DatasetIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
