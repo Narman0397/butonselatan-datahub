@@ -35,12 +35,12 @@ function OrgAdmin() {
     const { kind, row } = edit;
     const payload =
       kind === "organizations"
-        ? { name: row.name, acronym: row.acronym, description: row.description, slug: slug(row.acronym || row.name) }
-        : { name: row.name, description: row.description, slug: slug(row.name) };
+        ? { name: row.name, acronym: row.acronym ?? null, description: row.description ?? null, slug: slug(row.acronym || row.name) }
+        : { name: row.name, description: row.description ?? null, slug: slug(row.name) };
     const { error } = row.id
       ? await supabase.from(kind).update(payload).eq("id", row.id)
       : await supabase.from(kind).insert(payload);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Tersimpan");
     setEdit(null);
     qc.invalidateQueries({ queryKey: [kind] });
@@ -48,7 +48,7 @@ function OrgAdmin() {
   async function remove(kind: "organizations" | "topics", id: string) {
     if (!confirm(kind === "organizations" ? "Menghapus OPD juga menghapus seluruh datasetnya. Lanjutkan?" : "Hapus topik ini?")) return;
     const { error } = await supabase.from(kind).delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: [kind] });
   }
 

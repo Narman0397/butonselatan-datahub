@@ -41,9 +41,9 @@ function Verify() {
 
   async function decide(status: "published" | "rejected") {
     if (!current) return;
-    if (status === "rejected" && !note.trim()) return toast.error("Catatan penolakan wajib diisi");
+    if (status === "rejected" && !note.trim()) { toast.error("Catatan penolakan wajib diisi"); return; }
     const { error } = await supabase.from("datasets").update({ status, review_note: status === "rejected" ? note : null }).eq("id", current.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(status === "published" ? "Dataset diterbitkan" : "Dataset ditolak dengan catatan");
     setOpenId(null);
     setNote("");

@@ -40,18 +40,18 @@ function Users() {
   if (!hasRole("admin")) return <NoAccess />;
 
   async function toggleRole(uid: string, role: AppRole, on: boolean) {
-    if (uid === user?.id && role === "admin" && !on) return toast.error("Anda tidak dapat mencabut peran admin sendiri");
+    if (uid === user?.id && role === "admin" && !on) { toast.error("Anda tidak dapat mencabut peran admin sendiri"); return; }
     const { error } = on
       ? await supabase.from("user_roles").insert({ user_id: uid, role })
       : await supabase.from("user_roles").delete().eq("user_id", uid).eq("role", role);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Peran diperbarui");
     qc.invalidateQueries({ queryKey: ["admin-users"] });
     if (uid === user?.id) refresh();
   }
   async function setOrg(uid: string, org: string) {
     const { error } = await supabase.from("profiles").update({ organization_id: org === NONE ? null : org }).eq("id", uid);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("OPD diperbarui");
     qc.invalidateQueries({ queryKey: ["admin-users"] });
     if (uid === user?.id) refresh();

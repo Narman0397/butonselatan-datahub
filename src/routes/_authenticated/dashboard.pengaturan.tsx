@@ -27,7 +27,7 @@ function Settings() {
 
   async function save() {
     const { error } = await supabase.from("portal_settings").update({ ...f, updated_at: new Date().toISOString() }).eq("id", 1);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Pengaturan disimpan");
     qc.invalidateQueries({ queryKey: ["portal_settings"] });
   }

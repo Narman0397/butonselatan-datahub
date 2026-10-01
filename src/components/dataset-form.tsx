@@ -29,7 +29,7 @@ export type EditableDataset = {
   review_note: string | null;
 };
 
-export function DatasetForm({ initial, onDone }: { initial?: EditableDataset; onDone: () => void }) {
+export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | undefined; onDone: () => void }) {
   const { profile, hasRole } = useAuth();
   const isAdmin = hasRole("admin");
   const { data: orgs = [] } = useQuery(orgsQuery);
@@ -58,7 +58,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset; on
   }
 
   async function save(submit: boolean) {
-    if (!f.title || !f.organization_id) return toast.error("Judul dan OPD wajib diisi");
+    if (!f.title || !f.organization_id) { toast.error("Judul dan OPD wajib diisi"); return; }
     setBusy(true);
     try {
       let file_url = initial?.file_url ?? null;
