@@ -90,7 +90,7 @@ function Home() {
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-16 lg:grid-cols-3">
-        <div className="rounded-2xl border bg-card p-6 shadow-soft lg:col-span-2">
+        <div className="min-w-0 rounded-2xl border bg-card p-5 shadow-soft md:p-6 lg:col-span-2">
           <h2 className="text-lg font-semibold">Dataset per topik</h2>
           <p className="mb-4 text-sm text-muted-foreground">Sebaran dataset terbuka menurut sektor</p>
           <ChartContainer config={{ jumlah: { label: "Dataset", color: "var(--chart-1)" } }} className="h-72 w-full">
@@ -103,7 +103,7 @@ function Home() {
             </BarChart>
           </ChartContainer>
         </div>
-        <div className="rounded-2xl border bg-card p-6 shadow-soft">
+        <div className="min-w-0 rounded-2xl border bg-card p-5 shadow-soft md:p-6">
           <h2 className="text-lg font-semibold">Format file</h2>
           <p className="mb-4 text-sm text-muted-foreground">Komposisi format dataset</p>
           <ChartContainer config={{ value: { label: "Dataset" } }} className="mx-auto h-56">
