@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import { settingsQuery } from "@/lib/data";
+import { leaderPhotosQuery, settingsQuery } from "@/lib/data";
 
 const NAV = [
   { to: "/", label: "Beranda" },
@@ -15,17 +15,23 @@ const NAV = [
 ] as const;
 
 export function Logo({ light = false }: { light?: boolean }) {
+  const { data: s } = useQuery(settingsQuery);
+  const { data: assets } = useQuery(leaderPhotosQuery);
   return (
-    <Link to="/" className="flex items-center gap-2.5">
-      <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-accent text-accent-foreground shadow-soft">
-        <Database className="h-5 w-5" />
-      </span>
-      <span className="leading-tight">
-        <span className={`block font-display text-sm font-bold ${light ? "text-ocean-foreground" : "text-foreground"}`}>
-          Satu Data
+    <Link to="/" className="flex min-w-0 items-center gap-2.5">
+      {assets?.logo ? (
+        <img src={assets.logo} alt="Logo" className="h-10 w-10 shrink-0 object-contain" />
+      ) : (
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-accent text-accent-foreground shadow-soft">
+          <Database className="h-5 w-5" />
         </span>
-        <span className={`block text-xs ${light ? "text-ocean-foreground/70" : "text-muted-foreground"}`}>
-          Kabupaten Buton Selatan
+      )}
+      <span className="min-w-0 leading-tight">
+        <span className={`block truncate font-display text-sm font-bold ${light ? "text-ocean-foreground" : "text-foreground"}`}>
+          {s?.portal_name || "Satu Data"}
+        </span>
+        <span className={`block truncate text-xs ${light ? "text-ocean-foreground/70" : "text-muted-foreground"}`}>
+          {s?.region_label || "Kabupaten Buton Selatan"}
         </span>
       </span>
     </Link>
@@ -123,8 +129,15 @@ export function SiteFooter() {
         <div className="space-y-2 text-sm text-ocean-foreground/80">
           <h4 className="mb-3 font-semibold text-ocean-foreground">Kontak</h4>
           <p>{s?.address}</p>
-          <p>{s?.contact_email}</p>
+          <p className="break-all">{s?.contact_email}</p>
           <p>{s?.contact_phone}</p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            {([["Instagram", s?.instagram_url], ["Facebook", s?.facebook_url], ["YouTube", s?.youtube_url]] as const)
+              .filter(([, u]) => u && /^https?:\/\//i.test(u))
+              .map(([label, u]) => (
+                <a key={label} href={u!} target="_blank" rel="noopener noreferrer" className="rounded-full border border-ocean-foreground/20 px-3 py-1 text-xs hover:text-accent">{label}</a>
+              ))}
+          </div>
         </div>
       </div>
       <div className="border-t border-ocean-foreground/10 py-4 text-center text-xs text-ocean-foreground/60">
