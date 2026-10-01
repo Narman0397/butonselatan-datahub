@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FileStack, Clock, CheckCircle2, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, ROLE_LABEL } from "@/lib/auth";
-import { PageHeader } from "./dashboard";
+import { PageHeader } from "@/components/dash-bits";
 import { StatusBadge } from "@/components/dataset-bits";
 import { formatDate, type DatasetStatus } from "@/lib/data";
 

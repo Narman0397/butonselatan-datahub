@@ -10,15 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as OrganisasiRouteImport } from './routes/organisasi'
 import { Route as TopikRouteImport } from './routes/topik'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as DatasetIndexRouteImport } from './routes/dataset.index'
 import { Route as DatasetSlugRouteImport } from './routes/dataset.$slug'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
+import { Route as AuthenticatedDashboardDatasetRouteImport } from './routes/_authenticated/dashboard.dataset'
+import { Route as AuthenticatedDashboardOrganisasiRouteImport } from './routes/_authenticated/dashboard.organisasi'
+import { Route as AuthenticatedDashboardPengaturanRouteImport } from './routes/_authenticated/dashboard.pengaturan'
+import { Route as AuthenticatedDashboardPenggunaRouteImport } from './routes/_authenticated/dashboard.pengguna'
+import { Route as AuthenticatedDashboardVerifikasiRouteImport } from './routes/_authenticated/dashboard.verifikasi'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -36,6 +48,11 @@ const TopikRoute = TopikRouteImport.update({
   path: '/topik',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const DatasetIndexRoute = DatasetIndexRouteImport.update({
   id: '/dataset/',
   path: '/dataset/',
@@ -46,14 +63,57 @@ const DatasetSlugRoute = DatasetSlugRouteImport.update({
   path: '/dataset/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardDatasetRoute =
+  AuthenticatedDashboardDatasetRouteImport.update({
+    id: '/dataset',
+    path: '/dataset',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardOrganisasiRoute =
+  AuthenticatedDashboardOrganisasiRouteImport.update({
+    id: '/organisasi',
+    path: '/organisasi',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPengaturanRoute =
+  AuthenticatedDashboardPengaturanRouteImport.update({
+    id: '/pengaturan',
+    path: '/pengaturan',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPenggunaRoute =
+  AuthenticatedDashboardPenggunaRouteImport.update({
+    id: '/pengguna',
+    path: '/pengguna',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardVerifikasiRoute =
+  AuthenticatedDashboardVerifikasiRouteImport.update({
+    id: '/verifikasi',
+    path: '/verifikasi',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/organisasi': typeof OrganisasiRoute
   '/topik': typeof TopikRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/dataset/$slug': typeof DatasetSlugRoute
   '/dataset/': typeof DatasetIndexRoute
+  '/dashboard/dataset': typeof AuthenticatedDashboardDatasetRoute
+  '/dashboard/organisasi': typeof AuthenticatedDashboardOrganisasiRoute
+  '/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
+  '/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
+  '/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,34 +122,81 @@ export interface FileRoutesByTo {
   '/topik': typeof TopikRoute
   '/dataset/$slug': typeof DatasetSlugRoute
   '/dataset': typeof DatasetIndexRoute
+  '/dashboard/dataset': typeof AuthenticatedDashboardDatasetRoute
+  '/dashboard/organisasi': typeof AuthenticatedDashboardOrganisasiRoute
+  '/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
+  '/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
+  '/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/organisasi': typeof OrganisasiRoute
   '/topik': typeof TopikRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/dataset/$slug': typeof DatasetSlugRoute
   '/dataset/': typeof DatasetIndexRoute
+  '/_authenticated/dashboard/dataset': typeof AuthenticatedDashboardDatasetRoute
+  '/_authenticated/dashboard/organisasi': typeof AuthenticatedDashboardOrganisasiRoute
+  '/_authenticated/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
+  '/_authenticated/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
+  '/_authenticated/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/organisasi' | '/topik' | '/dataset/$slug' | '/dataset/'
+    | '/'
+    | '/auth'
+    | '/organisasi'
+    | '/topik'
+    | '/dashboard'
+    | '/dataset/$slug'
+    | '/dataset/'
+    | '/dashboard/dataset'
+    | '/dashboard/organisasi'
+    | '/dashboard/pengaturan'
+    | '/dashboard/pengguna'
+    | '/dashboard/verifikasi'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/organisasi' | '/topik' | '/dataset/$slug' | '/dataset'
-  id:
-    | '__root__'
+  to:
     | '/'
     | '/auth'
     | '/organisasi'
     | '/topik'
     | '/dataset/$slug'
+    | '/dataset'
+    | '/dashboard/dataset'
+    | '/dashboard/organisasi'
+    | '/dashboard/pengaturan'
+    | '/dashboard/pengguna'
+    | '/dashboard/verifikasi'
+    | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/organisasi'
+    | '/topik'
+    | '/_authenticated/dashboard'
+    | '/dataset/$slug'
     | '/dataset/'
+    | '/_authenticated/dashboard/dataset'
+    | '/_authenticated/dashboard/organisasi'
+    | '/_authenticated/dashboard/pengaturan'
+    | '/_authenticated/dashboard/pengguna'
+    | '/_authenticated/dashboard/verifikasi'
+    | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   OrganisasiRoute: typeof OrganisasiRoute
   TopikRoute: typeof TopikRoute
@@ -104,6 +211,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -127,6 +241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopikRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/dataset/': {
       id: '/dataset/'
       path: '/dataset'
@@ -141,11 +262,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DatasetSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/dataset': {
+      id: '/_authenticated/dashboard/dataset'
+      path: '/dataset'
+      fullPath: '/dashboard/dataset'
+      preLoaderRoute: typeof AuthenticatedDashboardDatasetRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/organisasi': {
+      id: '/_authenticated/dashboard/organisasi'
+      path: '/organisasi'
+      fullPath: '/dashboard/organisasi'
+      preLoaderRoute: typeof AuthenticatedDashboardOrganisasiRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pengaturan': {
+      id: '/_authenticated/dashboard/pengaturan'
+      path: '/pengaturan'
+      fullPath: '/dashboard/pengaturan'
+      preLoaderRoute: typeof AuthenticatedDashboardPengaturanRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pengguna': {
+      id: '/_authenticated/dashboard/pengguna'
+      path: '/pengguna'
+      fullPath: '/dashboard/pengguna'
+      preLoaderRoute: typeof AuthenticatedDashboardPenggunaRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/verifikasi': {
+      id: '/_authenticated/dashboard/verifikasi'
+      path: '/verifikasi'
+      fullPath: '/dashboard/verifikasi'
+      preLoaderRoute: typeof AuthenticatedDashboardVerifikasiRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
   }
 }
 
+interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardDatasetRoute: typeof AuthenticatedDashboardDatasetRoute
+  AuthenticatedDashboardOrganisasiRoute: typeof AuthenticatedDashboardOrganisasiRoute
+  AuthenticatedDashboardPengaturanRoute: typeof AuthenticatedDashboardPengaturanRoute
+  AuthenticatedDashboardPenggunaRoute: typeof AuthenticatedDashboardPenggunaRoute
+  AuthenticatedDashboardVerifikasiRoute: typeof AuthenticatedDashboardVerifikasiRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+}
+
+const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
+  {
+    AuthenticatedDashboardDatasetRoute: AuthenticatedDashboardDatasetRoute,
+    AuthenticatedDashboardOrganisasiRoute:
+      AuthenticatedDashboardOrganisasiRoute,
+    AuthenticatedDashboardPengaturanRoute:
+      AuthenticatedDashboardPengaturanRoute,
+    AuthenticatedDashboardPenggunaRoute: AuthenticatedDashboardPenggunaRoute,
+    AuthenticatedDashboardVerifikasiRoute:
+      AuthenticatedDashboardVerifikasiRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  }
+
+const AuthenticatedDashboardRouteWithChildren =
+  AuthenticatedDashboardRoute._addFileChildren(
+    AuthenticatedDashboardRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   OrganisasiRoute: OrganisasiRoute,
   TopikRoute: TopikRoute,

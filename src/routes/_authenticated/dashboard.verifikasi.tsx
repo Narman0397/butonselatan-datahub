@@ -5,7 +5,7 @@ import { CheckCircle2, XCircle, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { PageHeader, NoAccess } from "./dashboard";
+import { PageHeader, NoAccess } from "@/components/dash-bits";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
