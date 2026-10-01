@@ -1,0 +1,15 @@
+alter table public.portal_settings
+  add column if not exists logo_url text,
+  add column if not exists region_label text,
+  add column if not exists instagram_url text,
+  add column if not exists facebook_url text,
+  add column if not exists youtube_url text,
+  add column if not exists bupati_name text,
+  add column if not exists bupati_title text,
+  add column if not exists wabup_name text,
+  add column if not exists wabup_title text,
+  add column if not exists welcome_title text,
+  add column if not exists welcome_body text,
+  add column if not exists hero_kicker text,
+  add column if not exists hero_title text,
+  add column if not exists hero_description text;

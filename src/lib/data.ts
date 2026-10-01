@@ -57,20 +57,20 @@ export const settingsQuery = queryOptions({
   },
 });
 
-export type LeaderPhotos = { bupati: string | null; wabup: string | null };
+export type LeaderPhotos = { bupati: string | null; wabup: string | null; logo: string | null };
 
 export const leaderPhotosQuery = queryOptions({
   queryKey: ["leader_photos"],
   staleTime: 1000 * 60 * 60,
   queryFn: async (): Promise<LeaderPhotos> => {
-    const { data } = await supabase.from("portal_settings").select("*").eq("id", 1).maybeSingle();
-    const row = data as (typeof data & { bupati_photo_url?: string | null; wabup_photo_url?: string | null }) | null;
+    const { data: row } = await supabase.from("portal_settings").select("*").eq("id", 1).maybeSingle();
     const sign = async (path?: string | null) => {
       if (!path) return null;
       const { data: signed } = await supabase.storage.from("portal-assets").createSignedUrl(path, 60 * 60 * 24 * 7);
       return signed?.signedUrl ?? null;
     };
-    return { bupati: await sign(row?.bupati_photo_url), wabup: await sign(row?.wabup_photo_url) };
+    const [bupati, wabup, logo] = await Promise.all([sign(row?.bupati_photo_url), sign(row?.wabup_photo_url), sign(row?.logo_url)]);
+    return { bupati, wabup, logo };
   },
 });
 

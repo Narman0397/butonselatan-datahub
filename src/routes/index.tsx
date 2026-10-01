@@ -8,7 +8,11 @@ import { DatasetCard } from "@/components/dataset-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { leaderPhotosQuery, orgsQuery, publishedQuery, topicsQuery } from "@/lib/data";
+import { leaderPhotosQuery, orgsQuery, publishedQuery, settingsQuery, topicsQuery } from "@/lib/data";
+
+function initials(name: string) {
+  return name.replace(/^(H|Hj|Dr|Ir|Drs)\.?\s+/i, "").split(/\s+/).filter((w) => /^[A-Za-z]/.test(w)).slice(0, 2).map((w) => w[0]!.toUpperCase()).join("");
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,6 +35,17 @@ function Home() {
   const { data: orgs = [] } = useQuery(orgsQuery);
   const { data: topics = [] } = useQuery(topicsQuery);
   const { data: leaders } = useQuery(leaderPhotosQuery);
+  const { data: s } = useQuery(settingsQuery);
+  const leadersList = [
+    { key: "b", name: s?.bupati_name || "Nama Bupati", title: s?.bupati_title || "Bupati Buton Selatan", photo: leaders?.bupati },
+    { key: "w", name: s?.wabup_name || "Nama Wakil Bupati", title: s?.wabup_title || "Wakil Bupati Buton Selatan", photo: leaders?.wabup },
+  ].filter((p) => p.key === "b" || !s || s.wabup_name || s.wabup_photo_url || !s.bupati_name);
+  const welcomeParas = (s?.welcome_body?.trim()
+    ? s.welcome_body.split(/\n\s*\n/)
+    : [
+        "Portal Satu Data Buton Selatan hadir sebagai wujud komitmen pemerintah daerah dalam menyediakan data yang akurat, mutakhir, terpadu, dan dapat dipertanggungjawabkan sesuai Perpres No. 39 Tahun 2019.",
+        "Kami mengajak seluruh perangkat daerah, akademisi, dan masyarakat memanfaatkan data ini untuk perencanaan pembangunan, riset, dan inovasi demi kesejahteraan masyarakat pesisir dan kepulauan.",
+      ]).map((p) => p.trim()).filter(Boolean);
 
   const totalDownloads = datasets.reduce((a, d) => a + d.downloads, 0);
   const activeOrgs = new Set(datasets.map((d) => d.organization_id)).size;
@@ -55,12 +70,12 @@ function Home() {
           <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-ocean-foreground/20 bg-ocean-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em]">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Platform Data Terbuka
           </p>
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-accent">Kabupaten Buton Selatan · Sulawesi Tenggara</p>
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-accent">{s?.hero_kicker || "Kabupaten Buton Selatan · Sulawesi Tenggara"}</p>
           <h1 className="animate-rise max-w-4xl break-words text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl">
-            Data Publik <span className="text-accent">Buton Selatan</span><br className="hidden sm:block" /> Terbuka &amp; Terpadu
+            {s?.hero_title || <>Data Publik <span className="text-accent">Buton Selatan</span><br className="hidden sm:block" /> Terbuka &amp; Terpadu</>}
           </h1>
-          <p className="mt-5 max-w-2xl text-sm sm:text-base text-ocean-foreground/80">
-            Temukan data kependudukan, kesehatan, perikanan, hingga keuangan daerah — terverifikasi Wali Data dan siap diunduh.
+          <p className="mt-5 max-w-2xl whitespace-pre-line text-sm sm:text-base text-ocean-foreground/80">
+            {s?.hero_description || "Temukan data kependudukan, kesehatan, perikanan, hingga keuangan daerah — terverifikasi Wali Data dan siap diunduh."}
           </p>
           <div className="mt-8 grid w-full max-w-2xl grid-cols-2 divide-ocean-foreground/20 sm:grid-cols-4 sm:divide-x">
             {stats.map((s) => (
@@ -96,16 +111,16 @@ function Home() {
           <div className="relative">
             <div className="absolute -right-3 -top-3 h-24 w-24 rounded-2xl bg-accent/30" aria-hidden />
             <div className="relative rounded-3xl border bg-card p-4 shadow-floating">
-              <div className="grid grid-cols-2 gap-3 rounded-2xl bg-sea p-6 text-ocean-foreground">
-                {[{ i: "BP", t: "Bupati", photo: leaders?.bupati }, { i: "WB", t: "Wakil Bupati", photo: leaders?.wabup }].map((p) => (
-                  <div key={p.t} className="flex flex-col items-center text-center">
+              <div className={`grid gap-3 rounded-2xl bg-sea p-6 text-ocean-foreground ${leadersList.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+                {leadersList.map((p) => (
+                  <div key={p.key} className="flex min-w-0 flex-col items-center text-center">
                     {p.photo ? (
-                      <img src={p.photo} alt={`Foto ${p.t} Buton Selatan`} className="aspect-square w-full max-w-[150px] rounded-2xl object-cover" loading="lazy" />
+                      <img src={p.photo} alt={`Foto ${p.name}`} className="aspect-square w-full max-w-[150px] rounded-2xl object-cover" loading="lazy" />
                     ) : (
-                      <div className="grid aspect-square w-full max-w-[150px] place-items-center rounded-2xl bg-ocean-foreground/10 text-3xl font-extrabold">{p.i}</div>
+                      <div className="grid aspect-square w-full max-w-[150px] place-items-center rounded-2xl bg-ocean-foreground/10 text-3xl font-extrabold">{initials(p.name)}</div>
                     )}
-                    <div className="mt-3 text-sm font-bold">Nama {p.t}</div>
-                    <div className="text-xs text-ocean-foreground/70">{p.t} Buton Selatan</div>
+                    <div className="mt-3 break-words text-sm font-bold">{p.name}</div>
+                    <div className="text-xs text-ocean-foreground/70">{p.title}</div>
                   </div>
                 ))}
               </div>
@@ -113,15 +128,12 @@ function Home() {
           </div>
           <div className="min-w-0">
             <p className="mb-3 inline-flex rounded-full border bg-card px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">Sambutan Pimpinan Daerah</p>
-            <h2 className="text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">
-              Mewujudkan <span className="text-primary">Satu Data</span> untuk Buton Selatan yang Maju
+            <h2 className="break-words text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">
+              {s?.welcome_title || <>Mewujudkan <span className="text-primary">Satu Data</span> untuk Buton Selatan yang Maju</>}
             </h2>
-            <p className="mt-4 text-muted-foreground">
-              Portal Satu Data Buton Selatan hadir sebagai wujud komitmen pemerintah daerah dalam menyediakan data yang akurat, mutakhir, terpadu, dan dapat dipertanggungjawabkan sesuai Perpres No. 39 Tahun 2019.
-            </p>
-            <p className="mt-3 text-muted-foreground">
-              Kami mengajak seluruh perangkat daerah, akademisi, dan masyarakat memanfaatkan data ini untuk perencanaan pembangunan, riset, dan inovasi demi kesejahteraan masyarakat pesisir dan kepulauan.
-            </p>
+            {welcomeParas.map((para, i) => (
+              <p key={i} className={`${i === 0 ? "mt-4" : "mt-3"} whitespace-pre-line text-muted-foreground`}>{para}</p>
+            ))}
             <Link to="/dataset" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Jelajahi Dataset <ArrowRight className="h-4 w-4" /></Link>
           </div>
         </div>

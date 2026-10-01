@@ -131,36 +131,78 @@ export type Database = {
       portal_settings: {
         Row: {
           address: string | null
+          bupati_name: string | null
           bupati_photo_url: string | null
+          bupati_title: string | null
           contact_email: string | null
           contact_phone: string | null
+          facebook_url: string | null
+          hero_description: string | null
+          hero_kicker: string | null
+          hero_title: string | null
           id: number
+          instagram_url: string | null
+          logo_url: string | null
           portal_name: string
+          region_label: string | null
           tagline: string | null
           updated_at: string
+          wabup_name: string | null
           wabup_photo_url: string | null
+          wabup_title: string | null
+          welcome_body: string | null
+          welcome_title: string | null
+          youtube_url: string | null
         }
         Insert: {
           address?: string | null
+          bupati_name?: string | null
           bupati_photo_url?: string | null
+          bupati_title?: string | null
           contact_email?: string | null
           contact_phone?: string | null
+          facebook_url?: string | null
+          hero_description?: string | null
+          hero_kicker?: string | null
+          hero_title?: string | null
           id?: number
+          instagram_url?: string | null
+          logo_url?: string | null
           portal_name?: string
+          region_label?: string | null
           tagline?: string | null
           updated_at?: string
+          wabup_name?: string | null
           wabup_photo_url?: string | null
+          wabup_title?: string | null
+          welcome_body?: string | null
+          welcome_title?: string | null
+          youtube_url?: string | null
         }
         Update: {
           address?: string | null
+          bupati_name?: string | null
           bupati_photo_url?: string | null
+          bupati_title?: string | null
           contact_email?: string | null
           contact_phone?: string | null
+          facebook_url?: string | null
+          hero_description?: string | null
+          hero_kicker?: string | null
+          hero_title?: string | null
           id?: number
+          instagram_url?: string | null
+          logo_url?: string | null
           portal_name?: string
+          region_label?: string | null
           tagline?: string | null
           updated_at?: string
+          wabup_name?: string | null
           wabup_photo_url?: string | null
+          wabup_title?: string | null
+          welcome_body?: string | null
+          welcome_title?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }
