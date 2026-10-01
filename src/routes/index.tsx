@@ -122,15 +122,6 @@ function Home() {
         </div>
       </section>
 
-      <section className="hidden max-w-7xl grid-cols-2 gap-3 px-4 md:grid-cols-4 md:gap-4">
-        {stats.map((s) => (
-          <div key={s.label} className="card-lift relative min-w-0 rounded-2xl border bg-card p-4 sm:p-5">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-primary-foreground"><s.icon className="h-5 w-5" /></span>
-            <div className="mt-3 truncate font-display text-2xl font-bold sm:text-3xl">{s.value}</div>
-            <div className="text-sm text-muted-foreground">{s.label}</div>
-          </div>
-        ))}
-      </section>
 
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-16 lg:grid-cols-3">
         <div className="min-w-0 rounded-2xl border bg-card p-5 shadow-soft md:p-6 lg:col-span-2">
