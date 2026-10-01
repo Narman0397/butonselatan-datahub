@@ -79,8 +79,8 @@ export function SampleTable({ data, max = 100 }: { data: SampleData; max?: numbe
         <thead className="bg-muted">
           <tr>
             <th className="px-3 py-2 text-left text-xs font-semibold text-muted-foreground">#</th>
-            {data.columns.map((c) => (
-              <th key={c} className="whitespace-nowrap px-3 py-2 text-left text-xs font-semibold">{c}</th>
+            {data.columns.map((c, j) => (
+              <th key={c} className={cn("whitespace-nowrap px-3 py-2 text-left text-xs font-semibold", data.rows.every((r) => typeof r[j] === "number") && "text-right")}>{c}</th>
             ))}
           </tr>
         </thead>
@@ -90,7 +90,7 @@ export function SampleTable({ data, max = 100 }: { data: SampleData; max?: numbe
               <td className="px-3 py-2 text-xs text-muted-foreground">{i + 1}</td>
               {r.map((v, j) => (
                 <td key={j} className={cn("whitespace-nowrap px-3 py-2", typeof v === "number" && "text-right font-mono tabular-nums")}>
-                  {typeof v === "number" ? v.toLocaleString("id-ID") : v}
+                  {typeof v === "number" && !(Number.isInteger(v) && v >= 1900 && v <= 2100) ? v.toLocaleString("id-ID") : v}
                 </td>
               ))}
             </tr>
