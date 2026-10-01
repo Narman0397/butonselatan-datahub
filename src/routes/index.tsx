@@ -49,25 +49,25 @@ function Home() {
     <PublicLayout>
       <section className="bg-sea relative overflow-hidden text-ocean-foreground">
         <div className="contour absolute inset-0" />
-        <div className="relative mx-auto max-w-7xl px-4 py-20 md:py-28">
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:py-20 md:py-28">
           <p className="mb-4 inline-flex rounded-full border border-ocean-foreground/20 px-3 py-1 text-xs font-medium tracking-wide">
             Portal Resmi Pemerintah Kabupaten Buton Selatan
           </p>
-          <h1 className="animate-rise max-w-3xl text-4xl font-extrabold leading-tight md:text-6xl">
+          <h1 className="animate-rise max-w-3xl break-words text-3xl font-extrabold leading-tight sm:text-4xl md:text-6xl">
             Satu data, untuk <span className="text-accent">pesisir</span> dan pulau-pulau Buton Selatan.
           </h1>
-          <p className="mt-5 max-w-2xl text-lg text-ocean-foreground/80">
+          <p className="mt-5 max-w-2xl text-base sm:text-lg text-ocean-foreground/80">
             Temukan data kependudukan, kesehatan, perikanan, hingga keuangan daerah — terverifikasi Wali Data dan siap diunduh.
           </p>
           <form
             className="animate-rise mt-8 flex max-w-2xl gap-2 rounded-full bg-card p-1.5 shadow-floating ring-4 ring-ocean-foreground/10 focus-within:ring-accent/40"
             onSubmit={(e) => { e.preventDefault(); navigate({ to: "/dataset", search: { q } }); }}
           >
-            <div className="relative flex-1">
+            <div className="relative min-w-0 flex-1">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
               <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari dataset, mis. penduduk, ikan, puskesmas…" className="h-12 rounded-full border-0 bg-transparent pl-10 text-base text-foreground shadow-none focus-visible:ring-0" />
             </div>
-            <Button type="submit" size="lg" className="h-12 rounded-full bg-gradient-accent px-6 text-accent-foreground hover:opacity-90">Cari</Button>
+            <Button type="submit" size="lg" className="h-12 shrink-0 rounded-full bg-gradient-accent px-4 sm:px-6 text-accent-foreground hover:opacity-90">Cari</Button>
           </form>
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
             {topics.slice(0, 5).map((t) => (
@@ -79,11 +79,11 @@ function Home() {
         </div>
       </section>
 
-      <section className="mx-auto -mt-10 grid max-w-7xl grid-cols-2 gap-3 px-4 md:grid-cols-4">
+      <section className="mx-auto -mt-10 grid max-w-7xl grid-cols-2 gap-3 px-4 md:grid-cols-4 md:gap-4">
         {stats.map((s) => (
-          <div key={s.label} className="card-lift relative rounded-2xl border bg-card p-5">
+          <div key={s.label} className="card-lift relative min-w-0 rounded-2xl border bg-card p-4 sm:p-5">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-primary-foreground"><s.icon className="h-5 w-5" /></span>
-            <div className="mt-3 font-display text-3xl font-bold">{s.value}</div>
+            <div className="mt-3 truncate font-display text-2xl font-bold sm:text-3xl">{s.value}</div>
             <div className="text-sm text-muted-foreground">{s.label}</div>
           </div>
         ))}

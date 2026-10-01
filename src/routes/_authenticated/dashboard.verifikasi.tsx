@@ -62,7 +62,7 @@ function Verify() {
           <TabsTrigger value="rejected">Ditolak</TabsTrigger>
         </TabsList>
       </Tabs>
-      <div className="overflow-hidden rounded-2xl border bg-card shadow-soft">
+      <div className="max-w-full overflow-x-auto rounded-2xl border bg-card shadow-soft">
         <Table>
           <TableHeader>
             <TableRow>

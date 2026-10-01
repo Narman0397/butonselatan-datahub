@@ -81,16 +81,16 @@ function Detail() {
             <ArrowLeft className="h-4 w-4" /> Katalog
           </Link>
           <div className="flex flex-wrap items-start justify-between gap-6">
-            <div className="max-w-3xl">
+            <div className="min-w-0 max-w-3xl">
               <div className="mb-2 flex items-center gap-2"><FormatBadge format={ds.format} /><span className="text-sm text-muted-foreground">{ds.organizations?.acronym}</span></div>
-              <h1 className="text-3xl font-bold">{ds.title}</h1>
+              <h1 className="break-words text-2xl font-bold sm:text-3xl">{ds.title}</h1>
               <p className="mt-3 text-muted-foreground">{ds.description}</p>
-              <div className="mt-4 flex gap-4 text-sm text-muted-foreground">
+              <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1"><Eye className="h-4 w-4" />{ds.views} dilihat</span>
                 <span className="flex items-center gap-1"><Download className="h-4 w-4" />{ds.downloads} unduhan</span>
               </div>
             </div>
-            <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90"
+            <Button size="lg" className="w-full rounded-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
               onClick={async () => { await downloadDataset(ds); qc.invalidateQueries({ queryKey: ["dataset", slug] }); }}>
               <Download className="h-4 w-4" /> Unduh {ds.file_url ? ds.format : "CSV"}
             </Button>
@@ -98,7 +98,7 @@ function Detail() {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[1fr_300px]">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="min-w-0">
           <Tabs defaultValue="tabel">
             <TabsList>
@@ -108,7 +108,7 @@ function Detail() {
             <TabsContent value="tabel" className="mt-4 space-y-3">
               {filtered ? (
                 <>
-                  <Input placeholder="Saring baris…" value={filter} onChange={(e) => setFilter(e.target.value)} className="max-w-xs" />
+                  <Input placeholder="Saring baris…" value={filter} onChange={(e) => setFilter(e.target.value)} className="w-full sm:max-w-xs" />
                   <SampleTable data={filtered} />
                   <p className="text-xs text-muted-foreground">Menampilkan {filtered.rows.length} dari {sample?.rows.length} baris sampel.</p>
                 </>

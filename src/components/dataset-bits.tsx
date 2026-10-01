@@ -56,7 +56,7 @@ export function DatasetCard({ ds }: { ds: CardDs }) {
         <FormatBadge format={ds.format} />
         {ds.topics && <span className="truncate rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">{ds.topics.name}</span>}
       </div>
-      <h3 className="font-display text-base font-semibold leading-snug group-hover:text-primary">{ds.title}</h3>
+      <h3 className="break-words font-display text-base font-semibold leading-snug group-hover:text-primary">{ds.title}</h3>
       <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ds.description}</p>
       <div className="mt-auto flex items-center justify-between pt-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5 truncate">
@@ -74,7 +74,7 @@ export function DatasetCard({ ds }: { ds: CardDs }) {
 
 export function SampleTable({ data, max = 100 }: { data: SampleData; max?: number }) {
   return (
-    <div className="overflow-auto rounded-2xl border bg-card shadow-soft">
+    <div className="max-w-full overflow-x-auto rounded-2xl border bg-card shadow-soft">
       <table className="w-full text-sm">
         <thead className="sticky top-0 bg-secondary">
           <tr>
