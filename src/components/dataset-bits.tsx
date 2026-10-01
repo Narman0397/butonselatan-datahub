@@ -12,7 +12,7 @@ const FORMAT_CLASS: Record<string, string> = {
 
 export function FormatBadge({ format }: { format: string }) {
   return (
-    <span className={cn("inline-flex rounded border px-1.5 py-0.5 font-mono text-[11px] font-semibold", FORMAT_CLASS[format] ?? "bg-muted")}>
+    <span className={cn("inline-flex rounded-full border px-2.5 py-0.5 font-mono text-[11px] font-semibold", FORMAT_CLASS[format] ?? "bg-muted")}>
       {format}
     </span>
   );
@@ -50,11 +50,11 @@ export function DatasetCard({ ds }: { ds: CardDs }) {
     <Link
       to="/dataset/$slug"
       params={{ slug: ds.slug }}
-      className="group flex flex-col rounded-xl border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
+      className="group card-lift flex flex-col rounded-2xl border bg-card p-5 hover:border-primary/40"
     >
       <div className="mb-3 flex items-center gap-2">
         <FormatBadge format={ds.format} />
-        {ds.topics && <span className="text-xs text-muted-foreground">{ds.topics.name}</span>}
+        {ds.topics && <span className="truncate rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">{ds.topics.name}</span>}
       </div>
       <h3 className="font-display text-base font-semibold leading-snug group-hover:text-primary">{ds.title}</h3>
       <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ds.description}</p>
@@ -74,9 +74,9 @@ export function DatasetCard({ ds }: { ds: CardDs }) {
 
 export function SampleTable({ data, max = 100 }: { data: SampleData; max?: number }) {
   return (
-    <div className="overflow-auto rounded-lg border">
+    <div className="overflow-auto rounded-2xl border bg-card shadow-soft">
       <table className="w-full text-sm">
-        <thead className="bg-muted">
+        <thead className="sticky top-0 bg-secondary">
           <tr>
             <th className="px-3 py-2 text-left text-xs font-semibold text-muted-foreground">#</th>
             {data.columns.map((c, j) => (

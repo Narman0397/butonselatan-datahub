@@ -42,7 +42,7 @@ function Settings() {
   return (
     <div>
       <PageHeader title="Pengaturan Portal" desc="Identitas dan kontak yang tampil di portal publik" />
-      <div className="max-w-2xl space-y-4 rounded-xl border bg-card p-6">
+      <div className="max-w-2xl space-y-4 rounded-2xl border bg-card shadow-soft p-6">
         {field("portal_name", "Nama portal")}
         {field("tagline", "Tagline", true)}
         <div className="grid gap-4 sm:grid-cols-2">{field("contact_email", "Email kontak")}{field("contact_phone", "Telepon")}</div>

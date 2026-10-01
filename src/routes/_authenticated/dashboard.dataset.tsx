@@ -81,7 +81,7 @@ function MyDatasets() {
           <Input placeholder="Cari…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
         </div>
       </div>
-      <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="overflow-hidden rounded-2xl border bg-card shadow-soft">
         <Table>
           <TableHeader>
             <TableRow>

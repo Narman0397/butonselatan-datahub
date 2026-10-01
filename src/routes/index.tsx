@@ -53,25 +53,25 @@ function Home() {
           <p className="mb-4 inline-flex rounded-full border border-ocean-foreground/20 px-3 py-1 text-xs font-medium tracking-wide">
             Portal Resmi Pemerintah Kabupaten Buton Selatan
           </p>
-          <h1 className="max-w-3xl text-4xl font-extrabold leading-tight md:text-6xl">
+          <h1 className="animate-rise max-w-3xl text-4xl font-extrabold leading-tight md:text-6xl">
             Satu data, untuk <span className="text-accent">pesisir</span> dan pulau-pulau Buton Selatan.
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-ocean-foreground/80">
             Temukan data kependudukan, kesehatan, perikanan, hingga keuangan daerah — terverifikasi Wali Data dan siap diunduh.
           </p>
           <form
-            className="mt-8 flex max-w-2xl gap-2 rounded-xl bg-card p-2 shadow-2xl"
+            className="animate-rise mt-8 flex max-w-2xl gap-2 rounded-full bg-card p-1.5 shadow-floating ring-4 ring-ocean-foreground/10 focus-within:ring-accent/40"
             onSubmit={(e) => { e.preventDefault(); navigate({ to: "/dataset", search: { q } }); }}
           >
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari dataset, mis. penduduk, ikan, puskesmas…" className="h-12 border-0 pl-10 text-base text-foreground shadow-none focus-visible:ring-0" />
+              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari dataset, mis. penduduk, ikan, puskesmas…" className="h-12 rounded-full border-0 bg-transparent pl-10 text-base text-foreground shadow-none focus-visible:ring-0" />
             </div>
-            <Button type="submit" size="lg" className="h-12 bg-accent text-accent-foreground hover:bg-accent/90">Cari</Button>
+            <Button type="submit" size="lg" className="h-12 rounded-full bg-gradient-accent px-6 text-accent-foreground hover:opacity-90">Cari</Button>
           </form>
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
             {topics.slice(0, 5).map((t) => (
-              <Link key={t.id} to="/dataset" search={{ topik: t.slug }} className="rounded-full bg-ocean-foreground/10 px-3 py-1 hover:bg-ocean-foreground/20">
+              <Link key={t.id} to="/dataset" search={{ topik: t.slug }} className="rounded-full border border-ocean-foreground/15 bg-ocean-foreground/10 px-3 py-1 backdrop-blur transition hover:-translate-y-0.5 hover:bg-ocean-foreground/20">
                 {t.name}
               </Link>
             ))}
@@ -81,8 +81,8 @@ function Home() {
 
       <section className="mx-auto -mt-10 grid max-w-7xl grid-cols-2 gap-3 px-4 md:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="relative rounded-xl border bg-card p-5 shadow-sm">
-            <s.icon className="h-5 w-5 text-accent" />
+          <div key={s.label} className="card-lift relative rounded-2xl border bg-card p-5">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-primary-foreground"><s.icon className="h-5 w-5" /></span>
             <div className="mt-3 font-display text-3xl font-bold">{s.value}</div>
             <div className="text-sm text-muted-foreground">{s.label}</div>
           </div>
@@ -90,7 +90,7 @@ function Home() {
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-16 lg:grid-cols-3">
-        <div className="rounded-xl border bg-card p-6 lg:col-span-2">
+        <div className="min-w-0 rounded-2xl border bg-card p-5 shadow-soft md:p-6 lg:col-span-2">
           <h2 className="text-lg font-semibold">Dataset per topik</h2>
           <p className="mb-4 text-sm text-muted-foreground">Sebaran dataset terbuka menurut sektor</p>
           <ChartContainer config={{ jumlah: { label: "Dataset", color: "var(--chart-1)" } }} className="h-72 w-full">
@@ -103,7 +103,7 @@ function Home() {
             </BarChart>
           </ChartContainer>
         </div>
-        <div className="rounded-xl border bg-card p-6">
+        <div className="min-w-0 rounded-2xl border bg-card p-5 shadow-soft md:p-6">
           <h2 className="text-lg font-semibold">Format file</h2>
           <p className="mb-4 text-sm text-muted-foreground">Komposisi format dataset</p>
           <ChartContainer config={{ value: { label: "Dataset" } }} className="mx-auto h-56">
@@ -149,7 +149,7 @@ function Home() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {orgs.map((o) => (
-              <Link key={o.id} to="/dataset" search={{ opd: o.slug }} className="rounded-xl border bg-card p-4 transition hover:border-primary/40">
+              <Link key={o.id} to="/dataset" search={{ opd: o.slug }} className="rounded-2xl border bg-card shadow-soft p-4 transition hover:border-primary/40">
                 <div className="font-display text-lg font-bold text-primary">{o.acronym}</div>
                 <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">{o.name}</div>
                 <div className="mt-3 text-xs font-medium">{datasets.filter((d) => d.organization_id === o.id).length} dataset</div>
