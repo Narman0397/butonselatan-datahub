@@ -33,7 +33,7 @@ export const Route = createFileRoute("/dataset/")({
 
 const ALL = "__all";
 
-function FilterGroup({ title, options, value, onChange }: { title: string; options: { v: string; l: string; n?: number }[]; value?: string; onChange: (v?: string) => void }) {
+function FilterGroup({ title, options, value, onChange }: { title: string; options: { v: string; l: string; n?: number }[]; value?: string | undefined; onChange: (v?: string) => void }) {
   return (
     <div>
       <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</h4>
