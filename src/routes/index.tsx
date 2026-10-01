@@ -50,17 +50,27 @@ function Home() {
       <section className="bg-sea relative overflow-hidden text-ocean-foreground">
         <div className="contour absolute inset-0" />
         <div className="relative mx-auto max-w-7xl px-4 py-14 sm:py-20 md:py-28">
-          <p className="mb-4 inline-flex rounded-full border border-ocean-foreground/20 px-3 py-1 text-xs font-medium tracking-wide">
-            Portal Resmi Pemerintah Kabupaten Buton Selatan
+          <div className="flex flex-col items-center text-center">
+          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-ocean-foreground/20 bg-ocean-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em]">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Platform Data Terbuka
           </p>
-          <h1 className="animate-rise max-w-3xl break-words text-3xl font-extrabold leading-tight sm:text-4xl md:text-6xl">
-            Satu data, untuk <span className="text-accent">pesisir</span> dan pulau-pulau Buton Selatan.
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-accent">Kabupaten Buton Selatan · Sulawesi Tenggara</p>
+          <h1 className="animate-rise max-w-4xl break-words text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl">
+            Data Publik <span className="text-accent">Buton Selatan</span><br className="hidden sm:block" /> Terbuka &amp; Terpadu
           </h1>
-          <p className="mt-5 max-w-2xl text-base sm:text-lg text-ocean-foreground/80">
+          <p className="mt-5 max-w-2xl text-sm sm:text-base text-ocean-foreground/80">
             Temukan data kependudukan, kesehatan, perikanan, hingga keuangan daerah — terverifikasi Wali Data dan siap diunduh.
           </p>
+          <div className="mt-8 grid w-full max-w-2xl grid-cols-2 divide-ocean-foreground/20 sm:grid-cols-4 sm:divide-x">
+            {stats.map((s) => (
+              <div key={s.label} className="px-3 py-2">
+                <div className="text-2xl font-extrabold sm:text-3xl">{s.value}<span className="text-accent">+</span></div>
+                <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-ocean-foreground/70">{s.label}</div>
+              </div>
+            ))}
+          </div>
           <form
-            className="animate-rise mt-8 flex max-w-2xl gap-2 rounded-full bg-card p-1.5 shadow-floating ring-4 ring-ocean-foreground/10 focus-within:ring-accent/40"
+            className="animate-rise mt-8 flex w-full max-w-2xl gap-2 rounded-full bg-card p-1.5 shadow-floating ring-4 ring-ocean-foreground/10 focus-within:ring-accent/40"
             onSubmit={(e) => { e.preventDefault(); navigate({ to: "/dataset", search: { q } }); }}
           >
             <div className="relative min-w-0 flex-1">
@@ -69,25 +79,49 @@ function Home() {
             </div>
             <Button type="submit" size="lg" className="h-12 shrink-0 rounded-full bg-gradient-accent px-4 sm:px-6 text-accent-foreground hover:opacity-90">Cari</Button>
           </form>
-          <div className="mt-4 flex flex-wrap gap-2 text-sm">
+          <div className="mt-4 flex flex-wrap justify-center gap-2 text-sm">
             {topics.slice(0, 5).map((t) => (
               <Link key={t.id} to="/dataset" search={{ topik: t.slug }} className="rounded-full border border-ocean-foreground/15 bg-ocean-foreground/10 px-3 py-1 backdrop-blur transition hover:-translate-y-0.5 hover:bg-ocean-foreground/20">
                 {t.name}
               </Link>
             ))}
           </div>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto -mt-10 grid max-w-7xl grid-cols-2 gap-3 px-4 md:grid-cols-4 md:gap-4">
-        {stats.map((s) => (
-          <div key={s.label} className="card-lift relative min-w-0 rounded-2xl border bg-card p-4 sm:p-5">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-primary-foreground"><s.icon className="h-5 w-5" /></span>
-            <div className="mt-3 truncate font-display text-2xl font-bold sm:text-3xl">{s.value}</div>
-            <div className="text-sm text-muted-foreground">{s.label}</div>
+      <section className="relative overflow-hidden bg-secondary/50 py-16">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 lg:grid-cols-2">
+          <div className="relative">
+            <div className="absolute -right-3 -top-3 h-24 w-24 rounded-2xl bg-accent/30" aria-hidden />
+            <div className="relative rounded-3xl border bg-card p-4 shadow-floating">
+              <div className="grid grid-cols-2 gap-3 rounded-2xl bg-sea p-6 text-ocean-foreground">
+                {[{ i: "BP", t: "Bupati" }, { i: "WB", t: "Wakil Bupati" }].map((p) => (
+                  <div key={p.t} className="flex flex-col items-center text-center">
+                    <div className="grid aspect-square w-full max-w-[150px] place-items-center rounded-2xl bg-ocean-foreground/10 text-3xl font-extrabold">{p.i}</div>
+                    <div className="mt-3 text-sm font-bold">Nama {p.t}</div>
+                    <div className="text-xs text-ocean-foreground/70">{p.t} Buton Selatan</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        ))}
+          <div className="min-w-0">
+            <p className="mb-3 inline-flex rounded-full border bg-card px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">Sambutan Pimpinan Daerah</p>
+            <h2 className="text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">
+              Mewujudkan <span className="text-primary">Satu Data</span> untuk Buton Selatan yang Maju
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Portal Satu Data Buton Selatan hadir sebagai wujud komitmen pemerintah daerah dalam menyediakan data yang akurat, mutakhir, terpadu, dan dapat dipertanggungjawabkan sesuai Perpres No. 39 Tahun 2019.
+            </p>
+            <p className="mt-3 text-muted-foreground">
+              Kami mengajak seluruh perangkat daerah, akademisi, dan masyarakat memanfaatkan data ini untuk perencanaan pembangunan, riset, dan inovasi demi kesejahteraan masyarakat pesisir dan kepulauan.
+            </p>
+            <Link to="/dataset" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Jelajahi Dataset <ArrowRight className="h-4 w-4" /></Link>
+          </div>
+        </div>
       </section>
+
 
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-16 lg:grid-cols-3">
         <div className="min-w-0 rounded-2xl border bg-card p-5 shadow-soft md:p-6 lg:col-span-2">
