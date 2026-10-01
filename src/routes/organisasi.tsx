@@ -28,7 +28,7 @@ function Orgs() {
           {orgs.map((o) => {
             const n = ds.filter((d) => d.organization_id === o.id).length;
             return (
-              <Link key={o.id} to="/dataset" search={{ opd: o.slug }} className="group flex gap-4 rounded-xl border bg-card p-5 transition hover:border-primary/40 hover:shadow-md">
+              <Link key={o.id} to="/dataset" search={{ opd: o.slug }} className="group flex gap-4 rounded-2xl border bg-card shadow-soft p-5 transition hover:border-primary/40 hover:shadow-md">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-secondary text-primary"><Building2 className="h-6 w-6" /></span>
                 <div className="min-w-0 flex-1">
                   <div className="font-display font-bold text-primary">{o.acronym}</div>

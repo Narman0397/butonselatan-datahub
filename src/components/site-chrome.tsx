@@ -17,7 +17,7 @@ const NAV = [
 export function Logo({ light = false }: { light?: boolean }) {
   return (
     <Link to="/" className="flex items-center gap-2.5">
-      <span className="grid h-9 w-9 place-items-center rounded-lg bg-accent text-accent-foreground">
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-accent text-accent-foreground shadow-soft">
         <Database className="h-5 w-5" />
       </span>
       <span className="leading-tight">
@@ -46,7 +46,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b bg-background/75 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Logo />
         <nav className="hidden items-center gap-1 md:flex">
@@ -55,7 +55,7 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               activeOptions={{ exact: n.to === "/" }}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{ className: "text-primary bg-secondary" }}
             >
               {n.label}
@@ -65,7 +65,7 @@ export function SiteHeader() {
         <div className="hidden items-center gap-2 md:flex">
           {user ? (
             <>
-              <Button asChild size="sm">
+              <Button asChild size="sm" className="rounded-full bg-gradient-primary shadow-soft">
                 <Link to="/dashboard"><LayoutDashboard className="h-4 w-4" /> Dashboard</Link>
               </Button>
               <Button size="sm" variant="ghost" onClick={signOut} aria-label="Keluar">
@@ -73,7 +73,7 @@ export function SiteHeader() {
               </Button>
             </>
           ) : (
-            <Button asChild size="sm" variant="outline">
+            <Button asChild size="sm" variant="outline" className="rounded-full">
               <Link to="/auth">Masuk</Link>
             </Button>
           )}
@@ -83,9 +83,9 @@ export function SiteHeader() {
         </Button>
       </div>
       {open && (
-        <div className="border-t px-4 py-3 md:hidden">
+        <div className="animate-rise border-t bg-background px-4 py-3 md:hidden">
           {NAV.map((n) => (
-            <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block py-2 text-sm font-medium">
+            <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 text-sm font-medium hover:bg-secondary" activeOptions={{ exact: n.to === "/" }} activeProps={{ className: "bg-secondary text-primary" }}>
               {n.label}
             </Link>
           ))}

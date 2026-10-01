@@ -38,7 +38,7 @@ function Overview() {
     return (
       <div>
         <PageHeader title={`Halo, ${profile?.full_name ?? ""}`} />
-        <div className="rounded-xl border bg-card p-8">
+        <div className="rounded-2xl border bg-card shadow-soft p-8">
           <h2 className="font-semibold">Akun Anda belum memiliki peran</h2>
           <p className="mt-2 text-sm text-muted-foreground">Hubungi Super Admin (Diskominfo) untuk ditetapkan sebagai Produsen Data OPD atau Wali Data. Sementara itu Anda tetap dapat menjelajah dan mengunduh dataset publik.</p>
           <Link to="/dataset" className="mt-4 inline-block text-sm font-medium text-primary">Buka katalog →</Link>
@@ -51,14 +51,14 @@ function Overview() {
       <PageHeader title={`Halo, ${profile?.full_name ?? ""}`} desc={`Masuk sebagai ${roles.map((r) => ROLE_LABEL[r]).join(", ")}`} />
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-xl border bg-card p-5">
+          <div key={c.label} className="rounded-2xl border bg-card shadow-soft p-5">
             <c.icon className={`h-5 w-5 ${c.cls}`} />
             <div className="mt-3 font-display text-3xl font-bold">{c.v}</div>
             <div className="text-sm text-muted-foreground">{c.label}</div>
           </div>
         ))}
       </div>
-      <div className="mt-6 rounded-xl border bg-card">
+      <div className="mt-6 rounded-2xl border bg-card shadow-soft">
         <div className="border-b px-5 py-3 font-semibold">Aktivitas terbaru</div>
         <ul className="divide-y">
           {data.slice(0, 8).map((d) => (

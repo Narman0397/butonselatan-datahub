@@ -33,7 +33,7 @@ function Topics() {
           {topics.map((t) => {
             const Icon = ICONS[t.slug] ?? Layers;
             return (
-              <Link key={t.id} to="/dataset" search={{ topik: t.slug }} className="rounded-xl border bg-card p-6 transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md">
+              <Link key={t.id} to="/dataset" search={{ topik: t.slug }} className="rounded-2xl border bg-card shadow-soft p-6 transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md">
                 <Icon className="h-8 w-8 text-accent" />
                 <h3 className="mt-4 font-semibold">{t.name}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t.description}</p>

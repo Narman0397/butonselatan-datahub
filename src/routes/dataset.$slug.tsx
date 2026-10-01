@@ -117,7 +117,7 @@ function Detail() {
               )}
             </TabsContent>
             {chartCols.length > 0 && sample && (
-              <TabsContent value="grafik" className="mt-4 rounded-xl border bg-card p-4">
+              <TabsContent value="grafik" className="mt-4 rounded-2xl border bg-card shadow-soft p-4">
                 <ChartContainer
                   config={Object.fromEntries(chartCols.map((c, i) => [c, { label: c, color: `var(--chart-${i + 1})` }]))}
                   className="h-80 w-full"
@@ -135,7 +135,7 @@ function Detail() {
           </Tabs>
         </div>
         <aside className="space-y-4">
-          <div className="rounded-xl border bg-card p-5">
+          <div className="rounded-2xl border bg-card shadow-soft p-5">
             <h3 className="mb-4 font-semibold">Metadata</h3>
             <dl className="space-y-3 text-sm">
               {meta.map((m) => (
@@ -147,7 +147,7 @@ function Detail() {
             </dl>
           </div>
           {ds.tags.length > 0 && (
-            <div className="rounded-xl border bg-card p-5">
+            <div className="rounded-2xl border bg-card shadow-soft p-5">
               <h3 className="mb-3 font-semibold">Tag</h3>
               <div className="flex flex-wrap gap-1.5">
                 {ds.tags.map((t) => (

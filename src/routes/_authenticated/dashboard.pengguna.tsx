@@ -66,7 +66,7 @@ function Users() {
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input placeholder="Cari nama atau email…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
       </div>
-      <div className="overflow-x-auto rounded-xl border bg-card">
+      <div className="overflow-x-auto rounded-2xl border bg-card shadow-soft">
         <Table>
           <TableHeader>
             <TableRow>
