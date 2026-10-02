@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { orgsQuery, topicsQuery } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/organisasi")({
+  head: () => ({ meta: [{ title: "OPD dan Topik — Satu Data Buton Selatan" }, { name: "description", content: "Kelola organisasi dan topik data Buton Selatan." }, { property: "og:title", content: "OPD dan Topik — Satu Data Buton Selatan" }, { property: "og:description", content: "Kelola organisasi dan topik data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: OrgAdmin,
 });
 

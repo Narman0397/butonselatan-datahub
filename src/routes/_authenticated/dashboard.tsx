@@ -8,7 +8,7 @@ import { useAuth, ROLE_LABEL, type AppRole } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Satu Data Buton Selatan" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Satu Data Buton Selatan" }, { name: "description", content: "Ruang pengelolaan portal Satu Data Buton Selatan." }, { property: "og:title", content: "Dashboard — Satu Data Buton Selatan" }, { property: "og:description", content: "Ruang pengelolaan portal Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: DashboardLayout,
 });
 

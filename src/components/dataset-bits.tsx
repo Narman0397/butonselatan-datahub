@@ -50,13 +50,13 @@ export function DatasetCard({ ds }: { ds: CardDs }) {
     <Link
       to="/dataset/$slug"
       params={{ slug: ds.slug }}
-      className="group card-lift flex flex-col rounded-2xl border bg-card p-5 hover:border-primary/40"
+      className="group card-lift flex min-h-52 flex-col rounded-xl border border-border/80 bg-card p-5 hover:border-primary/35"
     >
       <div className="mb-3 flex items-center gap-2">
         <FormatBadge format={ds.format} />
         {ds.topics && <span className="truncate rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">{ds.topics.name}</span>}
       </div>
-      <h3 className="break-words font-display text-base font-semibold leading-snug group-hover:text-primary">{ds.title}</h3>
+      <h3 className="break-words font-display text-base font-semibold leading-snug transition-colors group-hover:text-primary">{ds.title}</h3>
       <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ds.description}</p>
       <div className="mt-auto flex items-center justify-between pt-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5 truncate">

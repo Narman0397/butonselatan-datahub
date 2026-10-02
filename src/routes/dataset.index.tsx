@@ -26,6 +26,8 @@ export const Route = createFileRoute("/dataset/")({
       { name: "description", content: "Telusuri dataset terbuka Buton Selatan berdasarkan OPD, topik, format, dan lisensi." },
       { property: "og:title", content: "Katalog Dataset — Satu Data Buton Selatan" },
       { property: "og:description", content: "Telusuri dataset terbuka Buton Selatan berdasarkan OPD, topik, format, dan lisensi." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Catalog,

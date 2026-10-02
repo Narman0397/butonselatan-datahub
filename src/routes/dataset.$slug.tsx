@@ -19,6 +19,8 @@ export const Route = createFileRoute("/dataset/$slug")({
       { name: "description", content: "Metadata lengkap, pratinjau data, dan unduhan dataset Kabupaten Buton Selatan." },
       { property: "og:title", content: "Detail Dataset — Satu Data Buton Selatan" },
       { property: "og:description", content: "Metadata lengkap, pratinjau data, dan unduhan dataset Kabupaten Buton Selatan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Detail,

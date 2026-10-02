@@ -16,6 +16,8 @@ export const Route = createFileRoute("/topik")({
       { name: "description", content: "Jelajahi dataset Buton Selatan berdasarkan topik sektoral." },
       { property: "og:title", content: "Topik Data — Satu Data Buton Selatan" },
       { property: "og:description", content: "Jelajahi dataset Buton Selatan berdasarkan topik sektoral." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Topics,
