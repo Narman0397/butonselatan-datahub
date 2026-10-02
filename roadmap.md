@@ -7,4 +7,4 @@
 - [x] Rampingkan bagian sambutan pimpinan
 - [x] Percantik kartu dataset dan OPD
 - [x] Teduhkan warna footer
-- [ ] Validasi tampilan ponsel dan desktop
+- [x] Validasi tampilan ponsel dan desktop
