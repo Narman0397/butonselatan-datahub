@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/dataset-bits";
 import { formatDate, type DatasetStatus } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
+  head: () => ({ meta: [{ title: "Ringkasan Dashboard — Satu Data Buton Selatan" }, { name: "description", content: "Ringkasan pengelolaan dataset Satu Data Buton Selatan." }, { property: "og:title", content: "Ringkasan Dashboard — Satu Data Buton Selatan" }, { property: "og:description", content: "Ringkasan pengelolaan dataset Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: Overview,
 });
 

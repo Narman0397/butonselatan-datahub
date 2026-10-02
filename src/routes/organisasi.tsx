@@ -11,6 +11,8 @@ export const Route = createFileRoute("/organisasi")({
       { name: "description", content: "Daftar organisasi perangkat daerah produsen data Kabupaten Buton Selatan." },
       { property: "og:title", content: "Direktori OPD — Satu Data Buton Selatan" },
       { property: "og:description", content: "Daftar organisasi perangkat daerah produsen data Kabupaten Buton Selatan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Orgs,

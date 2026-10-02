@@ -16,6 +16,7 @@ import { DatasetForm, type EditableDataset } from "@/components/dataset-form";
 import { formatDate, openDatasetFile, type DatasetStatus } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/dataset")({
+  head: () => ({ meta: [{ title: "Dataset Saya — Satu Data Buton Selatan" }, { name: "description", content: "Kelola dataset OPD di portal Satu Data Buton Selatan." }, { property: "og:title", content: "Dataset Saya — Satu Data Buton Selatan" }, { property: "og:description", content: "Kelola dataset OPD di portal Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: MyDatasets,
 });
 

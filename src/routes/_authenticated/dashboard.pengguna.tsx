@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { orgsQuery } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/pengguna")({
+  head: () => ({ meta: [{ title: "Pengguna dan Peran — Satu Data Buton Selatan" }, { name: "description", content: "Kelola pengguna dan hak akses portal Satu Data Buton Selatan." }, { property: "og:title", content: "Pengguna dan Peran — Satu Data Buton Selatan" }, { property: "og:description", content: "Kelola pengguna dan hak akses portal Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: Users,
 });
 

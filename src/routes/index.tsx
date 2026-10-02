@@ -21,6 +21,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Cari, pratinjau, dan unduh dataset resmi dari seluruh OPD Kabupaten Buton Selatan." },
       { property: "og:title", content: "Satu Data Buton Selatan — Portal Data Terbuka" },
       { property: "og:description", content: "Cari, pratinjau, dan unduh dataset resmi dari seluruh OPD Kabupaten Buton Selatan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Home,

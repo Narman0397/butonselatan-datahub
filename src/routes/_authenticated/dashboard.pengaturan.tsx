@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { leaderPhotosQuery, settingsQuery } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/pengaturan")({
+  head: () => ({ meta: [{ title: "Pengaturan Portal — Satu Data Buton Selatan" }, { name: "description", content: "Kelola identitas dan tampilan portal Satu Data Buton Selatan." }, { property: "og:title", content: "Pengaturan Portal — Satu Data Buton Selatan" }, { property: "og:description", content: "Kelola identitas dan tampilan portal Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: Settings,
 });
 

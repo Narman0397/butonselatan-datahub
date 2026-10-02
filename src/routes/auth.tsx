@@ -17,6 +17,8 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Masuk ke dashboard pengelolaan data Satu Data Buton Selatan." },
       { property: "og:title", content: "Masuk — Satu Data Buton Selatan" },
       { property: "og:description", content: "Masuk ke dashboard pengelolaan data Satu Data Buton Selatan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,
