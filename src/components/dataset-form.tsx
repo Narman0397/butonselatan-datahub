@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Upload } from "lucide-react";
+import { Upload, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { FORMATS, FREQUENCIES, LICENSES, orgsQuery, parseCsv, slugify, topicsQuery, type SampleData } from "@/lib/data";
+import { FORMATS, FREQUENCIES, LICENSES, openDatasetFile, orgsQuery, parseCsv, parseXlsx, slugify, topicsQuery, type SampleData } from "@/lib/data";
 import { SampleTable } from "@/components/dataset-bits";
 
 export type EditableDataset = {
@@ -54,7 +54,10 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
     if (!fl) return;
     const ext = fl.name.split(".").pop()?.toUpperCase();
     if (ext && (FORMATS as readonly string[]).includes(ext)) up("format", ext);
-    if (ext === "CSV") setSample(parseCsv(await fl.text()));
+    try {
+      if (ext === "CSV") setSample(parseCsv(await fl.text()));
+      else if (ext === "XLSX" || ext === "XLS") setSample(await parseXlsx(await fl.arrayBuffer()));
+    } catch { toast.error("Gagal membaca pratinjau file"); }
   }
 
   async function save(submit: boolean) {
@@ -151,7 +154,13 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
           <span className="flex-1 truncate">{file?.name ?? initial?.file_name ?? "Pilih file untuk diunggah…"}</span>
           <input type="file" accept=".csv,.xlsx,.xls,.pdf" className="hidden" onChange={(e) => onFile(e.target.files?.[0] ?? null)} />
         </label>
-        <p className="text-xs text-muted-foreground">File CSV otomatis menghasilkan pratinjau tabel untuk publik.</p>
+        {initial?.file_url && (
+          <div className="flex flex-wrap items-center gap-2 rounded-lg bg-muted p-2 text-xs">
+            <span className="min-w-0 flex-1 truncate">Berkas tersimpan: <b>{initial.file_name}</b>{file ? " — akan diganti berkas baru" : " — tetap dipakai bila tidak diganti"}</span>
+            <Button type="button" size="sm" variant="outline" onClick={() => openDatasetFile(initial.file_url!, initial.file_name, "open").catch((e) => toast.error(e.message))}><ExternalLink className="h-3.5 w-3.5" /> Buka</Button>
+          </div>
+        )}
+        <p className="text-xs text-muted-foreground">File CSV dan XLSX otomatis menghasilkan pratinjau tabel untuk publik.</p>
       </div>
       {sample && sample.columns.length > 0 && (
         <div className="space-y-1.5">

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { CheckCircle2, XCircle, Eye } from "lucide-react";
+import { CheckCircle2, XCircle, Eye, ExternalLink, Download } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, SampleTable, StatusBadge } from "@/components/dataset-bits";
-import { DATASET_FIELDS, formatDate, type DatasetStatus, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, formatDate, openDatasetFile, type DatasetStatus, type SampleData } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/verifikasi")({
   component: Verify,
@@ -108,6 +108,12 @@ function Verify() {
                 <div><dt className="text-xs text-muted-foreground">Frekuensi</dt><dd>{current.frequency}</dd></div>
                 <div><dt className="text-xs text-muted-foreground">File</dt><dd className="truncate">{current.file_name ?? "-"}</dd></div>
               </dl>
+              {current.file_url ? (
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => openDatasetFile(current.file_url!, current.file_name, "open").catch((e) => toast.error(e.message))}><ExternalLink className="h-4 w-4" /> Buka berkas</Button>
+                  <Button size="sm" variant="outline" onClick={() => openDatasetFile(current.file_url!, current.file_name, "download").catch((e) => toast.error(e.message))}><Download className="h-4 w-4" /> Unduh</Button>
+                </div>
+              ) : <p className="text-sm text-muted-foreground">Tidak ada berkas terlampir.</p>}
               {sample ? <div className="max-h-64 overflow-auto"><SampleTable data={sample} max={20} /></div> : <p className="text-sm text-muted-foreground">Tidak ada pratinjau data.</p>}
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Catatan reviu (wajib jika ditolak)</label>

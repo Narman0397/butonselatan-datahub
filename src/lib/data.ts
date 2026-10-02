@@ -147,6 +147,30 @@ export async function downloadDataset(ds: {
   URL.revokeObjectURL(a.href);
 }
 
+/** Open (inline, new tab) or download a private dataset file via short-lived signed URL. */
+export async function openDatasetFile(path: string, fileName: string | null, mode: "open" | "download") {
+  const win = mode === "open" ? window.open("", "_blank") : null;
+  const { data, error } = await supabase.storage
+    .from("dataset-files")
+    .createSignedUrl(path, 300, mode === "download" ? { download: fileName ?? true } : undefined);
+  if (error || !data?.signedUrl) {
+    win?.close();
+    throw error ?? new Error("Berkas tidak ditemukan");
+  }
+  if (win) win.location.href = data.signedUrl;
+  else window.location.href = data.signedUrl;
+}
+
+export async function parseXlsx(buf: ArrayBuffer, maxRows = 50): Promise<SampleData> {
+  const XLSX = await import("xlsx");
+  const wb = XLSX.read(buf, { type: "array" });
+  const ws = wb.Sheets[wb.SheetNames[0]!];
+  if (!ws) return { columns: [], rows: [] };
+  const all = XLSX.utils.sheet_to_json<(string | number | null)[]>(ws, { header: 1, defval: null, blankrows: false });
+  const [head = [], ...body] = all;
+  return { columns: head.map((h) => String(h ?? "")), rows: body.slice(0, maxRows) };
+}
+
 export function formatDate(d: string | null) {
   if (!d) return "-";
   return new Date(d).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
