@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Send, Search, ExternalLink } from "lucide-react";
+import { Plus, Pencil, Trash2, Send, Search, ExternalLink, Download } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, StatusBadge } from "@/components/dataset-bits";
 import { DatasetForm, type EditableDataset } from "@/components/dataset-form";
-import { formatDate, type DatasetStatus } from "@/lib/data";
+import { formatDate, openDatasetFile, type DatasetStatus } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/dataset")({
   component: MyDatasets,
