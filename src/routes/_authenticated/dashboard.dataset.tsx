@@ -108,6 +108,9 @@ function MyDatasets() {
                 <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{formatDate(d.updated_at)}</TableCell>
                 <TableCell>
                   <div className="flex justify-end gap-1">
+                    {d.file_url && (
+                      <Button size="icon" variant="ghost" title="Unduh berkas" onClick={() => openDatasetFile(d.file_url!, d.file_name, "download").catch((e) => toast.error(e.message))}><Download className="h-4 w-4" /></Button>
+                    )}
                     {d.status === "published" && (
                       <Button size="icon" variant="ghost" asChild title="Lihat"><Link to="/dataset/$slug" params={{ slug: d.slug }}><ExternalLink className="h-4 w-4" /></Link></Button>
                     )}
