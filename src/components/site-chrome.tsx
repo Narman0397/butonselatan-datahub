@@ -52,7 +52,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/75 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 border-b border-border/80 bg-background/95 shadow-soft backdrop-blur-xl supports-[backdrop-filter]:bg-background/90">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Logo />
         <nav className="hidden items-center gap-1 md:flex">
@@ -112,22 +112,22 @@ export function SiteHeader() {
 export function SiteFooter() {
   const { data: s } = useQuery(settingsQuery);
   return (
-    <footer className="bg-ocean text-ocean-foreground">
+    <footer className="bg-sidebar text-sidebar-foreground">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-3">
         <div className="space-y-3">
           <Logo light />
-          <p className="text-sm text-ocean-foreground/70">{s?.tagline}</p>
+          <p className="text-sm text-sidebar-foreground/70">{s?.tagline}</p>
         </div>
         <div className="text-sm">
           <h4 className="mb-3 font-semibold">Jelajahi</h4>
-          <ul className="space-y-2 text-ocean-foreground/80">
+          <ul className="space-y-2 text-sidebar-foreground/75">
             {NAV.map((n) => (
               <li key={n.to}><Link to={n.to} className="hover:text-accent">{n.label}</Link></li>
             ))}
           </ul>
         </div>
-        <div className="space-y-2 text-sm text-ocean-foreground/80">
-          <h4 className="mb-3 font-semibold text-ocean-foreground">Kontak</h4>
+        <div className="space-y-2 text-sm text-sidebar-foreground/75">
+          <h4 className="mb-3 font-semibold text-sidebar-foreground">Kontak</h4>
           <p>{s?.address}</p>
           <p className="break-all">{s?.contact_email}</p>
           <p>{s?.contact_phone}</p>
@@ -135,12 +135,12 @@ export function SiteFooter() {
             {([["Instagram", s?.instagram_url], ["Facebook", s?.facebook_url], ["YouTube", s?.youtube_url]] as const)
               .filter(([, u]) => u && /^https?:\/\//i.test(u))
               .map(([label, u]) => (
-                <a key={label} href={u!} target="_blank" rel="noopener noreferrer" className="rounded-full border border-ocean-foreground/20 px-3 py-1 text-xs hover:text-accent">{label}</a>
+                <a key={label} href={u ?? undefined} target="_blank" rel="noopener noreferrer" className="rounded-full border border-sidebar-foreground/20 px-3 py-1 text-xs transition-colors hover:border-accent/60 hover:text-accent">{label}</a>
               ))}
           </div>
         </div>
       </div>
-      <div className="border-t border-ocean-foreground/10 py-4 text-center text-xs text-ocean-foreground/60">
+      <div className="border-t border-sidebar-foreground/10 py-4 text-center text-xs text-sidebar-foreground/55">
         © {new Date().getFullYear()} Pemerintah Kabupaten Buton Selatan · Dikelola oleh Diskominfo
       </div>
     </footer>

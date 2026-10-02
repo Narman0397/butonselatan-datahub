@@ -78,9 +78,9 @@ function Home() {
           <p className="mt-5 max-w-2xl whitespace-pre-line text-sm sm:text-base text-ocean-foreground/80">
             {s?.hero_description || "Temukan data kependudukan, kesehatan, perikanan, hingga keuangan daerah — terverifikasi Wali Data dan siap diunduh."}
           </p>
-          <div className="mt-8 grid w-full max-w-2xl grid-cols-2 divide-ocean-foreground/20 sm:grid-cols-4 sm:divide-x">
+           <div className="mt-8 grid w-full max-w-3xl grid-cols-2 overflow-hidden rounded-2xl border border-ocean-foreground/20 bg-ocean-foreground/10 p-1 shadow-floating backdrop-blur-md sm:grid-cols-4 sm:divide-x sm:divide-ocean-foreground/15">
             {stats.map((s) => (
-              <div key={s.label} className="px-3 py-2">
+               <div key={s.label} className="rounded-xl px-3 py-3 even:bg-ocean-foreground/5 sm:rounded-none sm:bg-transparent sm:py-4">
                 <div className="text-2xl font-extrabold sm:text-3xl">{s.value}<span className="text-accent">+</span></div>
                 <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-ocean-foreground/70">{s.label}</div>
               </div>
@@ -119,17 +119,17 @@ function Home() {
       <section className="relative overflow-hidden bg-secondary/50 py-16">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 lg:grid-cols-2">
           <div className="relative">
-            <div className="absolute -right-3 -top-3 h-24 w-24 rounded-2xl bg-accent/30" aria-hidden />
-            <div className="relative rounded-3xl border bg-card p-4 shadow-floating">
-              <div className={`grid gap-3 rounded-2xl bg-sea p-6 text-ocean-foreground ${leadersList.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+             <div className="absolute -right-2 -top-2 h-20 w-20 rounded-xl bg-accent/25" aria-hidden />
+             <div className="relative rounded-2xl border bg-card p-2 shadow-floating sm:p-3">
+               <div className={`grid gap-2 rounded-xl bg-sea p-3 text-ocean-foreground sm:p-4 ${leadersList.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {leadersList.map((p) => (
                   <div key={p.key} className="flex min-w-0 flex-col items-center text-center">
                     {p.photo ? (
-                      <img src={p.photo} alt={`Foto ${p.name}`} className="aspect-square w-full max-w-[150px] rounded-2xl object-cover" loading="lazy" />
+                       <img src={p.photo} alt={`Foto ${p.name}`} className="aspect-[4/5] w-full max-w-[132px] rounded-xl object-cover object-top" loading="lazy" />
                     ) : (
-                      <div className="grid aspect-square w-full max-w-[150px] place-items-center rounded-2xl bg-ocean-foreground/10 text-3xl font-extrabold">{initials(p.name)}</div>
+                       <div className="grid aspect-[4/5] w-full max-w-[132px] place-items-center rounded-xl bg-ocean-foreground/10 text-3xl font-extrabold">{initials(p.name)}</div>
                     )}
-                    <div className="mt-3 break-words text-sm font-bold">{p.name}</div>
+                     <div className="mt-2 break-words text-sm font-bold">{p.name}</div>
                     <div className="text-xs text-ocean-foreground/70">{p.title}</div>
                   </div>
                 ))}
@@ -216,8 +216,9 @@ function Home() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {orgs.map((o) => (
-              <Link key={o.id} to="/dataset" search={{ opd: o.slug }} className="rounded-2xl border bg-card shadow-soft p-4 transition hover:border-primary/40">
-                <div className="font-display text-lg font-bold text-primary">{o.acronym}</div>
+               <Link key={o.id} to="/dataset" search={{ opd: o.slug }} className="group card-lift rounded-xl border border-border/80 bg-card p-4 hover:border-primary/35">
+                 <div className="mb-4 grid h-10 w-10 place-items-center rounded-lg bg-primary/10 font-display text-sm font-extrabold text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">{(o.acronym || o.name).slice(0, 3).toUpperCase()}</div>
+                 <div className="font-display text-base font-bold text-foreground transition-colors group-hover:text-primary">{o.acronym}</div>
                 <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">{o.name}</div>
                 <div className="mt-3 text-xs font-medium">{datasets.filter((d) => d.organization_id === o.id).length} dataset</div>
               </Link>
