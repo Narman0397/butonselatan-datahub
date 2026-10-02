@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      data_requests: {
+        Row: {
+          created_at: string
+          dataset_id: string
+          email: string
+          id: string
+          institution: string | null
+          name: string
+          purpose: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          dataset_id: string
+          email: string
+          id?: string
+          institution?: string | null
+          name: string
+          purpose: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          dataset_id?: string
+          email?: string
+          id?: string
+          institution?: string | null
+          name?: string
+          purpose?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_requests_dataset_id_fkey"
+            columns: ["dataset_id"]
+            isOneToOne: false
+            referencedRelation: "datasets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       datasets: {
         Row: {
           created_at: string

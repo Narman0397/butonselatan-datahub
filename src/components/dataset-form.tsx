@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { FORMATS, FREQUENCIES, LICENSES, openDatasetFile, orgsQuery, parseCsv, parseXlsx, slugify, topicsQuery, type SampleData } from "@/lib/data";
-import { SampleTable } from "@/components/dataset-bits";
+import { DatasetChart, LicenseInfoBox, SampleTable } from "@/components/dataset-bits";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export type EditableDataset = {
   id: string;
@@ -47,6 +48,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
   const [file, setFile] = useState<File | null>(null);
   const [sample, setSample] = useState<SampleData | null>((initial?.sample_data as SampleData) ?? null);
   const [busy, setBusy] = useState(false);
+  const [manual, setManual] = useState("");
   const up = (k: keyof typeof f, v: string) => setF((p) => ({ ...p, [k]: v }));
 
   async function onFile(fl: File | null) {
@@ -138,6 +140,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
             <SelectContent>{LICENSES.map((x) => <SelectItem key={x} value={x}>{x}</SelectItem>)}</SelectContent>
           </Select>
         </div>
+        <div className="sm:col-span-2"><LicenseInfoBox license={f.license} /></div>
         <div className="space-y-1.5">
           <Label>Frekuensi pembaruan</Label>
           <Select value={f.frequency} onValueChange={(v) => up("frequency", v)}>
@@ -162,10 +165,21 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
         )}
         <p className="text-xs text-muted-foreground">File CSV dan XLSX otomatis menghasilkan pratinjau tabel untuk publik.</p>
       </div>
+      {(f.format === "PDF" || !sample) && (
+        <div className="space-y-1.5">
+          <Label>Tabel sampel manual {f.format === "PDF" ? "(untuk berkas PDF)" : "(opsional)"}</Label>
+          <Textarea rows={4} value={manual} placeholder={"Tempel dari Excel atau ketik CSV, contoh:\nKecamatan;Jumlah\nBatauga;12.345"} onChange={(e) => { setManual(e.target.value); const s = e.target.value.trim() ? parseCsv(e.target.value.replace(/\t/g, ";")) : null; setSample(s && s.columns.length ? s : null); }} />
+          <p className="text-xs text-muted-foreground">Baris pertama = judul kolom. Pemisah koma, titik koma, atau tab. Data ini menjadi pratinjau tabel & grafik publik.</p>
+        </div>
+      )}
       {sample && sample.columns.length > 0 && (
         <div className="space-y-1.5">
           <Label>Pratinjau ({sample.rows.length} baris)</Label>
-          <div className="max-h-48 overflow-auto"><SampleTable data={sample} max={10} /></div>
+          <Tabs defaultValue="tabel">
+            <TabsList><TabsTrigger value="tabel">Tabel</TabsTrigger><TabsTrigger value="grafik">Grafik</TabsTrigger></TabsList>
+            <TabsContent value="tabel"><div className="max-h-56 overflow-auto"><SampleTable data={sample} max={10} /></div></TabsContent>
+            <TabsContent value="grafik"><DatasetChart data={sample} height="h-56" /></TabsContent>
+          </Tabs>
         </div>
       )}
       <div className="flex justify-end gap-2 border-t pt-4">

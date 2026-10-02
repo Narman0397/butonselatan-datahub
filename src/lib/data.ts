@@ -107,7 +107,7 @@ export function parseCsv(text: string, maxRows = 50): SampleData {
   const [head, ...body] = lines;
   const columns = head ? split(head) : [];
   const rows = body.slice(0, maxRows).map((l) =>
-    split(l).map((v) => (v !== "" && !isNaN(Number(v)) ? Number(v) : v)),
+    split(l).map(normalizeCell),
   );
   return { columns, rows };
 }
@@ -167,11 +167,65 @@ export async function parseXlsx(buf: ArrayBuffer, maxRows = 50): Promise<SampleD
   const ws = wb.Sheets[wb.SheetNames[0]!];
   if (!ws) return { columns: [], rows: [] };
   const all = XLSX.utils.sheet_to_json<(string | number | null)[]>(ws, { header: 1, defval: null, blankrows: false });
-  const [head = [], ...body] = all;
-  return { columns: head.map((h) => String(h ?? "")), rows: body.slice(0, maxRows) };
+  // Header = baris dengan sel terisi terbanyak di 10 baris pertama (melewati judul tabel Excel)
+  let hi = 0, best = -1;
+  all.slice(0, 10).forEach((r, i) => { const n = r.filter((v) => v != null && String(v).trim() !== "").length; if (n > best) { best = n; hi = i; } });
+  const head = all[hi] ?? [];
+  const body = all.slice(hi + 1).filter((r) => r.some((v) => v != null && String(v).trim() !== ""));
+  return { columns: head.map((h, i) => String(h ?? `Kolom ${i + 1}`).trim()), rows: body.slice(0, maxRows).map((r) => head.map((_, j) => normalizeCell(r[j]))) };
 }
 
 export function formatDate(d: string | null) {
   if (!d) return "-";
   return new Date(d).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+}
+
+const EMPTY = new Set(["", "-", "–", "n/a", "na", "null", "nan", "#n/a", "tidak ada"]);
+
+/** Parser angka cerdas: format Indonesia (1.234,56), internasional (1,234.56), persen, Rp; nilai kosong -> null. */
+export function parseNum(raw: unknown): number | null {
+  if (typeof raw === "number") return Number.isFinite(raw) ? raw : null;
+  if (raw == null) return null;
+  let t = String(raw).trim().replace(/^rp\.?\s*/i, "").replace(/%$/, "").replace(/\s/g, "");
+  if (EMPTY.has(t.toLowerCase())) return null;
+  if (!/^[-+]?[\d.,]+$/.test(t)) return NaN;
+  const lastDot = t.lastIndexOf("."), lastComma = t.lastIndexOf(",");
+  if (lastDot >= 0 && lastComma >= 0) {
+    t = lastComma > lastDot ? t.replace(/\./g, "").replace(",", ".") : t.replace(/,/g, "");
+  } else if (lastComma >= 0) {
+    t = /^[-+]?\d{1,3}(,\d{3})+$/.test(t) ? t.replace(/,/g, "") : t.replace(",", ".");
+  } else if ((t.match(/\./g) ?? []).length > 1 || /^[-+]?\d{1,3}\.\d{3}$/.test(t)) {
+    t = t.replace(/\./g, ""); // 1.234 atau 1.234.567 = ribuan (format Indonesia)
+  }
+  const n = Number(t);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+export function normalizeCell(v: unknown): string | number | null {
+  const n = parseNum(v);
+  if (n === null) return null;
+  if (Number.isNaN(n)) return String(v).trim();
+  return n;
+}
+
+/** Kolom numerik: semua nilai non-kosong angka, minimal satu angka. */
+export function numericColumns(s: SampleData) {
+  return s.columns.filter((_, i) => {
+    const vals = s.rows.map((r) => r[i]).filter((v) => v != null && v !== "");
+    return vals.length > 0 && vals.every((v) => typeof v === "number");
+  });
+}
+
+export type LicenseInfo = { summary: string; can: string[]; must: string[]; open: boolean };
+export const LICENSE_INFO: Record<string, LicenseInfo> = {
+  "CC-BY 4.0": { open: true, summary: "Bebas digunakan, dibagikan, dan diolah, termasuk untuk tujuan komersial.", can: ["Menyalin & menyebarluaskan", "Mengolah & menggabungkan", "Penggunaan komersial"], must: ["Mencantumkan sumber (atribusi) ke produsen data"] },
+  "CC-BY-SA 4.0": { open: true, summary: "Bebas digunakan dan diolah, tetapi hasil turunan wajib dibagikan dengan lisensi yang sama.", can: ["Menyalin & menyebarluaskan", "Mengolah & menggabungkan", "Penggunaan komersial"], must: ["Mencantumkan sumber", "Karya turunan berlisensi CC-BY-SA yang sama"] },
+  "CC0 1.0": { open: true, summary: "Domain publik: dapat digunakan untuk apa pun tanpa syarat.", can: ["Semua bentuk penggunaan tanpa izin"], must: ["Tidak ada kewajiban (atribusi tetap dianjurkan)"] },
+  "Open Government License": { open: true, summary: "Data resmi pemerintah yang terbuka untuk dimanfaatkan publik.", can: ["Menyalin, mengolah, dan menerbitkan ulang", "Penggunaan komersial"], must: ["Mencantumkan sumber", "Tidak menyiratkan dukungan resmi pemerintah"] },
+  Terbatas: { open: false, summary: "Akses berkas terbatas. Unduhan memerlukan permohonan yang disetujui Wali Data.", can: ["Melihat metadata & pratinjau ringkas"], must: ["Mengajukan permohonan data", "Menggunakan sesuai tujuan yang disetujui"] },
+};
+
+export function buildCitation(ds: { title: string; license: string; slug: string; published_at: string | null; organizations: { name: string } | null }, origin: string) {
+  const year = ds.published_at ? new Date(ds.published_at).getFullYear() : new Date().getFullYear();
+  return `${ds.organizations?.name ?? "Pemerintah Kabupaten Buton Selatan"} (${year}). ${ds.title}. Portal Satu Data Kabupaten Buton Selatan. Lisensi ${ds.license}. ${origin}/dataset/${ds.slug}`;
 }
