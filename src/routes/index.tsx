@@ -120,16 +120,16 @@ function Home() {
 
       <section className="relative overflow-hidden bg-secondary/50 py-16">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 lg:grid-cols-2">
-          <div className="relative">
+           <div className="relative">
              <div className="absolute -right-2 -top-2 h-20 w-20 rounded-xl bg-accent/25" aria-hidden />
-             <div className="relative rounded-2xl border bg-card p-2 shadow-floating sm:p-3">
-               <div className={`grid gap-2 rounded-xl bg-sea p-3 text-ocean-foreground sm:p-4 ${leadersList.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+             <div className="relative mx-auto w-full max-w-[400px] rounded-2xl border bg-card p-2 shadow-floating sm:p-3">
+               <div className={`grid gap-4 rounded-xl bg-sea p-3 text-ocean-foreground sm:p-4 ${leadersList.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
                 {leadersList.map((p) => (
                   <div key={p.key} className="flex min-w-0 flex-col items-center text-center">
                     {p.photo ? (
-                       <img src={p.photo} alt={`Foto ${p.name}`} className="aspect-[4/5] w-full max-w-[132px] rounded-xl object-cover object-top" loading="lazy" />
+                       <img src={p.photo} alt={`Foto ${p.name}`} className="aspect-[4/5] w-full max-w-[160px] rounded-xl object-cover object-top" loading="lazy" />
                     ) : (
-                       <div className="grid aspect-[4/5] w-full max-w-[132px] place-items-center rounded-xl bg-ocean-foreground/10 text-3xl font-extrabold">{initials(p.name)}</div>
+                       <div className="grid aspect-[4/5] w-full max-w-[160px] place-items-center rounded-xl bg-ocean-foreground/10 text-3xl font-extrabold">{initials(p.name)}</div>
                     )}
                      <div className="mt-2 break-words text-sm font-bold">{p.name}</div>
                     <div className="text-xs text-ocean-foreground/70">{p.title}</div>
