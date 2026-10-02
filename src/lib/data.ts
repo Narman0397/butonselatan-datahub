@@ -203,7 +203,7 @@ export function parseNum(raw: unknown): number | null {
 
 export function normalizeCell(v: unknown): string | number | null {
   const n = parseNum(v);
-  if (n === null) return v == null || String(v).trim() === "" ? null : String(v).trim() === "-" ? null : EMPTY.has(String(v).trim().toLowerCase()) ? null : String(v);
+  if (n === null) return null;
   if (Number.isNaN(n)) return String(v).trim();
   return n;
 }
