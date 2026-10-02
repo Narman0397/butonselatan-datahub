@@ -94,7 +94,7 @@ function Home() {
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
               <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari dataset, mis. penduduk, ikan, puskesmas…" className="h-12 rounded-full border-0 bg-transparent pl-10 text-base text-foreground shadow-none focus-visible:ring-0" />
             </div>
-            <Button type="submit" size="lg" className="h-12 shrink-0 rounded-full bg-gradient-accent px-4 sm:px-6 text-accent-foreground hover:opacity-90">Cari</Button>
+            <Button type="submit" size="lg" className="h-12 shrink-0 rounded-full bg-gradient-accent px-4 sm:px-6 text-primary-foreground hover:opacity-90">Cari</Button>
           </form>
           <div className="mt-4 flex flex-wrap justify-center gap-2 text-sm">
             {topics.slice(0, 5).map((t) => (
