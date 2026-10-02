@@ -31,6 +31,7 @@ const COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--cha
 function Home() {
   const navigate = useNavigate();
   const [q, setQ] = useState("");
+  const [tab, setTab] = useState<"baru" | "populer">("baru");
   const { data: datasets = [] } = useQuery(publishedQuery);
   const { data: orgs = [] } = useQuery(orgsQuery);
   const { data: topics = [] } = useQuery(topicsQuery);
@@ -102,8 +103,17 @@ function Home() {
               </Link>
             ))}
           </div>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+            <span className="font-semibold uppercase tracking-[0.15em] text-ocean-foreground/70">Tren:</span>
+            {["penduduk", "perikanan", "puskesmas", "APBD", "sekolah"].map((t) => (
+              <Link key={t} to="/dataset" search={{ q: t }} className="rounded-full px-2 py-0.5 text-accent underline-offset-4 hover:underline">#{t}</Link>
+            ))}
+          </div>
           </div>
         </div>
+        <svg className="relative block h-12 w-full text-secondary/50 sm:h-20" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden>
+          <path fill="var(--background)" d="M0,64 C240,120 480,0 720,48 C960,96 1200,16 1440,56 L1440,120 L0,120 Z" />
+        </svg>
       </section>
 
       <section className="relative overflow-hidden bg-secondary/50 py-16">
@@ -177,15 +187,21 @@ function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-16">
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold">Dataset terbaru</h2>
-            <p className="text-muted-foreground">Baru diterbitkan oleh Wali Data</p>
+        <div className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
+          <div className="min-w-0">
+            <h2 className="text-2xl font-bold">Dataset pilihan</h2>
+            <div className="mt-2 inline-flex rounded-full border bg-card p-1 text-sm">
+              {(["baru", "populer"] as const).map((t) => (
+                <button key={t} type="button" onClick={() => setTab(t)} className={`rounded-full px-4 py-1.5 font-medium transition ${tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                  {t === "baru" ? "Terbaru" : "Terpopuler"}
+                </button>
+              ))}
+            </div>
           </div>
-          <Link to="/dataset" className="flex items-center gap-1 text-sm font-medium text-primary">Semua dataset <ArrowRight className="h-4 w-4" /></Link>
+          <Link to="/dataset" className="flex shrink-0 items-center gap-1 text-sm font-medium text-primary">Semua <ArrowRight className="h-4 w-4" /></Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {datasets.slice(0, 6).map((d) => <DatasetCard key={d.id} ds={d} />)}
+          {(tab === "baru" ? datasets : [...datasets].sort((a, b) => b.downloads + b.views - (a.downloads + a.views))).slice(0, 6).map((d) => <DatasetCard key={d.id} ds={d} />)}
         </div>
       </section>
 
