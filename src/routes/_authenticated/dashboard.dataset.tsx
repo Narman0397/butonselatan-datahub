@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Send, Search, ExternalLink } from "lucide-react";
+import { Plus, Pencil, Trash2, Send, Search, ExternalLink, Download } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, StatusBadge } from "@/components/dataset-bits";
 import { DatasetForm, type EditableDataset } from "@/components/dataset-form";
-import { formatDate, type DatasetStatus } from "@/lib/data";
+import { formatDate, openDatasetFile, type DatasetStatus } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/dataset")({
   component: MyDatasets,
@@ -108,6 +108,9 @@ function MyDatasets() {
                 <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{formatDate(d.updated_at)}</TableCell>
                 <TableCell>
                   <div className="flex justify-end gap-1">
+                    {d.file_url && (
+                      <Button size="icon" variant="ghost" title="Unduh berkas" onClick={() => openDatasetFile(d.file_url!, d.file_name, "download").catch((e) => toast.error(e.message))}><Download className="h-4 w-4" /></Button>
+                    )}
                     {d.status === "published" && (
                       <Button size="icon" variant="ghost" asChild title="Lihat"><Link to="/dataset/$slug" params={{ slug: d.slug }}><ExternalLink className="h-4 w-4" /></Link></Button>
                     )}
