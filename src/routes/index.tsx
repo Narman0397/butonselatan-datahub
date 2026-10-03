@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Search, Database, Building2, Download, Layers, ArrowRight } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Pie, PieChart, Cell } from "recharts";
 import { PublicLayout } from "@/components/site-chrome";
@@ -52,10 +52,10 @@ function Home() {
 
   const totalDownloads = datasets.reduce((a, d) => a + d.downloads, 0);
   const activeOrgs = new Set(datasets.map((d) => d.organization_id)).size;
-  const byTopic = topics
+  const byTopic = useMemo(() => topics
     .map((t) => ({ name: t.name, jumlah: datasets.filter((d) => d.topic_id === t.id).length }))
-    .filter((x) => x.jumlah > 0);
-  const byFormat = ["CSV", "XLSX", "PDF"].map((f) => ({ name: f, value: datasets.filter((d) => d.format === f).length }));
+    .filter((x) => x.jumlah > 0), [topics, datasets]);
+  const byFormat = useMemo(() => ["CSV", "XLSX", "PDF"].map((f) => ({ name: f, value: datasets.filter((d) => d.format === f).length })), [datasets]);
 
   const stats = [
     { icon: Database, label: "Dataset terbuka", value: datasets.length },
@@ -80,7 +80,7 @@ function Home() {
           <p className="mt-5 max-w-2xl whitespace-pre-line text-sm sm:text-base text-ocean-foreground/80">
             {s?.hero_description || "Temukan data kependudukan, kesehatan, perikanan, hingga keuangan daerah — terverifikasi Wali Data dan siap diunduh."}
           </p>
-           <div className="mt-8 grid w-full max-w-3xl grid-cols-2 overflow-hidden rounded-2xl border border-ocean-foreground/20 bg-ocean-foreground/10 p-1 shadow-floating backdrop-blur-md sm:grid-cols-4 sm:divide-x sm:divide-ocean-foreground/15">
+           <div className="gpu-layer mt-8 grid w-full max-w-3xl grid-cols-2 overflow-hidden rounded-2xl border border-ocean-foreground/20 bg-ocean-foreground/10 p-1 shadow-floating backdrop-blur-md sm:grid-cols-4 sm:divide-x sm:divide-ocean-foreground/15">
             {stats.map((s) => (
                <div key={s.label} className="rounded-xl px-3 py-3 even:bg-ocean-foreground/5 sm:rounded-none sm:bg-transparent sm:py-4">
                 <div className="text-2xl font-extrabold sm:text-3xl">{s.value}<span className="text-accent">+</span></div>
@@ -152,7 +152,7 @@ function Home() {
       </section>
 
 
-      <section className="mx-auto grid max-w-7xl gap-6 px-4 py-16 lg:grid-cols-3">
+      <section className="defer-render mx-auto grid max-w-7xl gap-6 px-4 py-16 lg:grid-cols-3">
         <div className="min-w-0 rounded-2xl border bg-card p-5 shadow-soft md:p-6 lg:col-span-2">
           <h2 className="text-lg font-semibold">Dataset per topik</h2>
           <p className="mb-4 text-sm text-muted-foreground">Sebaran dataset terbuka menurut sektor</p>
@@ -207,7 +207,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="bg-secondary/60 py-16">
+      <section className="defer-render bg-secondary/60 py-16">
         <div className="mx-auto max-w-7xl px-4">
           <div className="mb-6 flex items-end justify-between">
             <div>

@@ -121,7 +121,12 @@
 
 @utility contour {
   background-image: repeating-radial-gradient(circle at 80% 20%, transparent 0 22px, color-mix(in oklab, var(--ocean-foreground) 4%, transparent) 22px 23px);
+  transform: translateZ(0);
+  contain: strict;
+  pointer-events: none;
 }
+@utility gpu-layer { transform: translateZ(0); backface-visibility: hidden; }
+@utility defer-render { content-visibility: auto; contain-intrinsic-size: auto 600px; }
 
 @utility bg-gradient-primary { background-image: var(--gradient-primary); }
 @utility bg-gradient-accent { background-image: var(--gradient-accent); }

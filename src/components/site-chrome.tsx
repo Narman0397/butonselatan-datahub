@@ -52,7 +52,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/80 bg-background/95 shadow-soft backdrop-blur-xl supports-[backdrop-filter]:bg-background/90">
+    <header className="gpu-layer sticky top-0 z-40 border-b border-border/80 bg-background/95 shadow-soft backdrop-blur-xl supports-[backdrop-filter]:bg-background/90">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Logo />
         <nav className="hidden items-center gap-1 md:flex">
