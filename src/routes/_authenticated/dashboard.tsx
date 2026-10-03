@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu, Inbox, FileBarChart } from "lucide-react";
+import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu, Inbox, FileBarChart, UserCircle } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/site-chrome";
 import { NotificationBell } from "@/components/activity-bits";
@@ -22,6 +22,7 @@ const ITEMS: { to: string; label: string; icon: typeof Users; roles: AppRole[] |
   { to: "/dashboard/pengguna", label: "Pengguna & Peran", icon: Users, roles: ["admin"] },
   { to: "/dashboard/organisasi", label: "OPD & Topik", icon: Building2, roles: ["admin"] },
   { to: "/dashboard/pengaturan", label: "Pengaturan Portal", icon: Settings, roles: ["admin"] },
+  { to: "/dashboard/profil", label: "Profil Saya", icon: UserCircle, roles: null },
 ];
 
 function DashboardLayout() {
