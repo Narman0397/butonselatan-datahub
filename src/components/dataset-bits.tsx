@@ -56,9 +56,12 @@ export function DatasetCard({ ds }: { ds: CardDs }) {
       params={{ slug: ds.slug }}
       className="group card-lift flex min-h-52 flex-col rounded-xl border border-border/80 bg-card p-5 hover:border-primary/35"
     >
-      <div className="mb-3 flex items-center gap-2">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
         <FormatBadge format={ds.format} />
         {ds.topics && <span className="truncate rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">{ds.topics.name}</span>}
+        <span className={cn("rounded-full border px-2.5 py-0.5 text-[11px] font-medium", LICENSE_INFO[ds.license]?.open === false ? "border-warning/40 bg-warning/15 text-warning-foreground" : "border-success/30 bg-success/10 text-success")}>
+          {LICENSE_INFO[ds.license]?.open === false ? "Perlu Izin" : "Bebas Unduh"}
+        </span>
       </div>
       <h3 className="break-words font-display text-base font-semibold leading-snug transition-colors group-hover:text-primary">{ds.title}</h3>
       <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ds.description}</p>

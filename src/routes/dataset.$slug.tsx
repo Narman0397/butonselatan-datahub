@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { DATASET_FIELDS, LICENSE_INFO, buildCitation, downloadDataset, formatDate, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, LICENSE_INFO, buildCitation, downloadDataset, formatDate, licenseLabel, type SampleData } from "@/lib/data";
 import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/dataset/$slug")({
