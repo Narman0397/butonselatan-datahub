@@ -22,6 +22,7 @@ import { Route as AuthenticatedDashboardDatasetRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardOrganisasiRouteImport } from './routes/_authenticated/dashboard.organisasi'
 import { Route as AuthenticatedDashboardPengaturanRouteImport } from './routes/_authenticated/dashboard.pengaturan'
 import { Route as AuthenticatedDashboardPenggunaRouteImport } from './routes/_authenticated/dashboard.pengguna'
+import { Route as AuthenticatedDashboardPermohonanRouteImport } from './routes/_authenticated/dashboard.permohonan'
 import { Route as AuthenticatedDashboardVerifikasiRouteImport } from './routes/_authenticated/dashboard.verifikasi'
 
 const IndexRoute = IndexRouteImport.update({
@@ -93,6 +94,12 @@ const AuthenticatedDashboardPenggunaRoute =
     path: '/pengguna',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardPermohonanRoute =
+  AuthenticatedDashboardPermohonanRouteImport.update({
+    id: '/permohonan',
+    path: '/permohonan',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardVerifikasiRoute =
   AuthenticatedDashboardVerifikasiRouteImport.update({
     id: '/verifikasi',
@@ -112,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/organisasi': typeof AuthenticatedDashboardOrganisasiRoute
   '/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
   '/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
+  '/dashboard/permohonan': typeof AuthenticatedDashboardPermohonanRoute
   '/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
@@ -126,6 +134,7 @@ export interface FileRoutesByTo {
   '/dashboard/organisasi': typeof AuthenticatedDashboardOrganisasiRoute
   '/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
   '/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
+  '/dashboard/permohonan': typeof AuthenticatedDashboardPermohonanRoute
   '/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
@@ -143,6 +152,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/organisasi': typeof AuthenticatedDashboardOrganisasiRoute
   '/_authenticated/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
   '/_authenticated/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
+  '/_authenticated/dashboard/permohonan': typeof AuthenticatedDashboardPermohonanRoute
   '/_authenticated/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/dashboard/organisasi'
     | '/dashboard/pengaturan'
     | '/dashboard/pengguna'
+    | '/dashboard/permohonan'
     | '/dashboard/verifikasi'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
@@ -174,6 +185,7 @@ export interface FileRouteTypes {
     | '/dashboard/organisasi'
     | '/dashboard/pengaturan'
     | '/dashboard/pengguna'
+    | '/dashboard/permohonan'
     | '/dashboard/verifikasi'
     | '/dashboard'
   id:
@@ -190,6 +202,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/organisasi'
     | '/_authenticated/dashboard/pengaturan'
     | '/_authenticated/dashboard/pengguna'
+    | '/_authenticated/dashboard/permohonan'
     | '/_authenticated/dashboard/verifikasi'
     | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
@@ -297,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardPenggunaRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/permohonan': {
+      id: '/_authenticated/dashboard/permohonan'
+      path: '/permohonan'
+      fullPath: '/dashboard/permohonan'
+      preLoaderRoute: typeof AuthenticatedDashboardPermohonanRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/verifikasi': {
       id: '/_authenticated/dashboard/verifikasi'
       path: '/verifikasi'
@@ -312,6 +332,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardOrganisasiRoute: typeof AuthenticatedDashboardOrganisasiRoute
   AuthenticatedDashboardPengaturanRoute: typeof AuthenticatedDashboardPengaturanRoute
   AuthenticatedDashboardPenggunaRoute: typeof AuthenticatedDashboardPenggunaRoute
+  AuthenticatedDashboardPermohonanRoute: typeof AuthenticatedDashboardPermohonanRoute
   AuthenticatedDashboardVerifikasiRoute: typeof AuthenticatedDashboardVerifikasiRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
@@ -324,6 +345,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardPengaturanRoute:
       AuthenticatedDashboardPengaturanRoute,
     AuthenticatedDashboardPenggunaRoute: AuthenticatedDashboardPenggunaRoute,
+    AuthenticatedDashboardPermohonanRoute:
+      AuthenticatedDashboardPermohonanRoute,
     AuthenticatedDashboardVerifikasiRoute:
       AuthenticatedDashboardVerifikasiRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,

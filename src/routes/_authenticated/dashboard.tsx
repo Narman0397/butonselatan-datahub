@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu } from "lucide-react";
+import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu, Inbox } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/site-chrome";
 import { Button } from "@/components/ui/button";
