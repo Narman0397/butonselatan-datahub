@@ -16,6 +16,7 @@ const ITEMS: { to: string; label: string; icon: typeof Users; roles: AppRole[] |
   { to: "/dashboard", label: "Ringkasan", icon: LayoutDashboard, roles: null },
   { to: "/dashboard/dataset", label: "Dataset Saya", icon: FileStack, roles: ["produsen", "admin"] },
   { to: "/dashboard/verifikasi", label: "Verifikasi", icon: ShieldCheck, roles: ["wali_data", "admin"] },
+  { to: "/dashboard/permohonan", label: "Permohonan Data", icon: Inbox, roles: ["wali_data", "admin"] },
   { to: "/dashboard/pengguna", label: "Pengguna & Peran", icon: Users, roles: ["admin"] },
   { to: "/dashboard/organisasi", label: "OPD & Topik", icon: Building2, roles: ["admin"] },
   { to: "/dashboard/pengaturan", label: "Pengaturan Portal", icon: Settings, roles: ["admin"] },
