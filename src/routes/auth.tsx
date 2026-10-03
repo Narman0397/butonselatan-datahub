@@ -59,7 +59,7 @@ function AuthPage() {
     setBusy(true);
     const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim(), { redirectTo: `${window.location.origin}/reset-password` });
     setBusy(false);
-    if (error) return toast.error("Gagal mengirim tautan pemulihan");
+    if (error) { toast.error("Gagal mengirim tautan pemulihan"); return; }
     toast.success("Jika email terdaftar, tautan pemulihan telah dikirim.");
     setResetOpen(false);
   }

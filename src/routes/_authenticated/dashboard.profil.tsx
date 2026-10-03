@@ -28,22 +28,22 @@ function Profil() {
 
   async function saveName(e: React.FormEvent) {
     e.preventDefault();
-    if (!user || !name.trim()) return;
+    if (!user || !name.trim()) return undefined;
     setBusy(true);
     const { error } = await supabase.from("profiles").update({ full_name: name.trim() }).eq("id", user.id);
     setBusy(false);
-    if (error) return toast.error("Gagal menyimpan profil");
+    if (error) { toast.error("Gagal menyimpan profil"); return; }
     toast.success("Profil diperbarui");
     refresh();
   }
   async function savePw(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 8) return toast.error("Kata sandi baru minimal 8 karakter");
-    if (pw !== pw2) return toast.error("Konfirmasi kata sandi tidak cocok");
+    if (pw.length < 8) { toast.error("Kata sandi baru minimal 8 karakter"); return; }
+    if (pw !== pw2) { toast.error("Konfirmasi kata sandi tidak cocok"); return; }
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: pw, current_password: cur } as never);
     setBusy(false);
-    if (error) return toast.error(/current|password/i.test(error.message) ? "Kata sandi saat ini salah atau kata sandi baru tidak valid" : "Gagal mengganti kata sandi");
+    if (error) { toast.error(/current|password/i.test(error.message) ? "Kata sandi saat ini salah atau kata sandi baru tidak valid" : "Gagal mengganti kata sandi"); return; }
     setCur(""); setPw(""); setPw2("");
     toast.success("Kata sandi berhasil diganti");
   }

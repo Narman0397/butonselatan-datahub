@@ -38,12 +38,12 @@ function ResetPassword() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 8) return toast.error("Kata sandi minimal 8 karakter");
-    if (pw !== pw2) return toast.error("Konfirmasi kata sandi tidak cocok");
+    if (pw.length < 8) { toast.error("Kata sandi minimal 8 karakter"); return; }
+    if (pw !== pw2) { toast.error("Konfirmasi kata sandi tidak cocok"); return; }
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: pw });
     setBusy(false);
-    if (error) return toast.error("Gagal menyimpan kata sandi. Tautan mungkin sudah kedaluwarsa.");
+    if (error) { toast.error("Gagal menyimpan kata sandi. Tautan mungkin sudah kedaluwarsa."); return; }
     toast.success("Kata sandi berhasil diperbarui");
     navigate({ to: "/dashboard", replace: true });
   }
