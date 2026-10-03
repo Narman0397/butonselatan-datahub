@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { FORMATS, FREQUENCIES, LICENSES, openDatasetFile, orgsQuery, parseCsv, parseXlsx, slugify, topicsQuery, type SampleData } from "@/lib/data";
+import { FORMATS, FREQUENCIES, LICENSES, licenseLabel, openDatasetFile, orgsQuery, parseCsv, parseXlsx, slugify, topicsQuery, type SampleData } from "@/lib/data";
 import { DatasetChart, LicenseInfoBox, SampleTable } from "@/components/dataset-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -139,7 +139,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
           <Label>Lisensi</Label>
           <Select value={f.license} onValueChange={(v) => up("license", v)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>{LICENSES.map((x) => <SelectItem key={x} value={x}>{x}</SelectItem>)}</SelectContent>
+            <SelectContent>{LICENSES.map((x) => <SelectItem key={x} value={x}>{licenseLabel(x)}</SelectItem>)}</SelectContent>
           </Select>
         </div>
         <div className="sm:col-span-2"><LicenseInfoBox license={f.license} /></div>

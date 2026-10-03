@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { DATASET_FIELDS, LICENSE_INFO, buildCitation, downloadDataset, formatDate, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, LICENSE_INFO, buildCitation, downloadDataset, formatDate, licenseLabel, type SampleData } from "@/lib/data";
 import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/dataset/$slug")({
@@ -72,7 +72,7 @@ function Detail() {
   const meta = [
     { icon: Building2, k: "Produsen data", v: ds.organizations?.name },
     { icon: Tag, k: "Topik", v: ds.topics?.name ?? "-" },
-    { icon: Scale, k: "Lisensi", v: ds.license },
+    { icon: Scale, k: "Lisensi", v: licenseLabel(ds.license) },
     { icon: RefreshCw, k: "Frekuensi", v: ds.frequency },
     { icon: Calendar, k: "Diterbitkan", v: formatDate(ds.published_at) },
     { icon: Calendar, k: "Diperbarui", v: formatDate(ds.updated_at) },
@@ -145,7 +145,7 @@ function Detail() {
             </dl>
           </div>
           <div className="rounded-2xl border bg-card shadow-soft p-5 space-y-3">
-            <h3 className="font-semibold">Lisensi: {ds.license}</h3>
+            <h3 className="font-semibold">Lisensi: {licenseLabel(ds.license)}</h3>
             <LicenseInfoBox license={ds.license} />
             <div>
               <p className="mb-1 text-xs font-medium text-muted-foreground">Sitasi</p>

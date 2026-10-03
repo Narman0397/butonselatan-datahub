@@ -7,7 +7,7 @@ import { DatasetCard } from "@/components/dataset-bits";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FORMATS, LICENSES, orgsQuery, publishedQuery, topicsQuery } from "@/lib/data";
+import { FORMATS, LICENSES, licenseLabel, orgsQuery, publishedQuery, topicsQuery } from "@/lib/data";
 
 const searchSchema = z.object({
   q: z.string().optional().catch(undefined),
@@ -86,7 +86,7 @@ function Catalog() {
           <FilterGroup title="Format" value={s.format} onChange={(v) => set({ format: v })}
             options={FORMATS.map((f) => ({ v: f, l: f, n: all.filter((d) => d.format === f).length }))} />
           <FilterGroup title="Lisensi" value={s.lisensi} onChange={(v) => set({ lisensi: v })}
-            options={LICENSES.map((f) => ({ v: f, l: f, n: all.filter((d) => d.license === f).length })).filter((o) => o.n > 0)} />
+            options={LICENSES.map((f) => ({ v: f, l: licenseLabel(f), n: all.filter((d) => d.license === f).length })).filter((o) => o.n > 0)} />
         </>
   );
 
