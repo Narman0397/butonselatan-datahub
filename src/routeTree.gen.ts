@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as OrganisasiRouteImport } from './routes/organisasi'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TopikRouteImport } from './routes/topik'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as DatasetIndexRouteImport } from './routes/dataset.index'
@@ -24,6 +25,7 @@ import { Route as AuthenticatedDashboardOrganisasiRouteImport } from './routes/_
 import { Route as AuthenticatedDashboardPengaturanRouteImport } from './routes/_authenticated/dashboard.pengaturan'
 import { Route as AuthenticatedDashboardPenggunaRouteImport } from './routes/_authenticated/dashboard.pengguna'
 import { Route as AuthenticatedDashboardPermohonanRouteImport } from './routes/_authenticated/dashboard.permohonan'
+import { Route as AuthenticatedDashboardProfilRouteImport } from './routes/_authenticated/dashboard.profil'
 import { Route as AuthenticatedDashboardVerifikasiRouteImport } from './routes/_authenticated/dashboard.verifikasi'
 
 const IndexRoute = IndexRouteImport.update({
@@ -43,6 +45,11 @@ const AuthRoute = AuthRouteImport.update({
 const OrganisasiRoute = OrganisasiRouteImport.update({
   id: '/organisasi',
   path: '/organisasi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TopikRoute = TopikRouteImport.update({
@@ -107,6 +114,12 @@ const AuthenticatedDashboardPermohonanRoute =
     path: '/permohonan',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardProfilRoute =
+  AuthenticatedDashboardProfilRouteImport.update({
+    id: '/profil',
+    path: '/profil',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardVerifikasiRoute =
   AuthenticatedDashboardVerifikasiRouteImport.update({
     id: '/verifikasi',
@@ -118,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/organisasi': typeof OrganisasiRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/topik': typeof TopikRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/dataset/$slug': typeof DatasetSlugRoute
@@ -128,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
   '/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
   '/dashboard/permohonan': typeof AuthenticatedDashboardPermohonanRoute
+  '/dashboard/profil': typeof AuthenticatedDashboardProfilRoute
   '/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
@@ -135,6 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/organisasi': typeof OrganisasiRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/topik': typeof TopikRoute
   '/dataset/$slug': typeof DatasetSlugRoute
   '/dataset': typeof DatasetIndexRoute
@@ -144,6 +160,7 @@ export interface FileRoutesByTo {
   '/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
   '/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
   '/dashboard/permohonan': typeof AuthenticatedDashboardPermohonanRoute
+  '/dashboard/profil': typeof AuthenticatedDashboardProfilRoute
   '/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
@@ -153,6 +170,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/organisasi': typeof OrganisasiRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/topik': typeof TopikRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/dataset/$slug': typeof DatasetSlugRoute
@@ -163,6 +181,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/pengaturan': typeof AuthenticatedDashboardPengaturanRoute
   '/_authenticated/dashboard/pengguna': typeof AuthenticatedDashboardPenggunaRoute
   '/_authenticated/dashboard/permohonan': typeof AuthenticatedDashboardPermohonanRoute
+  '/_authenticated/dashboard/profil': typeof AuthenticatedDashboardProfilRoute
   '/_authenticated/dashboard/verifikasi': typeof AuthenticatedDashboardVerifikasiRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
@@ -172,6 +191,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/organisasi'
+    | '/reset-password'
     | '/topik'
     | '/dashboard'
     | '/dataset/$slug'
@@ -182,6 +202,7 @@ export interface FileRouteTypes {
     | '/dashboard/pengaturan'
     | '/dashboard/pengguna'
     | '/dashboard/permohonan'
+    | '/dashboard/profil'
     | '/dashboard/verifikasi'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
@@ -189,6 +210,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/organisasi'
+    | '/reset-password'
     | '/topik'
     | '/dataset/$slug'
     | '/dataset'
@@ -198,6 +220,7 @@ export interface FileRouteTypes {
     | '/dashboard/pengaturan'
     | '/dashboard/pengguna'
     | '/dashboard/permohonan'
+    | '/dashboard/profil'
     | '/dashboard/verifikasi'
     | '/dashboard'
   id:
@@ -206,6 +229,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/organisasi'
+    | '/reset-password'
     | '/topik'
     | '/_authenticated/dashboard'
     | '/dataset/$slug'
@@ -216,6 +240,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/pengaturan'
     | '/_authenticated/dashboard/pengguna'
     | '/_authenticated/dashboard/permohonan'
+    | '/_authenticated/dashboard/profil'
     | '/_authenticated/dashboard/verifikasi'
     | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
@@ -225,6 +250,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   OrganisasiRoute: typeof OrganisasiRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TopikRoute: typeof TopikRoute
   DatasetSlugRoute: typeof DatasetSlugRoute
   DatasetIndexRoute: typeof DatasetIndexRoute
@@ -258,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/organisasi'
       fullPath: '/organisasi'
       preLoaderRoute: typeof OrganisasiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/topik': {
@@ -337,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardPermohonanRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/profil': {
+      id: '/_authenticated/dashboard/profil'
+      path: '/profil'
+      fullPath: '/dashboard/profil'
+      preLoaderRoute: typeof AuthenticatedDashboardProfilRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/verifikasi': {
       id: '/_authenticated/dashboard/verifikasi'
       path: '/verifikasi'
@@ -354,6 +394,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardPengaturanRoute: typeof AuthenticatedDashboardPengaturanRoute
   AuthenticatedDashboardPenggunaRoute: typeof AuthenticatedDashboardPenggunaRoute
   AuthenticatedDashboardPermohonanRoute: typeof AuthenticatedDashboardPermohonanRoute
+  AuthenticatedDashboardProfilRoute: typeof AuthenticatedDashboardProfilRoute
   AuthenticatedDashboardVerifikasiRoute: typeof AuthenticatedDashboardVerifikasiRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
@@ -369,6 +410,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardPenggunaRoute: AuthenticatedDashboardPenggunaRoute,
     AuthenticatedDashboardPermohonanRoute:
       AuthenticatedDashboardPermohonanRoute,
+    AuthenticatedDashboardProfilRoute: AuthenticatedDashboardProfilRoute,
     AuthenticatedDashboardVerifikasiRoute:
       AuthenticatedDashboardVerifikasiRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
@@ -395,6 +437,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   OrganisasiRoute: OrganisasiRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TopikRoute: TopikRoute,
   DatasetSlugRoute: DatasetSlugRoute,
   DatasetIndexRoute: DatasetIndexRoute,

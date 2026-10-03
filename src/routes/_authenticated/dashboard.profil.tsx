@@ -41,11 +41,9 @@ function Profil() {
     if (pw.length < 8) return toast.error("Kata sandi baru minimal 8 karakter");
     if (pw !== pw2) return toast.error("Konfirmasi kata sandi tidak cocok");
     setBusy(true);
-    const { error: e1 } = await supabase.auth.signInWithPassword({ email: user?.email ?? "", password: cur });
-    if (e1) { setBusy(false); return toast.error("Kata sandi saat ini salah"); }
     const { error } = await supabase.auth.updateUser({ password: pw, current_password: cur } as never);
     setBusy(false);
-    if (error) return toast.error("Gagal mengganti kata sandi");
+    if (error) return toast.error(/current|password/i.test(error.message) ? "Kata sandi saat ini salah atau kata sandi baru tidak valid" : "Gagal mengganti kata sandi");
     setCur(""); setPw(""); setPw2("");
     toast.success("Kata sandi berhasil diganti");
   }
