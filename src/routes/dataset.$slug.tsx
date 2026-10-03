@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { DATASET_FIELDS, LICENSE_INFO, buildCitation, downloadDataset, formatDate, type SampleData } from "@/lib/data";
+import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/dataset/$slug")({
   head: () => ({
@@ -152,6 +153,7 @@ function Detail() {
               <Button size="sm" variant="outline" className="mt-2 w-full" onClick={() => { navigator.clipboard.writeText(buildCitation(ds, window.location.origin)); toast.success("Sitasi disalin"); }}><Copy className="h-3.5 w-3.5" /> Salin sitasi</Button>
             </div>
           </div>
+          <div className="rounded-2xl border bg-card shadow-soft p-5"><DatasetHistory datasetId={ds.id} /></div>
           {ds.tags.length > 0 && (
             <div className="rounded-2xl border bg-card shadow-soft p-5">
               <h3 className="mb-3 font-semibold">Tag</h3>

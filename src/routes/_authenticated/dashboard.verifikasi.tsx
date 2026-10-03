@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, SampleTable, StatusBadge } from "@/components/dataset-bits";
 import { DATASET_FIELDS, formatDate, openDatasetFile, type DatasetStatus, type SampleData } from "@/lib/data";
+import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/_authenticated/dashboard/verifikasi")({
   head: () => ({ meta: [{ title: "Verifikasi Dataset — Satu Data Buton Selatan" }, { name: "description", content: "Tinjau dan verifikasi dataset yang diajukan OPD." }, { property: "og:title", content: "Verifikasi Dataset — Satu Data Buton Selatan" }, { property: "og:description", content: "Tinjau dan verifikasi dataset yang diajukan OPD." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -126,6 +127,7 @@ function Verify() {
                   <Button className="bg-success text-success-foreground hover:bg-success/90" onClick={() => decide("published")}><CheckCircle2 className="h-4 w-4" /> Terbitkan</Button>
                 )}
               </div>
+              <div className="border-t pt-4"><DatasetHistory datasetId={current.id} title="Riwayat Dataset" /></div>
             </>
           )}
         </DialogContent>
