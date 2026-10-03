@@ -216,6 +216,20 @@ export function numericColumns(s: SampleData) {
   });
 }
 
+/** Label ramah untuk setiap kode lisensi resmi. */
+export const LICENSE_LABEL: Record<string, string> = {
+  "CC-BY 4.0": "Bebas Pakai (Wajib Cantumkan Sumber)",
+  "CC-BY-SA 4.0": "Bebas Pakai (Wajib Bagikan Serupa)",
+  "CC0 1.0": "Bebas Tanpa Syarat (Domain Publik)",
+  "Open Government License": "Lisensi Data Terbuka Pemerintah",
+  Terbatas: "Akses Terbatas (Perlu Permohonan Data)",
+};
+
+export function licenseLabel(code: string) {
+  const l = LICENSE_LABEL[code];
+  return l ? `${l} — ${code}` : code;
+}
+
 export type LicenseInfo = { summary: string; can: string[]; must: string[]; open: boolean };
 export const LICENSE_INFO: Record<string, LicenseInfo> = {
   "CC-BY 4.0": { open: true, summary: "Bebas digunakan, dibagikan, dan diolah, termasuk untuk tujuan komersial.", can: ["Menyalin & menyebarluaskan", "Mengolah & menggabungkan", "Penggunaan komersial"], must: ["Mencantumkan sumber (atribusi) ke produsen data"] },
