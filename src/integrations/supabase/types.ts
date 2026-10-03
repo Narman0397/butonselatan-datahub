@@ -64,8 +64,50 @@ export type Database = {
           },
         ]
       }
+      dataset_history: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string | null
+          created_at: string
+          dataset_id: string
+          id: string
+          note: string | null
+          org_name: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          dataset_id: string
+          id?: string
+          note?: string | null
+          org_name?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          dataset_id?: string
+          id?: string
+          note?: string | null
+          org_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dataset_history_dataset_id_fkey"
+            columns: ["dataset_id"]
+            isOneToOne: false
+            referencedRelation: "datasets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       datasets: {
         Row: {
+          change_note: string | null
           created_at: string
           created_by: string | null
           description: string | null
@@ -89,6 +131,7 @@ export type Database = {
           views: number
         }
         Insert: {
+          change_note?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
@@ -112,6 +155,7 @@ export type Database = {
           views?: number
         }
         Update: {
+          change_note?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
@@ -150,6 +194,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          link: string | null
+          message: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          message?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          message?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       organizations: {
         Row: {
@@ -344,6 +418,10 @@ export type Database = {
       }
       increment_dataset_stat: {
         Args: { _id: string; _kind: string }
+        Returns: undefined
+      }
+      notify_staff: {
+        Args: { _link: string; _msg: string; _title: string }
         Returns: undefined
       }
       user_org: { Args: { _user_id: string }; Returns: string }
