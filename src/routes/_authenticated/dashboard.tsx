@@ -1,8 +1,9 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu, Inbox } from "lucide-react";
+import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu, Inbox, FileBarChart } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/site-chrome";
+import { NotificationBell } from "@/components/activity-bits";
 import { Button } from "@/components/ui/button";
 import { useAuth, ROLE_LABEL, type AppRole } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +18,7 @@ const ITEMS: { to: string; label: string; icon: typeof Users; roles: AppRole[] |
   { to: "/dashboard/dataset", label: "Dataset Saya", icon: FileStack, roles: ["produsen", "admin"] },
   { to: "/dashboard/verifikasi", label: "Verifikasi", icon: ShieldCheck, roles: ["wali_data", "admin"] },
   { to: "/dashboard/permohonan", label: "Permohonan Data", icon: Inbox, roles: ["wali_data", "admin"] },
+  { to: "/dashboard/laporan", label: "Laporan Statistik", icon: FileBarChart, roles: ["wali_data", "admin"] },
   { to: "/dashboard/pengguna", label: "Pengguna & Peran", icon: Users, roles: ["admin"] },
   { to: "/dashboard/organisasi", label: "OPD & Topik", icon: Building2, roles: ["admin"] },
   { to: "/dashboard/pengaturan", label: "Pengaturan Portal", icon: Settings, roles: ["admin"] },
@@ -58,7 +60,7 @@ function DashboardLayout() {
 
   return (
     <div className="flex min-h-screen bg-muted/40">
-      <aside className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar py-5 transition-transform lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar py-5 transition-transform print:hidden lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="mb-6 px-5"><Logo light /></div>
         {nav}
         <div className="mx-3 mt-4 rounded-lg bg-sidebar-accent p-3 text-sidebar-accent-foreground">
@@ -71,11 +73,12 @@ function DashboardLayout() {
       </aside>
       {open && <div className="fixed inset-0 z-40 bg-foreground/30 lg:hidden" onClick={() => setOpen(false)} />}
       <div className="min-w-0 flex-1 lg:pl-64">
-        <div className="sticky top-0 z-30 flex h-14 items-center border-b bg-background px-4 lg:hidden">
-          <Button size="icon" variant="ghost" onClick={() => setOpen(true)} aria-label="Menu"><Menu className="h-5 w-5" /></Button>
-          <span className="ml-2 font-display font-semibold">Dashboard</span>
+        <div className="sticky top-0 z-30 flex h-14 items-center border-b bg-background px-4 print:hidden">
+          <Button size="icon" variant="ghost" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Menu"><Menu className="h-5 w-5" /></Button>
+          <span className="ml-2 font-display font-semibold lg:ml-0">Dashboard</span>
+          <div className="ml-auto"><NotificationBell /></div>
         </div>
-        <main className="mx-auto max-w-6xl min-w-0 p-4 md:p-8"><Outlet /></main>
+        <main className="mx-auto max-w-6xl min-w-0 p-4 md:p-8 print:max-w-none print:p-0"><Outlet /></main>
       </div>
     </div>
   );

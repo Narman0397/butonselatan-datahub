@@ -49,6 +49,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
   const [sample, setSample] = useState<SampleData | null>((initial?.sample_data as SampleData) ?? null);
   const [busy, setBusy] = useState(false);
   const [manual, setManual] = useState("");
+  const [changeNote, setChangeNote] = useState("");
   const up = (k: keyof typeof f, v: string) => setF((p) => ({ ...p, [k]: v }));
 
   async function onFile(fl: File | null) {
@@ -86,6 +87,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
         tags: f.tags.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean),
         sample_data: sample,
         file_url,
+        change_note: changeNote.trim() || null,
         file_name,
         status: (submit ? "pending" : "draft") as "pending" | "draft",
       };
@@ -182,6 +184,11 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
           </Tabs>
         </div>
       )}
+      <div className="space-y-1.5">
+        <Label>Catatan perubahan / versi data</Label>
+        <Input value={changeNote} onChange={(e) => setChangeNote(e.target.value)} placeholder={initial ? "mis. Penambahan data semester 2 tahun 2026" : "mis. Rilis awal data 2025"} />
+        <p className="text-xs text-muted-foreground">Tercatat di riwayat pembaruan dataset yang dapat dilihat publik.</p>
+      </div>
       <div className="flex justify-end gap-2 border-t pt-4">
         <Button variant="outline" disabled={busy} onClick={() => save(false)}>Simpan Draft</Button>
         <Button disabled={busy} onClick={() => save(true)}>Ajukan Verifikasi</Button>
