@@ -1,16 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Download, Calendar, Building2, Tag, Scale, RefreshCw, Eye } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { ArrowLeft, Download, Calendar, Building2, Tag, Scale, RefreshCw, Eye, Copy, Lock } from "lucide-react";
 import { PublicLayout } from "@/components/site-chrome";
-import { FormatBadge, SampleTable } from "@/components/dataset-bits";
+import { DatasetChart, FormatBadge, LicenseInfoBox, SampleTable, chartSpec } from "@/components/dataset-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { DATASET_FIELDS, downloadDataset, formatDate, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, LICENSE_INFO, buildCitation, downloadDataset, formatDate, type SampleData } from "@/lib/data";
 
 export const Route = createFileRoute("/dataset/$slug")({
   head: () => ({
@@ -50,9 +53,8 @@ function Detail() {
     return { ...sample, rows: f ? sample.rows.filter((r) => r.some((v) => String(v).toLowerCase().includes(f))) : sample.rows };
   }, [sample, filter]);
 
-  const numericCols = sample ? sample.columns.filter((_, i) => sample.rows.every((r) => typeof r[i] === "number")) : [];
-  const chartCols = numericCols.filter((c) => c !== sample?.columns[0]).slice(0, 3);
-  const chartData = sample?.rows.map((r) => Object.fromEntries(sample.columns.map((c, i) => [c, r[i]]))) ?? [];
+  const chartCols = sample ? chartSpec(sample).series : [];
+  const [reqOpen, setReqOpen] = useState(false);
 
   if (isLoading) return <PublicLayout><p className="mx-auto max-w-7xl px-4 py-16 text-muted-foreground">Memuat…</p></PublicLayout>;
   if (!ds)
@@ -92,10 +94,14 @@ function Detail() {
                 <span className="flex items-center gap-1"><Download className="h-4 w-4" />{ds.downloads} unduhan</span>
               </div>
             </div>
-            <Button size="lg" className="w-full rounded-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
-              onClick={async () => { await downloadDataset(ds); qc.invalidateQueries({ queryKey: ["dataset", slug] }); }}>
-              <Download className="h-4 w-4" /> Unduh {ds.file_url ? ds.format : "CSV"}
-            </Button>
+            {LICENSE_INFO[ds.license]?.open === false ? (
+              <Button size="lg" className="w-full rounded-full sm:w-auto" onClick={() => setReqOpen(true)}><Lock className="h-4 w-4" /> Ajukan Permohonan Data</Button>
+            ) : (
+              <Button size="lg" className="w-full rounded-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
+                onClick={async () => { await downloadDataset(ds); qc.invalidateQueries({ queryKey: ["dataset", slug] }); }}>
+                <Download className="h-4 w-4" /> Unduh {ds.file_url ? ds.format : "CSV"}
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -120,18 +126,7 @@ function Detail() {
             </TabsContent>
             {chartCols.length > 0 && sample && (
               <TabsContent value="grafik" className="mt-4 rounded-2xl border bg-card shadow-soft p-4">
-                <ChartContainer
-                  config={Object.fromEntries(chartCols.map((c, i) => [c, { label: c, color: `var(--chart-${i + 1})` }]))}
-                  className="h-80 w-full"
-                >
-                  <BarChart data={chartData}>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey={sample.columns[0] ?? ""} tickLine={false} axisLine={false} fontSize={11} />
-                    <YAxis tickLine={false} axisLine={false} width={60} fontSize={11} />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    {chartCols.map((c, i) => <Bar key={c} dataKey={c} fill={`var(--chart-${i + 1})`} radius={[4, 4, 0, 0]} />)}
-                  </BarChart>
-                </ChartContainer>
+                <DatasetChart data={sample} />
               </TabsContent>
             )}
           </Tabs>
@@ -148,6 +143,15 @@ function Detail() {
               ))}
             </dl>
           </div>
+          <div className="rounded-2xl border bg-card shadow-soft p-5 space-y-3">
+            <h3 className="font-semibold">Lisensi: {ds.license}</h3>
+            <LicenseInfoBox license={ds.license} />
+            <div>
+              <p className="mb-1 text-xs font-medium text-muted-foreground">Sitasi</p>
+              <p className="rounded-lg bg-muted p-2 text-xs break-words">{buildCitation(ds, typeof window === "undefined" ? "" : window.location.origin)}</p>
+              <Button size="sm" variant="outline" className="mt-2 w-full" onClick={() => { navigator.clipboard.writeText(buildCitation(ds, window.location.origin)); toast.success("Sitasi disalin"); }}><Copy className="h-3.5 w-3.5" /> Salin sitasi</Button>
+            </div>
+          </div>
           {ds.tags.length > 0 && (
             <div className="rounded-2xl border bg-card shadow-soft p-5">
               <h3 className="mb-3 font-semibold">Tag</h3>
@@ -160,6 +164,45 @@ function Detail() {
           )}
         </aside>
       </div>
+      <RequestDialog open={reqOpen} onOpenChange={setReqOpen} datasetId={ds.id} title={ds.title} />
     </PublicLayout>
+  );
+}
+
+const reqSchema = z.object({
+  name: z.string().trim().min(2, "Nama minimal 2 karakter").max(120),
+  email: z.string().trim().email("Email tidak valid").max(200),
+  institution: z.string().trim().max(200),
+  purpose: z.string().trim().min(10, "Jelaskan tujuan minimal 10 karakter").max(2000),
+});
+
+function RequestDialog({ open, onOpenChange, datasetId, title }: { open: boolean; onOpenChange: (o: boolean) => void; datasetId: string; title: string }) {
+  const [f, setF] = useState({ name: "", email: "", institution: "", purpose: "" });
+  const [busy, setBusy] = useState(false);
+  async function send() {
+    const r = reqSchema.safeParse(f);
+    if (!r.success) { toast.error(r.error.issues[0]?.message ?? "Data tidak valid"); return; }
+    setBusy(true);
+    const { error } = await supabase.from("data_requests").insert({ dataset_id: datasetId, ...r.data, institution: r.data.institution || null });
+    setBusy(false);
+    if (error) { toast.error("Gagal mengirim permohonan"); return; }
+    toast.success("Permohonan terkirim. Wali Data akan menghubungi Anda melalui email.");
+    setF({ name: "", email: "", institution: "", purpose: "" });
+    onOpenChange(false);
+  }
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
+        <DialogHeader><DialogTitle>Permohonan Data</DialogTitle></DialogHeader>
+        <p className="text-sm text-muted-foreground">Dataset <b>{title}</b> berlisensi Terbatas. Isi formulir berikut; Wali Data akan meninjau dan mengirim tautan unduhan ke email Anda bila disetujui.</p>
+        <div className="space-y-3">
+          <div className="space-y-1.5"><Label>Nama lengkap *</Label><Input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label>Email *</Label><Input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label>Instansi / lembaga</Label><Input value={f.institution} onChange={(e) => setF({ ...f, institution: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label>Tujuan penggunaan *</Label><Textarea rows={4} value={f.purpose} onChange={(e) => setF({ ...f, purpose: e.target.value })} /></div>
+          <Button className="w-full" disabled={busy} onClick={send}>Kirim Permohonan</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
