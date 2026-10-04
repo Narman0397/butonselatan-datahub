@@ -362,6 +362,33 @@ export type Database = {
           },
         ]
       }
+      system_features: {
+        Row: {
+          description: string | null
+          enabled: boolean
+          key: string
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          description?: string | null
+          enabled?: boolean
+          key: string
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          description?: string | null
+          enabled?: boolean
+          key?: string
+          label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       topics: {
         Row: {
           created_at: string
@@ -409,6 +436,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      feature_enabled: { Args: { _key: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
