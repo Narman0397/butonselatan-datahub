@@ -1,4 +1,5 @@
-import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { useFeatures, type FeatureKey } from "@/lib/features";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu, Inbox, FileBarChart, UserCircle } from "lucide-react";
 import { useState } from "react";
@@ -13,15 +14,15 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardLayout,
 });
 
-const ITEMS: { to: string; label: string; icon: typeof Users; roles: AppRole[] | null }[] = [
+const ITEMS: { to: string; label: string; icon: typeof Users; roles: AppRole[] | null; feature?: FeatureKey }[] = [
   { to: "/dashboard", label: "Ringkasan", icon: LayoutDashboard, roles: null },
   { to: "/dashboard/dataset", label: "Dataset Saya", icon: FileStack, roles: ["produsen", "admin"] },
   { to: "/dashboard/verifikasi", label: "Verifikasi", icon: ShieldCheck, roles: ["wali_data", "admin"] },
-  { to: "/dashboard/permohonan", label: "Permohonan Data", icon: Inbox, roles: ["wali_data", "admin"] },
-  { to: "/dashboard/laporan", label: "Laporan Statistik", icon: FileBarChart, roles: ["wali_data", "admin"] },
-  { to: "/dashboard/pengguna", label: "Pengguna & Peran", icon: Users, roles: ["admin"] },
-  { to: "/dashboard/organisasi", label: "OPD & Topik", icon: Building2, roles: ["admin"] },
-  { to: "/dashboard/pengaturan", label: "Pengaturan Portal", icon: Settings, roles: ["admin"] },
+  { feature: "data_requests", to: "/dashboard/permohonan", label: "Permohonan Data", icon: Inbox, roles: ["wali_data", "admin"] },
+  { feature: "reports", to: "/dashboard/laporan", label: "Laporan Statistik", icon: FileBarChart, roles: ["wali_data", "admin"] },
+  { feature: "user_management", to: "/dashboard/pengguna", label: "Pengguna & Peran", icon: Users, roles: ["admin"] },
+  { feature: "org_management", to: "/dashboard/organisasi", label: "OPD & Topik", icon: Building2, roles: ["admin"] },
+  { feature: "portal_settings", to: "/dashboard/pengaturan", label: "Pengaturan Portal", icon: Settings, roles: ["admin"] },
   { to: "/dashboard/profil", label: "Profil Saya", icon: UserCircle, roles: null },
 ];
 
@@ -30,7 +31,9 @@ function DashboardLayout() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const items = ITEMS.filter((i) => !i.roles || i.roles.some((r) => roles.includes(r)));
+  const pathname = useRouterState({ select: (st) => st.location.pathname });
+  const hasFeature = useFeatures();
+  const items = ITEMS.filter((i) => (!i.feature || hasFeature(i.feature)) && (!i.roles || i.roles.some((r) => roles.includes(r))));
 
   async function signOut() {
     await qc.cancelQueries();
@@ -79,7 +82,7 @@ function DashboardLayout() {
           <span className="ml-2 font-display font-semibold lg:ml-0">Dashboard</span>
           <div className="ml-auto"><NotificationBell /></div>
         </div>
-        <main className="mx-auto max-w-6xl min-w-0 p-4 md:p-8 print:max-w-none print:p-0"><Outlet /></main>
+        <main className="mx-auto max-w-6xl min-w-0 p-4 md:p-8 print:max-w-none print:p-0">{ITEMS.some((i) => i.feature && !hasFeature(i.feature) && pathname.startsWith(i.to)) ? <div className="rounded-2xl border bg-card p-8 text-center text-muted-foreground">Fitur ini sedang tidak tersedia.</div> : <Outlet />}</main>
       </div>
     </div>
   );

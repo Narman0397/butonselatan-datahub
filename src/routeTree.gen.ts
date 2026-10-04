@@ -16,6 +16,7 @@ import { Route as OrganisasiRouteImport } from './routes/organisasi'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TopikRouteImport } from './routes/topik'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AdminSistem0852RouteImport } from './routes/admin.sistem0852'
 import { Route as DatasetIndexRouteImport } from './routes/dataset.index'
 import { Route as DatasetSlugRouteImport } from './routes/dataset.$slug'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
@@ -61,6 +62,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AdminSistem0852Route = AdminSistem0852RouteImport.update({
+  id: '/admin/sistem0852',
+  path: '/admin/sistem0852',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DatasetIndexRoute = DatasetIndexRouteImport.update({
   id: '/dataset/',
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/topik': typeof TopikRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/admin/sistem0852': typeof AdminSistem0852Route
   '/dataset/$slug': typeof DatasetSlugRoute
   '/dataset/': typeof DatasetIndexRoute
   '/dashboard/dataset': typeof AuthenticatedDashboardDatasetRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/organisasi': typeof OrganisasiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/topik': typeof TopikRoute
+  '/admin/sistem0852': typeof AdminSistem0852Route
   '/dataset/$slug': typeof DatasetSlugRoute
   '/dataset': typeof DatasetIndexRoute
   '/dashboard/dataset': typeof AuthenticatedDashboardDatasetRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/topik': typeof TopikRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/admin/sistem0852': typeof AdminSistem0852Route
   '/dataset/$slug': typeof DatasetSlugRoute
   '/dataset/': typeof DatasetIndexRoute
   '/_authenticated/dashboard/dataset': typeof AuthenticatedDashboardDatasetRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/topik'
     | '/dashboard'
+    | '/admin/sistem0852'
     | '/dataset/$slug'
     | '/dataset/'
     | '/dashboard/dataset'
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/organisasi'
     | '/reset-password'
     | '/topik'
+    | '/admin/sistem0852'
     | '/dataset/$slug'
     | '/dataset'
     | '/dashboard/dataset'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/topik'
     | '/_authenticated/dashboard'
+    | '/admin/sistem0852'
     | '/dataset/$slug'
     | '/dataset/'
     | '/_authenticated/dashboard/dataset'
@@ -252,6 +264,7 @@ export interface RootRouteChildren {
   OrganisasiRoute: typeof OrganisasiRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TopikRoute: typeof TopikRoute
+  AdminSistem0852Route: typeof AdminSistem0852Route
   DatasetSlugRoute: typeof DatasetSlugRoute
   DatasetIndexRoute: typeof DatasetIndexRoute
 }
@@ -306,6 +319,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/admin/sistem0852': {
+      id: '/admin/sistem0852'
+      path: '/admin/sistem0852'
+      fullPath: '/admin/sistem0852'
+      preLoaderRoute: typeof AdminSistem0852RouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/dataset/': {
       id: '/dataset/'
@@ -439,6 +459,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrganisasiRoute: OrganisasiRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TopikRoute: TopikRoute,
+  AdminSistem0852Route: AdminSistem0852Route,
   DatasetSlugRoute: DatasetSlugRoute,
   DatasetIndexRoute: DatasetIndexRoute,
 }

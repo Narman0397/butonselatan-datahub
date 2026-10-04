@@ -19,6 +19,8 @@ export const createPortalUser = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Error("Hanya Super Admin yang dapat menambah pengguna");
+    const { data: featOn } = await context.supabase.rpc("feature_enabled", { _key: "user_management" });
+    if (featOn === false) throw new Error("Fitur manajemen pengguna sedang dinonaktifkan");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,

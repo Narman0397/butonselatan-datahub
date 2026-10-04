@@ -1,3 +1,4 @@
+import { useFeatures } from "@/lib/features";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -56,6 +57,7 @@ function Detail() {
 
   const chartCols = sample ? chartSpec(sample).series : [];
   const [reqOpen, setReqOpen] = useState(false);
+  const hasFeature = useFeatures();
 
   if (isLoading) return <PublicLayout><p className="mx-auto max-w-7xl px-4 py-16 text-muted-foreground">Memuat…</p></PublicLayout>;
   if (!ds)
@@ -96,7 +98,7 @@ function Detail() {
               </div>
             </div>
             {LICENSE_INFO[ds.license]?.open === false ? (
-              <Button size="lg" className="w-full rounded-full sm:w-auto" onClick={() => setReqOpen(true)}><Lock className="h-4 w-4" /> Ajukan Permohonan Data</Button>
+              (hasFeature("data_requests") ? <Button size="lg" className="w-full rounded-full sm:w-auto" onClick={() => setReqOpen(true)}><Lock className="h-4 w-4" /> Ajukan Permohonan Data</Button> : <Button size="lg" className="w-full rounded-full sm:w-auto" disabled><Lock className="h-4 w-4" /> Akses Terbatas</Button>)
             ) : (
               <Button size="lg" className="w-full rounded-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
                 onClick={async () => { await downloadDataset(ds); qc.invalidateQueries({ queryKey: ["dataset", slug] }); }}>
@@ -147,13 +149,13 @@ function Detail() {
           <div className="rounded-2xl border bg-card shadow-soft p-5 space-y-3">
             <h3 className="font-semibold">Lisensi: {licenseLabel(ds.license)}</h3>
             <LicenseInfoBox license={ds.license} />
-            <div>
+            {hasFeature("citation") && <div>
               <p className="mb-1 text-xs font-medium text-muted-foreground">Sitasi</p>
               <p className="rounded-lg bg-muted p-2 text-xs break-words">{buildCitation(ds, typeof window === "undefined" ? "" : window.location.origin)}</p>
               <Button size="sm" variant="outline" className="mt-2 w-full" onClick={() => { navigator.clipboard.writeText(buildCitation(ds, window.location.origin)); toast.success("Sitasi disalin"); }}><Copy className="h-3.5 w-3.5" /> Salin sitasi</Button>
-            </div>
+            </div>}
           </div>
-          <div className="rounded-2xl border bg-card shadow-soft p-5"><DatasetHistory datasetId={ds.id} /></div>
+          {hasFeature("audit_history") && <div className="rounded-2xl border bg-card shadow-soft p-5"><DatasetHistory datasetId={ds.id} /></div>}
           {ds.tags.length > 0 && (
             <div className="rounded-2xl border bg-card shadow-soft p-5">
               <h3 className="mb-3 font-semibold">Tag</h3>
