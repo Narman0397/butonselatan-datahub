@@ -151,7 +151,7 @@ function Home() {
             <Link to="/dataset" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Jelajahi Dataset <ArrowRight className="h-4 w-4" /></Link>
           </div>
         </div>
-      </section>
+      </section>}
 
 
       <section className="defer-render mx-auto grid max-w-7xl gap-6 px-4 py-16 lg:grid-cols-3">

@@ -1,5 +1,5 @@
 import { useFeatures, type FeatureKey } from "@/lib/features";
-import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu, Inbox, FileBarChart, UserCircle } from "lucide-react";
 import { useState } from "react";
@@ -31,6 +31,7 @@ function DashboardLayout() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
+  const pathname = useRouterState({ select: (st) => st.location.pathname });
   const hasFeature = useFeatures();
   const items = ITEMS.filter((i) => (!i.feature || hasFeature(i.feature)) && (!i.roles || i.roles.some((r) => roles.includes(r))));
 
@@ -81,7 +82,7 @@ function DashboardLayout() {
           <span className="ml-2 font-display font-semibold lg:ml-0">Dashboard</span>
           <div className="ml-auto"><NotificationBell /></div>
         </div>
-        <main className="mx-auto max-w-6xl min-w-0 p-4 md:p-8 print:max-w-none print:p-0"><Outlet /></main>
+        <main className="mx-auto max-w-6xl min-w-0 p-4 md:p-8 print:max-w-none print:p-0">{ITEMS.some((i) => i.feature && !hasFeature(i.feature) && pathname.startsWith(i.to)) ? <div className="rounded-2xl border bg-card p-8 text-center text-muted-foreground">Fitur ini sedang tidak tersedia.</div> : <Outlet />}</main>
       </div>
     </div>
   );

@@ -57,6 +57,7 @@ function Detail() {
 
   const chartCols = sample ? chartSpec(sample).series : [];
   const [reqOpen, setReqOpen] = useState(false);
+  const hasFeature = useFeatures();
 
   if (isLoading) return <PublicLayout><p className="mx-auto max-w-7xl px-4 py-16 text-muted-foreground">Memuat…</p></PublicLayout>;
   if (!ds)
