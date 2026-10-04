@@ -1,3 +1,4 @@
+import { useFeatures } from "@/lib/features";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -39,6 +40,7 @@ function Home() {
   const { data: topics = [] } = useQuery(topicsQuery);
   const { data: leaders } = useQuery(leaderPhotosQuery);
   const { data: s } = useQuery(settingsQuery);
+  const hasFeature = useFeatures();
   const leadersList = [
     { key: "b", name: s?.bupati_name || "Nama Bupati", title: s?.bupati_title || "Bupati Buton Selatan", photo: leaders?.bupati },
     { key: "w", name: s?.wabup_name || "Nama Wakil Bupati", title: s?.wabup_title || "Wakil Bupati Buton Selatan", photo: leaders?.wabup },
@@ -118,7 +120,7 @@ function Home() {
         </svg>
       </section>
 
-      <section className="relative overflow-hidden bg-secondary/50 py-16">
+      {hasFeature("leadership_section") && <section className="relative overflow-hidden bg-secondary/50 py-16">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 lg:grid-cols-2">
            <div className="relative">
              <div className="absolute -right-2 -top-2 h-20 w-20 rounded-xl bg-accent/25" aria-hidden />

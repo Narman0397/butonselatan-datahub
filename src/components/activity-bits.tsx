@@ -1,3 +1,4 @@
+import { useFeature } from "@/lib/features";
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -16,6 +17,11 @@ function timeAgo(iso: string) {
 }
 
 export function NotificationBell() {
+  const on = useFeature("notifications");
+  return on ? <NotificationBellInner /> : null;
+}
+
+function NotificationBellInner() {
   const { user } = useAuth();
   const qc = useQueryClient();
   const key = ["notifications", user?.id];
@@ -86,7 +92,12 @@ export function NotificationBell() {
   );
 }
 
-export function DatasetHistory({ datasetId, title = "Riwayat Pembaruan" }: { datasetId: string; title?: string }) {
+export function DatasetHistory(props: { datasetId: string; title?: string }) {
+  const on = useFeature("audit_history");
+  return on ? <DatasetHistoryInner {...props} /> : null;
+}
+
+function DatasetHistoryInner({ datasetId, title = "Riwayat Pembaruan" }: { datasetId: string; title?: string }) {
   const { data = [] } = useQuery({
     queryKey: ["dataset-history", datasetId],
     queryFn: async () => {
