@@ -225,7 +225,7 @@ export const LICENSE_LABEL: Record<string, string> = {
 };
 
 export function licenseLabel(code: string) {
-  return LICENSE_LABEL[normalize(code)];
+  return LICENSE_LABEL[normalize(code)] ?? code;
 }
 
 export type LicenseInfo = { summary: string; can: string[]; must: string[]; open: boolean };
