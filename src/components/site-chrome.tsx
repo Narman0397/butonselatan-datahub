@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Database, LogOut, LayoutDashboard, Menu } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +17,17 @@ const NAV = [
 export function Logo({ light = false }: { light?: boolean }) {
   const { data: s } = useQuery(settingsQuery);
   const { data: assets } = useQuery(leaderPhotosQuery);
+  useEffect(() => {
+    if (!assets?.logo) return;
+    let link = document.querySelector<HTMLLinkElement>("link[rel='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.type = "image/png";
+    link.href = assets.logo;
+  }, [assets?.logo]);
   return (
     <Link to="/" className="flex min-w-0 items-center gap-2.5">
       {assets?.logo ? (
