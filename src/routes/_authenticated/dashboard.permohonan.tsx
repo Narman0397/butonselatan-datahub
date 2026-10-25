@@ -12,7 +12,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/permohonan")({
-  head: () => ({ meta: [{ title: "Permohonan Data — Satu Data Buton Selatan" }, { name: "description", content: "Tinjau permohonan akses dataset berlisensi terbatas." }, { property: "og:title", content: "Permohonan Data — Satu Data Buton Selatan" }, { property: "og:description", content: "Tinjau permohonan akses dataset berlisensi terbatas." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Permohonan Data — Satu Data Buton Selatan" }, { name: "description", content: "Tinjau permohonan akses dataset bersifat terbatas." }, { property: "og:title", content: "Permohonan Data — Satu Data Buton Selatan" }, { property: "og:description", content: "Tinjau permohonan akses dataset bersifat terbatas." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
   component: Requests,
 });
 
@@ -51,7 +51,7 @@ function Requests() {
   const list = data.filter((r) => r.status === tab);
   return (
     <div>
-      <PageHeader title="Permohonan Data" desc="Tinjau permohonan akses dataset berlisensi Terbatas" />
+      <PageHeader title="Permohonan Data" desc="Tinjau permohonan akses dataset bersifat Data Terbatas" />
       <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="mb-4">
         <TabsList>{(Object.keys(LABEL) as (keyof typeof LABEL)[]).map((k) => <TabsTrigger key={k} value={k}>{LABEL[k]}</TabsTrigger>)}</TabsList>
       </Tabs>

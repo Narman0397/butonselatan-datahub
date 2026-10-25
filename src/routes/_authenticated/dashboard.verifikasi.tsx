@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, SampleTable, StatusBadge } from "@/components/dataset-bits";
-import { DATASET_FIELDS, formatDate, openDatasetFile, type DatasetStatus, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, formatDate, licenseLabel, openDatasetFile, type DatasetStatus, type SampleData } from "@/lib/data";
 import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/_authenticated/dashboard/verifikasi")({
@@ -106,7 +106,7 @@ function Verify() {
               <p className="text-sm text-muted-foreground">{current.description}</p>
               <dl className="grid grid-cols-2 gap-3 rounded-lg bg-muted p-4 text-sm sm:grid-cols-4">
                 <div><dt className="text-xs text-muted-foreground">Topik</dt><dd>{current.topics?.name ?? "-"}</dd></div>
-                <div><dt className="text-xs text-muted-foreground">Lisensi</dt><dd>{current.license}</dd></div>
+                <div><dt className="text-xs text-muted-foreground">Sifat Data</dt><dd>{licenseLabel(current.license)}</dd></div>
                 <div><dt className="text-xs text-muted-foreground">Frekuensi</dt><dd>{current.frequency}</dd></div>
                 <div><dt className="text-xs text-muted-foreground">File</dt><dd className="truncate">{current.file_name ?? "-"}</dd></div>
               </dl>

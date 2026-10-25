@@ -23,9 +23,9 @@ export const Route = createFileRoute("/dataset/")({
   head: () => ({
     meta: [
       { title: "Katalog Dataset — Satu Data Buton Selatan" },
-      { name: "description", content: "Telusuri dataset terbuka Buton Selatan berdasarkan OPD, topik, format, dan lisensi." },
+      { name: "description", content: "Telusuri dataset terbuka Buton Selatan berdasarkan OPD, topik, format, dan sifat data." },
       { property: "og:title", content: "Katalog Dataset — Satu Data Buton Selatan" },
-      { property: "og:description", content: "Telusuri dataset terbuka Buton Selatan berdasarkan OPD, topik, format, dan lisensi." },
+      { property: "og:description", content: "Telusuri dataset terbuka Buton Selatan berdasarkan OPD, topik, format, dan sifat data." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -85,7 +85,7 @@ function Catalog() {
             options={topics.map((t) => ({ v: t.slug, l: t.name, n: all.filter((d) => d.topic_id === t.id).length }))} />
           <FilterGroup title="Format" value={s.format} onChange={(v) => set({ format: v })}
             options={FORMATS.map((f) => ({ v: f, l: f, n: all.filter((d) => d.format === f).length }))} />
-          <FilterGroup title="Lisensi" value={s.lisensi} onChange={(v) => set({ lisensi: v })}
+          <FilterGroup title="Sifat Data" value={s.lisensi} onChange={(v) => set({ lisensi: v })}
             options={LICENSES.map((f) => ({ v: f, l: licenseLabel(f), n: all.filter((d) => d.license === f).length })).filter((o) => o.n > 0)} />
         </>
   );

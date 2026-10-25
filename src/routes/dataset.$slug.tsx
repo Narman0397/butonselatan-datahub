@@ -74,7 +74,7 @@ function Detail() {
   const meta = [
     { icon: Building2, k: "Produsen data", v: ds.organizations?.name },
     { icon: Tag, k: "Topik", v: ds.topics?.name ?? "-" },
-    { icon: Scale, k: "Lisensi", v: licenseLabel(ds.license) },
+    { icon: Scale, k: "Sifat Data", v: licenseLabel(ds.license) },
     { icon: RefreshCw, k: "Frekuensi", v: ds.frequency },
     { icon: Calendar, k: "Diterbitkan", v: formatDate(ds.published_at) },
     { icon: Calendar, k: "Diperbarui", v: formatDate(ds.updated_at) },
@@ -147,7 +147,7 @@ function Detail() {
             </dl>
           </div>
           <div className="rounded-2xl border bg-card shadow-soft p-5 space-y-3">
-            <h3 className="font-semibold">Lisensi: {licenseLabel(ds.license)}</h3>
+            <h3 className="font-semibold">Sifat Data: {licenseLabel(ds.license)}</h3>
             <LicenseInfoBox license={ds.license} />
             {hasFeature("citation") && <div>
               <p className="mb-1 text-xs font-medium text-muted-foreground">Sitasi</p>
@@ -198,7 +198,7 @@ function RequestDialog({ open, onOpenChange, datasetId, title }: { open: boolean
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader><DialogTitle>Permohonan Data</DialogTitle></DialogHeader>
-        <p className="text-sm text-muted-foreground">Dataset <b>{title}</b> berlisensi Terbatas. Isi formulir berikut; Wali Data akan meninjau dan mengirim tautan unduhan ke email Anda bila disetujui.</p>
+        <p className="text-sm text-muted-foreground">Dataset <b>{title}</b> bersifat Data Terbatas. Isi formulir berikut; Wali Data akan meninjau dan mengirim tautan unduhan ke email Anda bila disetujui.</p>
         <div className="space-y-3">
           <div className="space-y-1.5"><Label>Nama lengkap *</Label><Input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></div>
           <div className="space-y-1.5"><Label>Email *</Label><Input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
