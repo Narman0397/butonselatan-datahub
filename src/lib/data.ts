@@ -5,7 +5,7 @@ export type SampleData = { columns: string[]; rows: (string | number | null)[][]
 export type DatasetStatus = "draft" | "pending" | "published" | "rejected";
 
 export const FORMATS = ["CSV", "XLSX", "PDF"] as const;
-export const LICENSES = ["CC-BY 4.0", "CC-BY-SA 4.0", "CC0 1.0", "Open Government License", "Terbatas"] as const;
+export const LICENSES = ["Terbuka", "Terbatas"] as const;
 export const FREQUENCIES = ["Bulanan", "Triwulanan", "Semesteran", "Tahunan", "Sekali"] as const;
 
 export const STATUS_LABEL: Record<DatasetStatus, string> = {
@@ -216,30 +216,28 @@ export function numericColumns(s: SampleData) {
   });
 }
 
-/** Label ramah untuk setiap kode lisensi resmi. */
+/** Sifat Data (pengganti istilah lisensi). Data lama non-"Terbatas" diperlakukan sebagai Terbuka. */
+const normalize = (code: string) => (code === "Terbatas" ? "Terbatas" : "Terbuka");
+
 export const LICENSE_LABEL: Record<string, string> = {
-  "CC-BY 4.0": "Bebas Pakai (Wajib Cantumkan Sumber)",
-  "CC-BY-SA 4.0": "Bebas Pakai (Wajib Bagikan Serupa)",
-  "CC0 1.0": "Bebas Tanpa Syarat (Domain Publik)",
-  "Open Government License": "Lisensi Data Terbuka Pemerintah",
-  Terbatas: "Akses Terbatas (Perlu Permohonan Data)",
+  Terbuka: "Data Terbuka",
+  Terbatas: "Data Terbatas",
 };
 
 export function licenseLabel(code: string) {
-  const l = LICENSE_LABEL[code];
-  return l ? `${l} — ${code}` : code;
+  return LICENSE_LABEL[normalize(code)];
 }
 
 export type LicenseInfo = { summary: string; can: string[]; must: string[]; open: boolean };
-export const LICENSE_INFO: Record<string, LicenseInfo> = {
-  "CC-BY 4.0": { open: true, summary: "Bebas digunakan, dibagikan, dan diolah, termasuk untuk tujuan komersial.", can: ["Menyalin & menyebarluaskan", "Mengolah & menggabungkan", "Penggunaan komersial"], must: ["Mencantumkan sumber (atribusi) ke produsen data"] },
-  "CC-BY-SA 4.0": { open: true, summary: "Bebas digunakan dan diolah, tetapi hasil turunan wajib dibagikan dengan lisensi yang sama.", can: ["Menyalin & menyebarluaskan", "Mengolah & menggabungkan", "Penggunaan komersial"], must: ["Mencantumkan sumber", "Karya turunan berlisensi CC-BY-SA yang sama"] },
-  "CC0 1.0": { open: true, summary: "Domain publik: dapat digunakan untuk apa pun tanpa syarat.", can: ["Semua bentuk penggunaan tanpa izin"], must: ["Tidak ada kewajiban (atribusi tetap dianjurkan)"] },
-  "Open Government License": { open: true, summary: "Data resmi pemerintah yang terbuka untuk dimanfaatkan publik.", can: ["Menyalin, mengolah, dan menerbitkan ulang", "Penggunaan komersial"], must: ["Mencantumkan sumber", "Tidak menyiratkan dukungan resmi pemerintah"] },
+const INFO: Record<string, LicenseInfo> = {
+  Terbuka: { open: true, summary: "Data dapat diakses, diunduh, dan dimanfaatkan secara bebas oleh publik.", can: ["Mengunduh langsung", "Menyalin & menyebarluaskan", "Mengolah & menggabungkan"], must: ["Mencantumkan sumber data (produsen data)"] },
   Terbatas: { open: false, summary: "Akses berkas terbatas. Unduhan memerlukan permohonan yang disetujui Wali Data.", can: ["Melihat metadata & pratinjau ringkas"], must: ["Mengajukan permohonan data", "Menggunakan sesuai tujuan yang disetujui"] },
 };
+export const LICENSE_INFO: Record<string, LicenseInfo> = new Proxy(INFO, {
+  get: (t, k) => (typeof k === "string" ? t[normalize(k)] : undefined),
+});
 
 export function buildCitation(ds: { title: string; license: string; slug: string; published_at: string | null; organizations: { name: string } | null }, origin: string) {
   const year = ds.published_at ? new Date(ds.published_at).getFullYear() : new Date().getFullYear();
-  return `${ds.organizations?.name ?? "Pemerintah Kabupaten Buton Selatan"} (${year}). ${ds.title}. Portal Satu Data Kabupaten Buton Selatan. Lisensi ${ds.license}. ${origin}/dataset/${ds.slug}`;
+  return `${ds.organizations?.name ?? "Pemerintah Kabupaten Buton Selatan"} (${year}). ${ds.title}. Portal Satu Data Kabupaten Buton Selatan. Sifat Data: ${licenseLabel(ds.license)}. ${origin}/dataset/${ds.slug}`;
 }

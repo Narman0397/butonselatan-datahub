@@ -41,7 +41,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
     organization_id: initial?.organization_id ?? profile?.organization_id ?? "",
     topic_id: initial?.topic_id ?? "",
     format: initial?.format ?? "CSV",
-    license: initial?.license ?? "CC-BY 4.0",
+    license: initial?.license ?? "Terbuka",
     frequency: initial?.frequency ?? "Tahunan",
     tags: (initial?.tags ?? []).join(", "),
   });
