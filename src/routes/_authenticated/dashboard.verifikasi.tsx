@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, SampleTable, StatusBadge } from "@/components/dataset-bits";
-import { DATASET_FIELDS, formatDate, openDatasetFile, type DatasetStatus, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, formatDate, licenseLabel, openDatasetFile, type DatasetStatus, type SampleData } from "@/lib/data";
 import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/_authenticated/dashboard/verifikasi")({

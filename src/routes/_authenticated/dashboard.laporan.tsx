@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { PageHeader, NoAccess } from "@/components/dash-bits";
 import { Button } from "@/components/ui/button";
-import { STATUS_LABEL, type DatasetStatus } from "@/lib/data";
+import { STATUS_LABEL, licenseLabel, type DatasetStatus } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/laporan")({
   head: () => ({ meta: [{ title: "Laporan Statistik — Satu Data Buton Selatan" }, { name: "description", content: "Rekapitulasi statistik dataset sektoral untuk pimpinan dan Bappeda." }, { property: "og:title", content: "Laporan Statistik — Satu Data Buton Selatan" }, { property: "og:description", content: "Rekapitulasi statistik dataset sektoral untuk pimpinan dan Bappeda." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -43,7 +43,7 @@ function Report() {
   const byOrg = group((d) => d.organizations?.name ?? "Tanpa OPD");
   const byTopic = group((d) => d.topics?.name ?? "Tanpa topik");
   const byFormat = group((d) => d.format);
-  const byLicense = group((d) => d.license);
+  const byLicense = group((d) => licenseLabel(d.license));
   const total = group(() => "Total")[0] ?? blank("Total");
   const today = new Date().toLocaleDateString("id-ID", { dateStyle: "long" });
 
@@ -59,7 +59,7 @@ function Report() {
     XLSX.utils.book_append_sheet(wb, toSheet(byOrg, "OPD"), "Per OPD");
     XLSX.utils.book_append_sheet(wb, toSheet(byTopic, "Topik"), "Per Topik");
     XLSX.utils.book_append_sheet(wb, toSheet(byFormat, "Format"), "Per Format");
-    XLSX.utils.book_append_sheet(wb, toSheet(byLicense, "Lisensi"), "Per Lisensi");
+    XLSX.utils.book_append_sheet(wb, toSheet(byLicense, "Sifat Data"), "Per Sifat Data");
     XLSX.writeFile(wb, `laporan-satu-data-busel-${new Date().toISOString().slice(0, 10)}.xlsx`);
   }
 
@@ -105,7 +105,7 @@ function Report() {
         <Tbl title="A. Rekap per OPD / Instansi" rows={byOrg} col="OPD" />
         <Tbl title="B. Rekap per Topik Sektoral" rows={byTopic} col="Topik" />
         <Tbl title="C. Rekap per Format Berkas" rows={byFormat} col="Format" />
-        <Tbl title="D. Rekap per Lisensi" rows={byLicense} col="Lisensi" />
+        <Tbl title="D. Rekap per Sifat Data" rows={byLicense} col="Sifat Data" />
         <div className="mt-10 flex justify-end break-inside-avoid">
           <div className="w-60 text-center text-sm">
             <div>Buton Selatan, {today}</div>
