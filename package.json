@@ -9,7 +9,6 @@
     "build:dev": "vite build --mode development --config vite.config.ts",
     "preview": "vite preview",
     "start": "node .output/server/index.mjs",
-    "db:migrate": "drizzle-kit migrate",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
@@ -79,8 +78,6 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.2.0",
-    "drizzle-kit": "^0.31.11",
-    "drizzle-orm": "^0.45.3",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.6",
