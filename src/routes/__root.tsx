@@ -66,6 +66,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "author", content: "LA ODE SUNARMAN Bersama Diskominfo Kabupaten Buton Selatan" },
       { title: "Satu Data Kabupaten Buton Selatan" },
       { name: "description", content: "Portal data terbuka Pemerintah Kabupaten Buton Selatan." },
       { property: "og:type", content: "website" },
@@ -102,6 +103,14 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+
+  useEffect(() => {
+    const kredit = " Dibuat oleh: LA ODE SUNARMAN Bersama Diskominfo Kabupaten Buton Selatan ";
+    const sudahAda = Array.from(document.childNodes).some(
+      (n) => n.nodeType === Node.COMMENT_NODE && n.nodeValue === kredit,
+    );
+    if (!sudahAda) document.insertBefore(document.createComment(kredit), document.documentElement);
+  }, []);
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
