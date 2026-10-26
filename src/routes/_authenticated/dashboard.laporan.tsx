@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { PageHeader, NoAccess } from "@/components/dash-bits";
 import { Button } from "@/components/ui/button";
-import { STATUS_LABEL, labelSifatData, type DatasetStatus } from "@/lib/data";
+import { STATUS_LABEL, labelSifatData, type StatusDataset } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/laporan")({
   head: () => ({ meta: [{ title: "Laporan Statistik — Satu Data Buton Selatan" }, { name: "description", content: "Rekapitulasi statistik dataset sektoral untuk pimpinan dan Bappeda." }, { property: "og:title", content: "Laporan Statistik — Satu Data Buton Selatan" }, { property: "og:description", content: "Rekapitulasi statistik dataset sektoral untuk pimpinan dan Bappeda." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -35,7 +35,7 @@ function Report() {
     for (const d of ds) {
       const k = fn(d);
       const r = m.get(k) ?? blank(k);
-      r.total++; r[d.status as DatasetStatus]++; r.downloads += d.downloads; r.views += d.views;
+      r.total++; r[d.status as StatusDataset]++; r.downloads += d.downloads; r.views += d.views;
       m.set(k, r);
     }
     return [...m.values()].sort((a, b) => b.total - a.total);

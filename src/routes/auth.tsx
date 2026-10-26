@@ -27,40 +27,40 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [busy, setBusy] = useState(false);
+  const [sibuk, setSibuk] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [resetOpen, setResetOpen] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
+  const [dialogResetTerbuka, setDialogResetTerbuka] = useState(false);
+  const [emailReset, setEmailReset] = useState("");
 
   useEffect(() => { if (user) navigate({ to: "/dashboard" }); }, [user, navigate]);
 
   async function signIn(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true);
+    setSibuk(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setBusy(false);
+    setSibuk(false);
     if (error) toast.error("Gagal masuk: email atau kata sandi salah");
   }
   async function signUp(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true);
+    setSibuk(true);
     const { error } = await supabase.auth.signUp({
       email, password, options: { emailRedirectTo: window.location.origin, data: { full_name: name } },
     });
-    setBusy(false);
+    setSibuk(false);
     if (error) toast.error(error.message);
     else toast.success("Pendaftaran berhasil. Periksa email Anda untuk konfirmasi.");
   }
   async function forgot(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim(), { redirectTo: `${window.location.origin}/reset-password` });
-    setBusy(false);
+    setSibuk(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(emailReset.trim(), { redirectTo: `${window.location.origin}/reset-password` });
+    setSibuk(false);
     if (error) { toast.error("Gagal mengirim tautan pemulihan"); return; }
     toast.success("Jika email terdaftar, tautan pemulihan telah dikirim.");
-    setResetOpen(false);
+    setDialogResetTerbuka(false);
   }
 
   return (
@@ -86,8 +86,8 @@ function AuthPage() {
               <form onSubmit={signIn} className="mt-4 space-y-4">
                 <div className="space-y-1.5"><Label>Email</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
                 <div className="space-y-1.5"><Label>Kata sandi</Label><Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-                <Button className="w-full" disabled={busy}>Masuk</Button>
-                <button type="button" onClick={() => { setResetEmail(email); setResetOpen(true); }} className="block w-full text-center text-sm text-primary hover:underline">Lupa kata sandi?</button>
+                <Button className="w-full" disabled={sibuk}>Masuk</Button>
+                <button type="button" onClick={() => { setEmailReset(email); setDialogResetTerbuka(true); }} className="block w-full text-center text-sm text-primary hover:underline">Lupa kata sandi?</button>
               </form>
             </TabsContent>
             <TabsContent value="daftar">
@@ -95,19 +95,19 @@ function AuthPage() {
                 <div className="space-y-1.5"><Label>Nama lengkap</Label><Input required value={name} onChange={(e) => setName(e.target.value)} /></div>
                 <div className="space-y-1.5"><Label>Email</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
                 <div className="space-y-1.5"><Label>Kata sandi</Label><Input type="password" minLength={6} required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-                <Button className="w-full" disabled={busy}>Buat akun</Button>
+                <Button className="w-full" disabled={sibuk}>Buat akun</Button>
               </form>
             </TabsContent>
           </Tabs>
-          <Dialog open={resetOpen} onOpenChange={setResetOpen}>
+          <Dialog open={dialogResetTerbuka} onOpenChange={setDialogResetTerbuka}>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Lupa kata sandi</DialogTitle>
                 <DialogDescription>Masukkan email akun Anda. Kami akan mengirim tautan untuk membuat kata sandi baru.</DialogDescription>
               </DialogHeader>
               <form onSubmit={forgot} className="space-y-4">
-                <div className="space-y-1.5"><Label>Email</Label><Input type="email" required value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} /></div>
-                <Button className="w-full" disabled={busy}>Kirim tautan pemulihan</Button>
+                <div className="space-y-1.5"><Label>Email</Label><Input type="email" required value={emailReset} onChange={(e) => setEmailReset(e.target.value)} /></div>
+                <Button className="w-full" disabled={sibuk}>Kirim tautan pemulihan</Button>
               </form>
             </DialogContent>
           </Dialog>

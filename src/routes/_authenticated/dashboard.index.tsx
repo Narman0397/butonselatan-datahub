@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth, ROLE_LABEL } from "@/lib/auth";
 import { PageHeader } from "@/components/dash-bits";
 import { StatusBadge } from "@/components/dataset-bits";
-import { formatTanggal, type DatasetStatus } from "@/lib/data";
+import { formatTanggal, type StatusDataset } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   head: () => ({ meta: [{ title: "Ringkasan Dashboard — Satu Data Buton Selatan" }, { name: "description", content: "Ringkasan pengelolaan dataset Satu Data Buton Selatan." }, { property: "og:title", content: "Ringkasan Dashboard — Satu Data Buton Selatan" }, { property: "og:description", content: "Ringkasan pengelolaan dataset Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -27,7 +27,7 @@ function Overview() {
     enabled: roles.length > 0,
   });
 
-  const count = (s: DatasetStatus) => data.filter((d) => d.status === s).length;
+  const count = (s: StatusDataset) => data.filter((d) => d.status === s).length;
   const cards = [
     { label: "Draft", v: count("draft"), icon: FileStack, cls: "text-muted-foreground" },
     { label: "Menunggu Verifikasi", v: count("pending"), icon: Clock, cls: "text-warning-foreground" },

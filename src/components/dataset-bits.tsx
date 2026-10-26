@@ -6,7 +6,7 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "rec
 import { useState } from "react";
 import { CheckCircle2, Info, Lock } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LICENSE_INFO, STATUS_LABEL, kolomNumerik, type DatasetStatus, type SampleData } from "@/lib/data";
+import { LICENSE_INFO, STATUS_LABEL, kolomNumerik, type StatusDataset, type DataSampel } from "@/lib/data";
 
 const FORMAT_CLASS: Record<string, string> = {
   CSV: "bg-success/15 text-success border-success/30",
@@ -22,14 +22,14 @@ export function FormatBadge({ format }: { format: string }) {
   );
 }
 
-const STATUS_CLASS: Record<DatasetStatus, string> = {
+const STATUS_CLASS: Record<StatusDataset, string> = {
   draft: "bg-muted text-muted-foreground",
   pending: "bg-warning/25 text-warning-foreground",
   published: "bg-success/15 text-success",
   rejected: "bg-destructive/10 text-destructive",
 };
 
-export function StatusBadge({ status }: { status: DatasetStatus }) {
+export function StatusBadge({ status }: { status: StatusDataset }) {
   return (
     <Badge variant="outline" className={cn("border-transparent font-medium", STATUS_CLASS[status])}>
       {STATUS_LABEL[status]}
@@ -79,7 +79,7 @@ export function DatasetCard({ ds }: { ds: CardDs }) {
   );
 }
 
-export function SampleTable({ data, max = 100 }: { data: SampleData; max?: number }) {
+export function SampleTable({ data, max = 100 }: { data: DataSampel; max?: number }) {
   return (
     <div className="max-w-full overflow-x-auto rounded-2xl border bg-card shadow-soft">
       <table className="w-full text-sm">
@@ -108,7 +108,7 @@ export function SampleTable({ data, max = 100 }: { data: SampleData; max?: numbe
   );
 }
 
-export function chartSpec(data: SampleData) {
+export function chartSpec(data: DataSampel) {
   const nums = kolomNumerik(data);
   const category = data.columns.find((c) => !nums.includes(c)) ?? data.columns[0] ?? "";
   const series = nums.filter((c) => c !== category).slice(0, 3);
@@ -116,9 +116,9 @@ export function chartSpec(data: SampleData) {
   return { category, series, rows };
 }
 
-export function DatasetChart({ data, height = "h-80" }: { data: SampleData; height?: string }) {
+export function DatasetChart({ data, height = "h-80" }: { data: DataSampel; height?: string }) {
   const { category, series, rows } = chartSpec(data);
-  const [kind, setKind] = useState<"bar" | "line">("bar");
+  const [jenis, setJenis] = useState<"bar" | "line">("bar");
   if (!series.length)
     return <p className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">Grafik belum dapat dibuat: tidak ada kolom berisi angka yang konsisten. Pastikan baris pertama adalah judul kolom dan nilai berupa angka.</p>;
   const config = Object.fromEntries(series.map((c, i) => [c, { label: c, color: `var(--chart-${i + 1})` }]));
@@ -128,12 +128,12 @@ export function DatasetChart({ data, height = "h-80" }: { data: SampleData; heig
         <span>Sumbu X: <b>{category}</b> · Nilai: {series.join(", ")}</span>
         <div className="flex gap-1">
           {(["bar", "line"] as const).map((k) => (
-            <button key={k} type="button" onClick={() => setKind(k)} className={cn("rounded-full border px-2.5 py-0.5", kind === k && "border-primary bg-primary/10 text-primary")}>{k === "bar" ? "Batang" : "Garis"}</button>
+            <button key={k} type="button" onClick={() => setJenis(k)} className={cn("rounded-full border px-2.5 py-0.5", jenis === k && "border-primary bg-primary/10 text-primary")}>{k === "bar" ? "Batang" : "Garis"}</button>
           ))}
         </div>
       </div>
       <ChartContainer config={config} className={cn(height, "w-full")}>
-        {kind === "bar" ? (
+        {jenis === "bar" ? (
           <BarChart data={rows}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey={category} tickLine={false} axisLine={false} fontSize={11} />

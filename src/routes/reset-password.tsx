@@ -24,25 +24,25 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPassword() {
   const navigate = useNavigate();
-  const [ready, setReady] = useState(false);
-  const [pw, setPw] = useState("");
-  const [pw2, setPw2] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [siap, setSiap] = useState(false);
+  const [sandi, setSandi] = useState("");
+  const [sandiUlang, setSandiUlang] = useState("");
+  const [sibuk, setSibuk] = useState(false);
 
   useEffect(() => {
-    if (window.location.hash.includes("type=recovery")) setReady(true);
-    const { data } = supabase.auth.onAuthStateChange((ev) => { if (ev === "PASSWORD_RECOVERY") setReady(true); });
-    supabase.auth.getSession().then(({ data: s }) => { if (s.session) setReady(true); });
+    if (window.location.hash.includes("type=recovery")) setSiap(true);
+    const { data } = supabase.auth.onAuthStateChange((ev) => { if (ev === "PASSWORD_RECOVERY") setSiap(true); });
+    supabase.auth.getSession().then(({ data: s }) => { if (s.session) setSiap(true); });
     return () => data.subscription.unsubscribe();
   }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 8) { toast.error("Kata sandi minimal 8 karakter"); return; }
-    if (pw !== pw2) { toast.error("Konfirmasi kata sandi tidak cocok"); return; }
-    setBusy(true);
-    const { error } = await supabase.auth.updateUser({ password: pw });
-    setBusy(false);
+    if (sandi.length < 8) { toast.error("Kata sandi minimal 8 karakter"); return; }
+    if (sandi !== sandiUlang) { toast.error("Konfirmasi kata sandi tidak cocok"); return; }
+    setSibuk(true);
+    const { error } = await supabase.auth.updateUser({ password: sandi });
+    setSibuk(false);
     if (error) { toast.error("Gagal menyimpan kata sandi. Tautan mungkin sudah kedaluwarsa."); return; }
     toast.success("Kata sandi berhasil diperbarui");
     navigate({ to: "/dashboard", replace: true });
@@ -53,11 +53,11 @@ function ResetPassword() {
       <div className="w-full max-w-sm rounded-2xl border bg-card p-6 shadow-soft">
         <div className="mb-6"><Logo /></div>
         <h1 className="text-xl font-bold">Atur ulang kata sandi</h1>
-        {ready ? (
+        {siap ? (
           <form onSubmit={submit} className="mt-4 space-y-4">
-            <div className="space-y-1.5"><Label>Kata sandi baru</Label><Input type="password" required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Ulangi kata sandi baru</Label><Input type="password" required minLength={8} value={pw2} onChange={(e) => setPw2(e.target.value)} /></div>
-            <Button className="w-full" disabled={busy}>Simpan kata sandi</Button>
+            <div className="space-y-1.5"><Label>Kata sandi baru</Label><Input type="password" required minLength={8} value={sandi} onChange={(e) => setSandi(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label>Ulangi kata sandi baru</Label><Input type="password" required minLength={8} value={sandiUlang} onChange={(e) => setSandiUlang(e.target.value)} /></div>
+            <Button className="w-full" disabled={sibuk}>Simpan kata sandi</Button>
           </form>
         ) : (
           <p className="mt-3 text-sm text-muted-foreground">Buka halaman ini melalui tautan pemulihan yang dikirim ke email Anda. Jika tautan sudah kedaluwarsa, minta tautan baru dari halaman Masuk.</p>

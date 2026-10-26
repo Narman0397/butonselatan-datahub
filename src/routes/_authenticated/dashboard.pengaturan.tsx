@@ -36,40 +36,40 @@ function Settings() {
   const { data } = useQuery(settingsQuery);
   const { data: signed } = useQuery(leaderPhotosQuery);
   const [f, setF] = useState(emptyText);
-  const [imgs, setImgs] = useState<Record<ImgKey, string | null>>({ bupati_photo_url: null, wabup_photo_url: null, logo_url: null });
-  const [uploading, setUploading] = useState<ImgKey | null>(null);
-  const [previews, setPreviews] = useState<Partial<Record<ImgKey, string>>>({});
-  const [saving, setSaving] = useState(false);
+  const [gambar, setGambar] = useState<Record<ImgKey, string | null>>({ bupati_photo_url: null, wabup_photo_url: null, logo_url: null });
+  const [sedangMengunggah, setSedangMengunggah] = useState<ImgKey | null>(null);
+  const [pratinjau, setPratinjau] = useState<Partial<Record<ImgKey, string>>>({});
+  const [sedangMenyimpan, setSedangMenyimpan] = useState(false);
 
   useEffect(() => {
     if (!data) return;
     const next = { ...emptyText };
     for (const k of TEXT_KEYS) next[k] = (data[k] as string | null) ?? "";
     setF(next);
-    setImgs({ bupati_photo_url: data.bupati_photo_url, wabup_photo_url: data.wabup_photo_url, logo_url: data.logo_url });
+    setGambar({ bupati_photo_url: data.bupati_photo_url, wabup_photo_url: data.wabup_photo_url, logo_url: data.logo_url });
   }, [data]);
   if (!hasRole("admin")) return <NoAccess />;
 
   async function upload(key: ImgKey, file: File) {
     if (!file.type.startsWith("image/")) { toast.error("File harus berupa gambar"); return; }
     if (file.size > 5 * 1024 * 1024) { toast.error("Ukuran gambar maksimal 5 MB"); return; }
-    setUploading(key);
+    setSedangMengunggah(key);
     const ext = file.name.split(".").pop()?.toLowerCase() || "png";
     const path = `${IMG_FILE[key]}-${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from("portal-assets").upload(path, file, { upsert: true, contentType: file.type });
-    setUploading(null);
+    setSedangMengunggah(null);
     if (error) { toast.error(error.message); return; }
-    setImgs((p) => ({ ...p, [key]: path }));
-    setPreviews((p) => ({ ...p, [key]: URL.createObjectURL(file) }));
+    setGambar((p) => ({ ...p, [key]: path }));
+    setPratinjau((p) => ({ ...p, [key]: URL.createObjectURL(file) }));
     toast.success("Gambar diunggah — jangan lupa Simpan");
   }
 
   async function save() {
-    setSaving(true);
+    setSedangMenyimpan(true);
     const text = Object.fromEntries(TEXT_KEYS.map((k) => [k, k === "portal_name" ? f[k].trim() : f[k].trim() || null]));
-    if (!text["portal_name"]) { toast.error("Nama portal wajib diisi"); setSaving(false); return; }
+    if (!text["portal_name"]) { toast.error("Nama portal wajib diisi"); setSedangMenyimpan(false); return; }
     const { error } = await supabase.from("portal_settings").update({ ...text, ...imgs, updated_at: new Date().toISOString() } as never).eq("id", 1);
-    setSaving(false);
+    setSedangMenyimpan(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Pengaturan disimpan");
     qc.invalidateQueries({ queryKey: ["portal_settings"] });
@@ -88,9 +88,9 @@ function Settings() {
   );
 
   const imgField = (key: ImgKey, label: string) => {
-    const preview = previews[key] ?? (imgs[key] ? signed?.[IMG_SIGNED[key]] ?? null : null);
-    return <ImageField label={label} preview={preview} busy={uploading === key} hasValue={!!imgs[key]} contain={key === "logo_url"}
-      onPick={(file) => upload(key, file)} onClear={() => { setImgs((p) => ({ ...p, [key]: null })); setPreviews((p) => ({ ...p, [key]: undefined })); }} />;
+    const preview = pratinjau[key] ?? (gambar[key] ? signed?.[IMG_SIGNED[key]] ?? null : null);
+    return <ImageField label={label} preview={preview} busy={sedangMengunggah === key} hasValue={!!gambar[key]} contain={key === "logo_url"}
+      onPick={(file) => upload(key, file)} onClear={() => { setGambar((p) => ({ ...p, [key]: null })); setPratinjau((p) => ({ ...p, [key]: undefined })); }} />;
   };
 
   return (
@@ -141,7 +141,7 @@ function Settings() {
             {field("hero_description", "Deskripsi", { area: true })}
           </TabsContent>
         </Tabs>
-        <div className="mt-6 flex justify-end border-t pt-4"><Button onClick={save} disabled={saving}>{saving ? "Menyimpan…" : "Simpan"}</Button></div>
+        <div className="mt-6 flex justify-end border-t pt-4"><Button onClick={save} disabled={sedangMenyimpan}>{sedangMenyimpan ? "Menyimpan…" : "Simpan"}</Button></div>
       </div>
     </div>
   );

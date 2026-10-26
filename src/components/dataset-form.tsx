@@ -9,11 +9,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { FORMATS, FREQUENCIES, LICENSES, labelSifatData, bukaBerkasDataset, orgsQuery, uraiCsv, uraiXlsx, buatSlug, topicsQuery, type SampleData } from "@/lib/data";
+import { FORMATS, FREQUENCIES, LICENSES, labelSifatData, bukaBerkasDataset, orgsQuery, uraiCsv, uraiXlsx, buatSlug, topicsQuery, type DataSampel } from "@/lib/data";
 import { DatasetChart, LicenseInfoBox, SampleTable } from "@/components/dataset-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export type EditableDataset = {
+export type DatasetDapatDiubah = {
   id: string;
   title: string;
   description: string | null;
@@ -30,7 +30,7 @@ export type EditableDataset = {
   review_note: string | null;
 };
 
-export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | undefined; onDone: () => void }) {
+export function DatasetForm({ initial, onDone }: { initial?: DatasetDapatDiubah | undefined; onDone: () => void }) {
   const { profile, hasRole } = useAuth();
   const isAdmin = hasRole("admin");
   const { data: orgs = [] } = useQuery(orgsQuery);
@@ -46,10 +46,10 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
     tags: (initial?.tags ?? []).join(", "),
   });
   const [file, setFile] = useState<File | null>(null);
-  const [sample, setSample] = useState<SampleData | null>((initial?.sample_data as SampleData) ?? null);
-  const [busy, setBusy] = useState(false);
+  const [sampel, setSampel] = useState<DataSampel | null>((initial?.sample_data as DataSampel) ?? null);
+  const [sibuk, setSibuk] = useState(false);
   const [manual, setManual] = useState("");
-  const [changeNote, setChangeNote] = useState("");
+  const [catatanPerubahan, setCatatanPerubahan] = useState("");
   const up = (k: keyof typeof f, v: string) => setF((p) => ({ ...p, [k]: v }));
 
   async function onFile(fl: File | null) {
@@ -58,14 +58,14 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
     const ext = fl.name.split(".").pop()?.toUpperCase();
     if (ext && (FORMATS as readonly string[]).includes(ext)) up("format", ext);
     try {
-      if (ext === "CSV") setSample(uraiCsv(await fl.text()));
-      else if (ext === "XLSX" || ext === "XLS") setSample(await uraiXlsx(await fl.arrayBuffer()));
+      if (ext === "CSV") setSampel(uraiCsv(await fl.text()));
+      else if (ext === "XLSX" || ext === "XLS") setSampel(await uraiXlsx(await fl.arrayBuffer()));
     } catch { toast.error("Gagal membaca pratinjau file"); }
   }
 
   async function save(submit: boolean) {
     if (!f.title || !f.organization_id) { toast.error("Judul dan OPD wajib diisi"); return; }
-    setBusy(true);
+    setSibuk(true);
     try {
       let file_url = initial?.file_url ?? null;
       let file_name = initial?.file_name ?? null;
@@ -85,9 +85,9 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
         license: f.license,
         frequency: f.frequency,
         tags: f.tags.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean),
-        sample_data: sample,
+        sample_data: sampel,
         file_url,
-        change_note: changeNote.trim() || null,
+        change_note: catatanPerubahan.trim() || null,
         file_name,
         status: (submit ? "pending" : "draft") as "pending" | "draft",
       };
@@ -100,7 +100,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
-      setBusy(false);
+      setSibuk(false);
     }
   }
 
@@ -167,31 +167,31 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
         )}
         <p className="text-xs text-muted-foreground">File CSV dan XLSX otomatis menghasilkan pratinjau tabel untuk publik.</p>
       </div>
-      {(f.format === "PDF" || !sample) && (
+      {(f.format === "PDF" || !sampel) && (
         <div className="space-y-1.5">
           <Label>Tabel sampel manual {f.format === "PDF" ? "(untuk berkas PDF)" : "(opsional)"}</Label>
-          <Textarea rows={4} value={manual} placeholder={"Tempel dari Excel atau ketik CSV, contoh:\nKecamatan;Jumlah\nBatauga;12.345"} onChange={(e) => { setManual(e.target.value); const s = e.target.value.trim() ? uraiCsv(e.target.value.replace(/\t/g, ";")) : null; setSample(s && s.columns.length ? s : null); }} />
+          <Textarea rows={4} value={manual} placeholder={"Tempel dari Excel atau ketik CSV, contoh:\nKecamatan;Jumlah\nBatauga;12.345"} onChange={(e) => { setManual(e.target.value); const s = e.target.value.trim() ? uraiCsv(e.target.value.replace(/\t/g, ";")) : null; setSampel(s && s.columns.length ? s : null); }} />
           <p className="text-xs text-muted-foreground">Baris pertama = judul kolom. Pemisah koma, titik koma, atau tab. Data ini menjadi pratinjau tabel & grafik publik.</p>
         </div>
       )}
-      {sample && sample.columns.length > 0 && (
+      {sampel && sampel.columns.length > 0 && (
         <div className="space-y-1.5">
-          <Label>Pratinjau ({sample.rows.length} baris)</Label>
+          <Label>Pratinjau ({sampel.rows.length} baris)</Label>
           <Tabs defaultValue="tabel">
             <TabsList><TabsTrigger value="tabel">Tabel</TabsTrigger><TabsTrigger value="grafik">Grafik</TabsTrigger></TabsList>
-            <TabsContent value="tabel"><div className="max-h-56 overflow-auto"><SampleTable data={sample} max={10} /></div></TabsContent>
-            <TabsContent value="grafik"><DatasetChart data={sample} height="h-56" /></TabsContent>
+            <TabsContent value="tabel"><div className="max-h-56 overflow-auto"><SampleTable data={sampel} max={10} /></div></TabsContent>
+            <TabsContent value="grafik"><DatasetChart data={sampel} height="h-56" /></TabsContent>
           </Tabs>
         </div>
       )}
       <div className="space-y-1.5">
         <Label>Catatan perubahan / versi data</Label>
-        <Input value={changeNote} onChange={(e) => setChangeNote(e.target.value)} placeholder={initial ? "mis. Penambahan data semester 2 tahun 2026" : "mis. Rilis awal data 2025"} />
+        <Input value={catatanPerubahan} onChange={(e) => setCatatanPerubahan(e.target.value)} placeholder={initial ? "mis. Penambahan data semester 2 tahun 2026" : "mis. Rilis awal data 2025"} />
         <p className="text-xs text-muted-foreground">Tercatat di riwayat pembaruan dataset yang dapat dilihat publik.</p>
       </div>
       <div className="flex justify-end gap-2 border-t pt-4">
-        <Button variant="outline" disabled={busy} onClick={() => save(false)}>Simpan Draft</Button>
-        <Button disabled={busy} onClick={() => save(true)}>Ajukan Verifikasi</Button>
+        <Button variant="outline" disabled={sibuk} onClick={() => save(false)}>Simpan Draft</Button>
+        <Button disabled={sibuk} onClick={() => save(true)}>Ajukan Verifikasi</Button>
       </div>
     </div>
   );

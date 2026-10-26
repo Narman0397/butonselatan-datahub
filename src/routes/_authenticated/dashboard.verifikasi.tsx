@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, SampleTable, StatusBadge } from "@/components/dataset-bits";
-import { DATASET_FIELDS, formatTanggal, labelSifatData, bukaBerkasDataset, type DatasetStatus, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, formatTanggal, labelSifatData, bukaBerkasDataset, type StatusDataset, type DataSampel } from "@/lib/data";
 import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/_authenticated/dashboard/verifikasi")({
@@ -24,22 +24,22 @@ function Verify() {
   const { hasRole } = useAuth();
   const qc = useQueryClient();
   const allowed = hasRole("wali_data") || hasRole("admin");
-  const [tab, setTab] = useState<DatasetStatus>("pending");
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [tabAktif, setTabAktif] = useState<StatusDataset>("pending");
+  const [idTerbuka, setIdTerbuka] = useState<string | null>(null);
   const [note, setNote] = useState("");
 
   const { data = [] } = useQuery({
-    queryKey: ["verify", tab],
+    queryKey: ["verify", tabAktif],
     enabled: allowed,
     queryFn: async () => {
-      const { data, error } = await supabase.from("datasets").select(DATASET_FIELDS).eq("status", tab).order("updated_at", { ascending: true });
+      const { data, error } = await supabase.from("datasets").select(DATASET_FIELDS).eq("status", tabAktif).order("updated_at", { ascending: true });
       if (error) throw error;
       return data;
     },
   });
 
   if (!allowed) return <NoAccess />;
-  const current = data.find((d) => d.id === openId);
+  const current = data.find((d) => d.id === idTerbuka);
 
   async function decide(status: "published" | "rejected") {
     if (!current) return;
@@ -47,17 +47,17 @@ function Verify() {
     const { error } = await supabase.from("datasets").update({ status, review_note: status === "rejected" ? note : null }).eq("id", current.id);
     if (error) { toast.error(error.message); return; }
     toast.success(status === "published" ? "Dataset diterbitkan" : "Dataset ditolak dengan catatan");
-    setOpenId(null);
+    setIdTerbuka(null);
     setNote("");
     qc.invalidateQueries();
   }
 
-  const sample = current?.sample_data as SampleData | null;
+  const sample = current?.sample_data as DataSampel | null;
 
   return (
     <div>
       <PageHeader title="Kurasi & Verifikasi" desc="Tinjau dataset yang diajukan OPD sebelum diterbitkan ke publik" />
-      <Tabs value={tab} onValueChange={(v) => setTab(v as DatasetStatus)} className="mb-4">
+      <Tabs value={tabAktif} onValueChange={(v) => setTabAktif(v as StatusDataset)} className="mb-4">
         <TabsList>
           <TabsTrigger value="pending">Menunggu</TabsTrigger>
           <TabsTrigger value="published">Diterbitkan</TabsTrigger>
@@ -84,7 +84,7 @@ function Verify() {
                 <TableCell className="hidden sm:table-cell"><FormatBadge format={d.format} /></TableCell>
                 <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{formatTanggal(d.updated_at)}</TableCell>
                 <TableCell className="text-right">
-                  <Button size="sm" variant={tab === "pending" ? "default" : "outline"} onClick={() => { setOpenId(d.id); setNote(d.review_note ?? ""); }}>
+                  <Button size="sm" variant={tabAktif === "pending" ? "default" : "outline"} onClick={() => { setIdTerbuka(d.id); setNote(d.review_note ?? ""); }}>
                     <Eye className="h-4 w-4" /> Tinjau
                   </Button>
                 </TableCell>
@@ -94,7 +94,7 @@ function Verify() {
         </Table>
       </div>
 
-      <Dialog open={!!current} onOpenChange={(o) => !o && setOpenId(null)}>
+      <Dialog open={!!current} onOpenChange={(o) => !o && setIdTerbuka(null)}>
         <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
           {current && (
             <>

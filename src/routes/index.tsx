@@ -33,8 +33,8 @@ const COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--cha
 
 function Home() {
   const navigate = useNavigate();
-  const [q, setQ] = useState("");
-  const [tab, setTab] = useState<"baru" | "populer">("baru");
+  const [kataKunci, setKataKunci] = useState("");
+  const [tabAktif, setTabAktif] = useState<"baru" | "populer">("baru");
   const { data: datasets = [] } = useQuery(publishedQuery);
   const { data: orgs = [] } = useQuery(orgsQuery);
   const { data: topics = [] } = useQuery(topicsQuery);
@@ -92,11 +92,11 @@ function Home() {
           </div>
           <form
             className="animate-rise mt-8 flex w-full max-w-2xl gap-2 rounded-full bg-card p-1.5 shadow-floating ring-4 ring-ocean-foreground/10 focus-within:ring-accent/40"
-            onSubmit={(e) => { e.preventDefault(); navigate({ to: "/dataset", search: { q } }); }}
+            onSubmit={(e) => { e.preventDefault(); navigate({ to: "/dataset", search: { kataKunci } }); }}
           >
             <div className="relative min-w-0 flex-1">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari dataset, mis. penduduk, ikan, puskesmas…" className="h-12 rounded-full border-0 bg-transparent pl-10 text-base text-foreground shadow-none focus-visible:ring-0" />
+              <Input value={kataKunci} onChange={(e) => setKataKunci(e.target.value)} placeholder="Cari dataset, mis. penduduk, ikan, puskesmas…" className="h-12 rounded-full border-0 bg-transparent pl-10 text-base text-foreground shadow-none focus-visible:ring-0" />
             </div>
             <Button type="submit" size="lg" className="h-12 shrink-0 rounded-full bg-gradient-accent px-4 sm:px-6 text-primary-foreground hover:opacity-90">Cari</Button>
           </form>
@@ -196,7 +196,7 @@ function Home() {
             <h2 className="text-2xl font-bold">Dataset pilihan</h2>
             <div className="mt-2 inline-flex rounded-full border bg-card p-1 text-sm">
               {(["baru", "populer"] as const).map((t) => (
-                <button key={t} type="button" onClick={() => setTab(t)} className={`rounded-full px-4 py-1.5 font-medium transition ${tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                <button key={t} type="button" onClick={() => setTabAktif(t)} className={`rounded-full px-4 py-1.5 font-medium transition ${tabAktif === t ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
                   {t === "baru" ? "Terbaru" : "Terpopuler"}
                 </button>
               ))}
@@ -205,7 +205,7 @@ function Home() {
           <Link to="/dataset" className="flex shrink-0 items-center gap-1 text-sm font-medium text-primary">Semua <ArrowRight className="h-4 w-4" /></Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {(tab === "baru" ? datasets : [...datasets].sort((a, b) => b.downloads + b.views - (a.downloads + a.views))).slice(0, 6).map((d) => <DatasetCard key={d.id} ds={d} />)}
+          {(tabAktif === "baru" ? datasets : [...datasets].sort((a, b) => b.downloads + b.views - (a.downloads + a.views))).slice(0, 6).map((d) => <DatasetCard key={d.id} ds={d} />)}
         </div>
       </section>
 

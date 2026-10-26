@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { DATASET_FIELDS, LICENSE_INFO, buatSitasi, unduhDataset, formatTanggal, labelSifatData, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, LICENSE_INFO, buatSitasi, unduhDataset, formatTanggal, labelSifatData, type DataSampel } from "@/lib/data";
 import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/dataset/$slug")({
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/dataset/$slug")({
 function Detail() {
   const { slug } = Route.useParams();
   const qc = useQueryClient();
-  const [filter, setFilter] = useState("");
+  const [saringan, setSaringan] = useState("");
   const { data: ds, isLoading } = useQuery({
     queryKey: ["dataset", slug],
     queryFn: async () => {
@@ -48,15 +48,15 @@ function Detail() {
     if (ds?.id && ds.status === "published") supabase.rpc("increment_dataset_stat", { _id: ds.id, _kind: "view" });
   }, [ds?.id, ds?.status]);
 
-  const sample = ds?.sample_data as SampleData | null;
+  const sample = ds?.sample_data as DataSampel | null;
   const filtered = useMemo(() => {
     if (!sample) return null;
-    const f = filter.toLowerCase();
+    const f = saringan.toLowerCase();
     return { ...sample, rows: f ? sample.rows.filter((r) => r.some((v) => String(v).toLowerCase().includes(f))) : sample.rows };
-  }, [sample, filter]);
+  }, [sample, saringan]);
 
   const chartCols = sample ? chartSpec(sample).series : [];
-  const [reqOpen, setReqOpen] = useState(false);
+  const [dialogPermohonanTerbuka, setDialogPermohonanTerbuka] = useState(false);
   const hasFeature = useFeatures();
 
   if (isLoading) return <PublicLayout><p className="mx-auto max-w-7xl px-4 py-16 text-muted-foreground">Memuat…</p></PublicLayout>;
@@ -98,7 +98,7 @@ function Detail() {
               </div>
             </div>
             {LICENSE_INFO[ds.license]?.open === false ? (
-              (hasFeature("data_requests") ? <Button size="lg" className="w-full rounded-full sm:w-auto" onClick={() => setReqOpen(true)}><Lock className="h-4 w-4" /> Ajukan Permohonan Data</Button> : <Button size="lg" className="w-full rounded-full sm:w-auto" disabled><Lock className="h-4 w-4" /> Akses Terbatas</Button>)
+              (hasFeature("data_requests") ? <Button size="lg" className="w-full rounded-full sm:w-auto" onClick={() => setDialogPermohonanTerbuka(true)}><Lock className="h-4 w-4" /> Ajukan Permohonan Data</Button> : <Button size="lg" className="w-full rounded-full sm:w-auto" disabled><Lock className="h-4 w-4" /> Akses Terbatas</Button>)
             ) : (
               <Button size="lg" className="w-full rounded-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
                 onClick={async () => { await unduhDataset(ds); qc.invalidateQueries({ queryKey: ["dataset", slug] }); }}>
@@ -119,7 +119,7 @@ function Detail() {
             <TabsContent value="tabel" className="mt-4 space-y-3">
               {filtered ? (
                 <>
-                  <Input placeholder="Saring baris…" value={filter} onChange={(e) => setFilter(e.target.value)} className="w-full sm:max-w-xs" />
+                  <Input placeholder="Saring baris…" value={saringan} onChange={(e) => setSaringan(e.target.value)} className="w-full sm:max-w-xs" />
                   <SampleTable data={filtered} />
                   <p className="text-xs text-muted-foreground">Menampilkan {filtered.rows.length} dari {sample?.rows.length} baris sampel.</p>
                 </>
@@ -168,7 +168,7 @@ function Detail() {
           )}
         </aside>
       </div>
-      <RequestDialog open={reqOpen} onOpenChange={setReqOpen} datasetId={ds.id} title={ds.title} />
+      <RequestDialog open={dialogPermohonanTerbuka} onOpenChange={setDialogPermohonanTerbuka} datasetId={ds.id} title={ds.title} />
     </PublicLayout>
   );
 }
@@ -182,13 +182,13 @@ const reqSchema = z.object({
 
 function RequestDialog({ open, onOpenChange, datasetId, title }: { open: boolean; onOpenChange: (o: boolean) => void; datasetId: string; title: string }) {
   const [f, setF] = useState({ name: "", email: "", institution: "", purpose: "" });
-  const [busy, setBusy] = useState(false);
+  const [sibuk, setSibuk] = useState(false);
   async function send() {
     const r = reqSchema.safeParse(f);
     if (!r.success) { toast.error(r.error.issues[0]?.message ?? "Data tidak valid"); return; }
-    setBusy(true);
+    setSibuk(true);
     const { error } = await supabase.from("data_requests").insert({ dataset_id: datasetId, ...r.data, institution: r.data.institution || null });
-    setBusy(false);
+    setSibuk(false);
     if (error) { toast.error("Gagal mengirim permohonan"); return; }
     toast.success("Permohonan terkirim. Wali Data akan menghubungi Anda melalui email.");
     setF({ name: "", email: "", institution: "", purpose: "" });
@@ -204,7 +204,7 @@ function RequestDialog({ open, onOpenChange, datasetId, title }: { open: boolean
           <div className="space-y-1.5"><Label>Email *</Label><Input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
           <div className="space-y-1.5"><Label>Instansi / lembaga</Label><Input value={f.institution} onChange={(e) => setF({ ...f, institution: e.target.value })} /></div>
           <div className="space-y-1.5"><Label>Tujuan penggunaan *</Label><Textarea rows={4} value={f.purpose} onChange={(e) => setF({ ...f, purpose: e.target.value })} /></div>
-          <Button className="w-full" disabled={busy} onClick={send}>Kirim Permohonan</Button>
+          <Button className="w-full" disabled={sibuk} onClick={send}>Kirim Permohonan</Button>
         </div>
       </DialogContent>
     </Dialog>

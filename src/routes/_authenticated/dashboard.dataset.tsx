@@ -12,8 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, StatusBadge } from "@/components/dataset-bits";
-import { DatasetForm, type EditableDataset } from "@/components/dataset-form";
-import { formatTanggal, bukaBerkasDataset, type DatasetStatus } from "@/lib/data";
+import { DatasetForm, type DatasetDapatDiubah } from "@/components/dataset-form";
+import { formatTanggal, bukaBerkasDataset, type StatusDataset } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/dataset")({
   head: () => ({ meta: [{ title: "Dataset Saya — Satu Data Buton Selatan" }, { name: "description", content: "Kelola dataset OPD di portal Satu Data Buton Selatan." }, { property: "og:title", content: "Dataset Saya — Satu Data Buton Selatan" }, { property: "og:description", content: "Kelola dataset OPD di portal Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -23,9 +23,9 @@ export const Route = createFileRoute("/_authenticated/dashboard/dataset")({
 function MyDatasets() {
   const { hasRole, profile } = useAuth();
   const qc = useQueryClient();
-  const [editing, setEditing] = useState<EditableDataset | "new" | null>(null);
-  const [tab, setTab] = useState<DatasetStatus | "all">("all");
-  const [q, setQ] = useState("");
+  const [sedangMengubah, setSedangMengubah] = useState<DatasetDapatDiubah | "new" | null>(null);
+  const [tabAktif, setTabAktif] = useState<StatusDataset | "all">("all");
+  const [kataKunci, setKataKunci] = useState("");
   const allowed = hasRole("produsen") || hasRole("admin");
 
   const { data = [], isLoading } = useQuery({
@@ -56,7 +56,7 @@ function MyDatasets() {
     if (error) toast.error(error.message); else { toast.success("Dataset dihapus"); refresh(); }
   }
 
-  const list = data.filter((d) => (tab === "all" || d.status === tab) && d.title.toLowerCase().includes(q.toLowerCase()));
+  const list = data.filter((d) => (tabAktif === "all" || d.status === tabAktif) && d.title.toLowerCase().includes(kataKunci.toLowerCase()));
   const noOrg = hasRole("produsen") && !hasRole("admin") && !profile?.organization_id;
 
   return (
@@ -64,11 +64,11 @@ function MyDatasets() {
       <PageHeader
         title="Dataset Saya"
         desc="Kelola draft, perbarui resource, dan ajukan dataset untuk diverifikasi"
-        action={<Button onClick={() => setEditing("new")} disabled={noOrg}><Plus className="h-4 w-4" /> Dataset baru</Button>}
+        action={<Button onClick={() => setSedangMengubah("new")} disabled={noOrg}><Plus className="h-4 w-4" /> Dataset baru</Button>}
       />
       {noOrg && <div className="mb-4 rounded-lg border border-warning bg-warning/15 p-3 text-sm">Akun Anda belum terhubung ke OPD. Minta Super Admin menetapkan OPD Anda.</div>}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
+        <Tabs value={tabAktif} onValueChange={(v) => setTabAktif(v as typeof tabAktif)}>
           <TabsList>
             <TabsTrigger value="all">Semua</TabsTrigger>
             <TabsTrigger value="draft">Draft</TabsTrigger>
@@ -79,7 +79,7 @@ function MyDatasets() {
         </Tabs>
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Cari…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
+          <Input placeholder="Cari…" value={kataKunci} onChange={(e) => setKataKunci(e.target.value)} className="pl-9" />
         </div>
       </div>
       <div className="max-w-full overflow-x-auto rounded-2xl border bg-card shadow-soft">
@@ -119,7 +119,7 @@ function MyDatasets() {
                       <Button size="icon" variant="ghost" title="Ajukan" onClick={() => submit(d.id)}><Send className="h-4 w-4" /></Button>
                     )}
                     {d.status !== "pending" && (
-                      <Button size="icon" variant="ghost" title="Edit" onClick={() => setEditing(d)}><Pencil className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="ghost" title="Edit" onClick={() => setSedangMengubah(d)}><Pencil className="h-4 w-4" /></Button>
                     )}
                     {(d.status === "draft" || d.status === "rejected" || hasRole("admin")) && (
                       <Button size="icon" variant="ghost" title="Hapus" onClick={() => remove(d.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
@@ -131,16 +131,16 @@ function MyDatasets() {
           </TableBody>
         </Table>
       </div>
-      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+      <Dialog open={!!sedangMengubah} onOpenChange={(o) => !o && setSedangMengubah(null)}>
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
-          <DialogHeader><DialogTitle>{editing === "new" ? "Dataset baru" : "Perbarui dataset"}</DialogTitle></DialogHeader>
-          {editing && (
+          <DialogHeader><DialogTitle>{sedangMengubah === "new" ? "Dataset baru" : "Perbarui dataset"}</DialogTitle></DialogHeader>
+          {sedangMengubah && (
             <DatasetForm
-              initial={editing === "new" ? undefined : editing}
-              onDone={() => { setEditing(null); refresh(); }}
+              initial={sedangMengubah === "new" ? undefined : sedangMengubah}
+              onDone={() => { setSedangMengubah(null); refresh(); }}
             />
           )}
-          {editing && editing !== "new" && editing.status === "published" && (
+          {sedangMengubah && sedangMengubah !== "new" && sedangMengubah.status === "published" && (
             <p className="text-xs text-muted-foreground">Perubahan pada dataset terbit akan dikirim ulang ke Wali Data untuk verifikasi.</p>
           )}
         </DialogContent>
