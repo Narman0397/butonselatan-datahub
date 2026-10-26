@@ -1,4 +1,4 @@
-import { useFeatures, type FeatureKey } from "@/lib/features";
+import { useFeatures, type KunciFitur } from "@/lib/features";
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { LayoutDashboard, FileStack, ShieldCheck, Users, Building2, Settings, LogOut, Globe, Menu, Inbox, FileBarChart, UserCircle } from "lucide-react";
@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Logo } from "@/components/site-chrome";
 import { NotificationBell } from "@/components/activity-bits";
 import { Button } from "@/components/ui/button";
-import { useAuth, ROLE_LABEL, type AppRole } from "@/lib/auth";
+import { useAuth, ROLE_LABEL, type PeranAplikasi } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardLayout,
 });
 
-const ITEMS: { to: string; label: string; icon: typeof Users; roles: AppRole[] | null; feature?: FeatureKey }[] = [
+const ITEMS: { to: string; label: string; icon: typeof Users; roles: PeranAplikasi[] | null; feature?: KunciFitur }[] = [
   { to: "/dashboard", label: "Ringkasan", icon: LayoutDashboard, roles: null },
   { to: "/dashboard/dataset", label: "Dataset Saya", icon: FileStack, roles: ["produsen", "admin"] },
   { to: "/dashboard/verifikasi", label: "Verifikasi", icon: ShieldCheck, roles: ["wali_data", "admin"] },

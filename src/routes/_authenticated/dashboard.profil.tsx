@@ -19,32 +19,32 @@ function Profil() {
   const { profile, user, roles, refresh } = useAuth();
   const { data: orgs = [] } = useQuery(orgsQuery);
   const [name, setName] = useState("");
-  const [cur, setCur] = useState("");
-  const [pw, setPw] = useState("");
-  const [pw2, setPw2] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [saatIni, setSaatIni] = useState("");
+  const [sandi, setSandi] = useState("");
+  const [sandiUlang, setSandiUlang] = useState("");
+  const [sibuk, setSibuk] = useState(false);
   useEffect(() => { setName(profile?.full_name ?? ""); }, [profile?.full_name]);
   const org = orgs.find((o) => o.id === profile?.organization_id);
 
   async function saveName(e: React.FormEvent) {
     e.preventDefault();
     if (!user || !name.trim()) return undefined;
-    setBusy(true);
+    setSibuk(true);
     const { error } = await supabase.from("profiles").update({ full_name: name.trim() }).eq("id", user.id);
-    setBusy(false);
+    setSibuk(false);
     if (error) { toast.error("Gagal menyimpan profil"); return; }
     toast.success("Profil diperbarui");
     refresh();
   }
   async function savePw(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 8) { toast.error("Kata sandi baru minimal 8 karakter"); return; }
-    if (pw !== pw2) { toast.error("Konfirmasi kata sandi tidak cocok"); return; }
-    setBusy(true);
-    const { error } = await supabase.auth.updateUser({ password: pw, current_password: cur } as never);
-    setBusy(false);
+    if (sandi.length < 8) { toast.error("Kata sandi baru minimal 8 karakter"); return; }
+    if (sandi !== sandiUlang) { toast.error("Konfirmasi kata sandi tidak cocok"); return; }
+    setSibuk(true);
+    const { error } = await supabase.auth.updateUser({ password: sandi, current_password: saatIni } as never);
+    setSibuk(false);
     if (error) { toast.error(/current|password/i.test(error.message) ? "Kata sandi saat ini salah atau kata sandi baru tidak valid" : "Gagal mengganti kata sandi"); return; }
-    setCur(""); setPw(""); setPw2("");
+    setSaatIni(""); setSandi(""); setSandiUlang("");
     toast.success("Kata sandi berhasil diganti");
   }
 
@@ -60,16 +60,16 @@ function Profil() {
             <div className="space-y-1.5"><Label>OPD / Instansi</Label><Input value={org ? `${org.acronym} — ${org.name}` : "Belum ditetapkan"} disabled /></div>
           </div>
           <div className="text-sm text-muted-foreground">Peran: {roles.length ? roles.map((r) => ROLE_LABEL[r]).join(", ") : "Belum ada — hubungi Super Admin"}</div>
-          <Button disabled={busy}>Simpan profil</Button>
+          <Button disabled={sibuk}>Simpan profil</Button>
         </form>
         <form onSubmit={savePw} className="space-y-4 rounded-2xl border bg-card p-5 shadow-soft">
           <h2 className="font-semibold">Ganti kata sandi</h2>
-          <div className="space-y-1.5"><Label>Kata sandi saat ini</Label><Input type="password" required value={cur} onChange={(e) => setCur(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label>Kata sandi saat ini</Label><Input type="password" required value={saatIni} onChange={(e) => setSaatIni(e.target.value)} /></div>
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5"><Label>Kata sandi baru</Label><Input type="password" required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Ulangi kata sandi baru</Label><Input type="password" required minLength={8} value={pw2} onChange={(e) => setPw2(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label>Kata sandi baru</Label><Input type="password" required minLength={8} value={sandi} onChange={(e) => setSandi(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label>Ulangi kata sandi baru</Label><Input type="password" required minLength={8} value={sandiUlang} onChange={(e) => setSandiUlang(e.target.value)} /></div>
           </div>
-          <Button disabled={busy}>Ganti kata sandi</Button>
+          <Button disabled={sibuk}>Ganti kata sandi</Button>
         </form>
       </div>
     </div>

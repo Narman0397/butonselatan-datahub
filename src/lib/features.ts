@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type FeatureKey =
+export type KunciFitur =
   | "notifications"
   | "audit_history"
   | "data_requests"
@@ -23,7 +23,7 @@ export const featuresQuery = queryOptions({
 });
 
 /** Returns true while loading (avoid flicker hiding); false only when explicitly disabled. */
-export function useFeature(key: FeatureKey) {
+export function useFeature(key: KunciFitur) {
   const { data } = useQuery(featuresQuery);
   const row = data?.find((f) => f.key === key);
   return row ? row.enabled : true;
@@ -31,5 +31,5 @@ export function useFeature(key: FeatureKey) {
 
 export function useFeatures() {
   const { data } = useQuery(featuresQuery);
-  return (key: FeatureKey) => data?.find((f) => f.key === key)?.enabled ?? true;
+  return (key: KunciFitur) => data?.find((f) => f.key === key)?.enabled ?? true;
 }

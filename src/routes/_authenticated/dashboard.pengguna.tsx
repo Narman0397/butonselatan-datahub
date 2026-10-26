@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth, ROLE_LABEL, type AppRole } from "@/lib/auth";
+import { useAuth, ROLE_LABEL, type PeranAplikasi } from "@/lib/auth";
 import { PageHeader, NoAccess } from "@/components/dash-bits";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,16 +23,16 @@ export const Route = createFileRoute("/_authenticated/dashboard/pengguna")({
   component: Users,
 });
 
-const ROLES: AppRole[] = ["produsen", "wali_data", "admin"];
+const ROLES: PeranAplikasi[] = ["produsen", "wali_data", "admin"];
 const NONE = "__none";
 
 function Users() {
   const { hasRole, user, refresh } = useAuth();
   const qc = useQueryClient();
-  const [q, setQ] = useState("");
-  const [addOpen, setAddOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [form, setForm] = useState({ full_name: "", email: "", password: "", org: NONE, roles: ["produsen"] as AppRole[] });
+  const [kataKunci, setKataKunci] = useState("");
+  const [dialogTambahTerbuka, setDialogTambahTerbuka] = useState(false);
+  const [sibuk, setSibuk] = useState(false);
+  const [form, setForm] = useState({ full_name: "", email: "", password: "", org: NONE, roles: ["produsen"] as PeranAplikasi[] });
   const createFn = useServerFn(createPortalUser);
   const { data: orgs = [] } = useQuery(orgsQuery);
   const { data } = useQuery({
@@ -44,13 +44,13 @@ function Users() {
         supabase.from("user_roles").select("user_id, role"),
       ]);
       if (error) throw error;
-      return (profiles ?? []).map((p) => ({ ...p, roles: (roles ?? []).filter((r) => r.user_id === p.id).map((r) => r.role as AppRole) }));
+      return (profiles ?? []).map((p) => ({ ...p, roles: (roles ?? []).filter((r) => r.user_id === p.id).map((r) => r.role as PeranAplikasi) }));
     },
   });
 
   if (!hasRole("admin")) return <NoAccess />;
 
-  async function toggleRole(uid: string, role: AppRole, on: boolean) {
+  async function toggleRole(uid: string, role: PeranAplikasi, on: boolean) {
     if (uid === user?.id && role === "admin" && !on) { toast.error("Anda tidak dapat mencabut peran admin sendiri"); return; }
     const { error } = on
       ? await supabase.from("user_roles").insert({ user_id: uid, role })
@@ -70,19 +70,19 @@ function Users() {
 
   async function addUser(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true);
+    setSibuk(true);
     try {
       await createFn({ data: { full_name: form.full_name, email: form.email, password: form.password, organization_id: form.org === NONE ? null : form.org, roles: form.roles } });
       toast.success("Pengguna berhasil ditambahkan");
-      setAddOpen(false);
+      setDialogTambahTerbuka(false);
       setForm({ full_name: "", email: "", password: "", org: NONE, roles: ["produsen"] });
       qc.invalidateQueries({ queryKey: ["admin-users"] });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gagal menambah pengguna");
-    } finally { setBusy(false); }
+    } finally { setSibuk(false); }
   }
 
-  const list = (data ?? []).filter((u) => `${u.full_name} ${u.email}`.toLowerCase().includes(q.toLowerCase()));
+  const list = (data ?? []).filter((u) => `${u.full_name} ${u.email}`.toLowerCase().includes(kataKunci.toLowerCase()));
 
   return (
     <div>
@@ -90,11 +90,11 @@ function Users() {
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Cari nama atau email…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
+          <Input placeholder="Cari nama atau email…" value={kataKunci} onChange={(e) => setKataKunci(e.target.value)} className="pl-9" />
         </div>
-        <Button onClick={() => setAddOpen(true)}><UserPlus className="mr-2 h-4 w-4" />Tambah Pengguna</Button>
+        <Button onClick={() => setDialogTambahTerbuka(true)}><UserPlus className="mr-2 h-4 w-4" />Tambah Pengguna</Button>
       </div>
-      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+      <Dialog open={dialogTambahTerbuka} onOpenChange={setDialogTambahTerbuka}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Tambah Pengguna</DialogTitle>
@@ -123,7 +123,7 @@ function Users() {
                 ))}
               </div>
             </div>
-            <Button className="w-full" disabled={busy}>{busy ? "Menyimpan…" : "Buat akun"}</Button>
+            <Button className="w-full" disabled={sibuk}>{sibuk ? "Menyimpan…" : "Buat akun"}</Button>
           </form>
         </DialogContent>
       </Dialog>

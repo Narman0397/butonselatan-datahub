@@ -22,7 +22,7 @@ function Requests() {
   const { hasRole, user } = useAuth();
   const qc = useQueryClient();
   const allowed = hasRole("wali_data") || hasRole("admin");
-  const [tab, setTab] = useState<"pending" | "approved" | "rejected">("pending");
+  const [tabAktif, setTabAktif] = useState<"pending" | "approved" | "rejected">("pending");
   const { data = [], isLoading } = useQuery({
     queryKey: ["data-requests"],
     enabled: allowed,
@@ -48,11 +48,11 @@ function Requests() {
     toast.success("Tautan unduhan (berlaku 7 hari) disalin. Kirimkan ke email pemohon.");
   }
 
-  const list = data.filter((r) => r.status === tab);
+  const list = data.filter((r) => r.status === tabAktif);
   return (
     <div>
       <PageHeader title="Permohonan Data" desc="Tinjau permohonan akses dataset bersifat Data Terbatas" />
-      <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="mb-4">
+      <Tabs value={tabAktif} onValueChange={(v) => setTabAktif(v as typeof tabAktif)} className="mb-4">
         <TabsList>{(Object.keys(LABEL) as (keyof typeof LABEL)[]).map((k) => <TabsTrigger key={k} value={k}>{LABEL[k]}</TabsTrigger>)}</TabsList>
       </Tabs>
       {isLoading && <p className="text-muted-foreground">Memuat…</p>}

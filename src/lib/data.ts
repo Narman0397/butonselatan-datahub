@@ -1,14 +1,14 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type SampleData = { columns: string[]; rows: (string | number | null)[][] };
-export type DatasetStatus = "draft" | "pending" | "published" | "rejected";
+export type DataSampel = { columns: string[]; rows: (string | number | null)[][] };
+export type StatusDataset = "draft" | "pending" | "published" | "rejected";
 
 export const FORMATS = ["CSV", "XLSX", "PDF"] as const;
 export const LICENSES = ["Terbuka", "Terbatas"] as const;
 export const FREQUENCIES = ["Bulanan", "Triwulanan", "Semesteran", "Tahunan", "Sekali"] as const;
 
-export const STATUS_LABEL: Record<DatasetStatus, string> = {
+export const STATUS_LABEL: Record<StatusDataset, string> = {
   draft: "Draft",
   pending: "Menunggu Verifikasi",
   published: "Diterbitkan",
@@ -57,12 +57,12 @@ export const settingsQuery = queryOptions({
   },
 });
 
-export type LeaderPhotos = { bupati: string | null; wabup: string | null; logo: string | null };
+export type FotoPimpinan = { bupati: string | null; wabup: string | null; logo: string | null };
 
 export const leaderPhotosQuery = queryOptions({
   queryKey: ["leader_photos"],
   staleTime: 1000 * 60 * 60,
-  queryFn: async (): Promise<LeaderPhotos> => {
+  queryFn: async (): Promise<FotoPimpinan> => {
     const { data: row } = await supabase.from("portal_settings").select("*").eq("id", 1).maybeSingle();
     const sign = async (path?: string | null) => {
       if (!path) return null;
@@ -88,7 +88,7 @@ export function buatSlug(s: string) {
   );
 }
 
-export function uraiCsv(text: string, maxRows = 50): SampleData {
+export function uraiCsv(text: string, maxRows = 50): DataSampel {
   const lines = text.replace(/\r/g, "").split("\n").filter((l) => l.trim().length);
   const split = (line: string) => {
     const out: string[] = [];
@@ -112,7 +112,7 @@ export function uraiCsv(text: string, maxRows = 50): SampleData {
   return { columns, rows };
 }
 
-export function keCsv(s: SampleData) {
+export function keCsv(s: DataSampel) {
   const esc = (v: unknown) => {
     const t = v == null ? "" : String(v);
     return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
@@ -137,7 +137,7 @@ export async function unduhDataset(ds: {
       return;
     }
   }
-  const sample = ds.sample_data as SampleData | null;
+  const sample = ds.sample_data as DataSampel | null;
   if (!sample) return;
   const blob = new Blob([keCsv(sample)], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a");
@@ -161,7 +161,7 @@ export async function bukaBerkasDataset(path: string, fileName: string | null, m
   else window.location.href = data.signedUrl;
 }
 
-export async function uraiXlsx(buf: ArrayBuffer, maxRows = 50): Promise<SampleData> {
+export async function uraiXlsx(buf: ArrayBuffer, maxRows = 50): Promise<DataSampel> {
   const XLSX = await import("xlsx");
   const wb = XLSX.read(buf, { type: "array" });
   const ws = wb.Sheets[wb.SheetNames[0]!];
@@ -208,7 +208,7 @@ export function normalisasiSel(v: unknown): string | number | null {
 }
 
 /** Kolom numerik: semua nilai non-kosong angka, minimal satu angka. */
-export function kolomNumerik(s: SampleData) {
+export function kolomNumerik(s: DataSampel) {
   return s.columns.filter((_, i) => {
     const vals = s.rows.map((r) => r[i]).filter((v) => v != null && v !== "");
     return vals.length > 0 && vals.every((v) => typeof v === "number");
@@ -227,12 +227,12 @@ export function labelSifatData(code: string) {
   return LICENSE_LABEL[normalize(code)] ?? code;
 }
 
-export type LicenseInfo = { summary: string; can: string[]; must: string[]; open: boolean };
-const INFO: Record<string, LicenseInfo> = {
+export type InfoLisensi = { summary: string; can: string[]; must: string[]; open: boolean };
+const INFO: Record<string, InfoLisensi> = {
   Terbuka: { open: true, summary: "Data dapat diakses, diunduh, dan dimanfaatkan secara bebas oleh publik.", can: ["Mengunduh langsung", "Menyalin & menyebarluaskan", "Mengolah & menggabungkan"], must: ["Mencantumkan sumber data (produsen data)"] },
   Terbatas: { open: false, summary: "Akses berkas terbatas. Unduhan memerlukan permohonan yang disetujui Wali Data.", can: ["Melihat metadata & pratinjau ringkas"], must: ["Mengajukan permohonan data", "Menggunakan sesuai tujuan yang disetujui"] },
 };
-export const LICENSE_INFO: Record<string, LicenseInfo> = new Proxy(INFO, {
+export const LICENSE_INFO: Record<string, InfoLisensi> = new Proxy(INFO, {
   get: (t, k) => (typeof k === "string" ? t[normalize(k)] : undefined),
 });
 
