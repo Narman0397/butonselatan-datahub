@@ -85,7 +85,7 @@ function Home() {
            <div className="gpu-layer mt-8 grid w-full max-w-3xl grid-cols-2 overflow-hidden rounded-2xl border border-ocean-foreground/20 bg-ocean-foreground/10 p-1 shadow-floating backdrop-blur-md sm:grid-cols-4 sm:divide-x sm:divide-ocean-foreground/15">
             {stats.map((s) => (
                <div key={s.label} className="rounded-xl px-3 py-3 even:bg-ocean-foreground/5 sm:rounded-none sm:bg-transparent sm:py-4">
-                <div className="text-2xl font-extrabold sm:text-3xl">{s.value}<span className="text-accent">+</span></div>
+                <div className="text-2xl font-extrabold sm:text-3xl">{s.value}</div>
                 <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-ocean-foreground/70">{s.label}</div>
               </div>
             ))}
