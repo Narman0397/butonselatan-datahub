@@ -208,7 +208,7 @@ CREATE POLICY "dataset files staff upload" ON storage.objects FOR INSERT TO auth
 
 -- Seed
 INSERT INTO public.portal_settings (id, portal_name, tagline, contact_email, contact_phone, address)
-VALUES (1, 'Satu Data Buton Selatan', 'Data terbuka untuk pembangunan Kabupaten Buton Selatan', 'satudata@butonselatankab.go.id', '(0402) 000000', 'Kompleks Perkantoran Pemda, Batauga, Buton Selatan, Sulawesi Tenggara');
+VALUES (1, 'Satu Data Buton Selatan', 'Data terbuka untuk pembangunan Kabupaten Buton Selatan', 'satudata@butonselatankab.go.id', NULL, 'Kompleks Perkantoran Pemda, Batauga, Buton Selatan, Sulawesi Tenggara');
 
 INSERT INTO public.organizations (name, acronym, slug, description) VALUES
 ('Dinas Komunikasi dan Informatika','Diskominfo','diskominfo','Wali Data Kabupaten; pengelola Satu Data dan infrastruktur TIK.'),
@@ -233,7 +233,7 @@ INSERT INTO public.topics (name, slug, description) VALUES
 ('Sosial','sosial','Kesejahteraan dan bantuan sosial.');
 
 INSERT INTO public.datasets (title, slug, description, organization_id, topic_id, format, license, frequency, tags, status, sample_data, downloads, views)
-SELECT d.title, d.slug, d.description, o.id, t.id, d.format, d.license, d.frequency, d.tags, 'published', d.sample::jsonb, d.dl, d.vw
+SELECT d.title, d.slug, d.description, o.id, t.id, d.format, d.license, d.frequency, d.tags, 'published', d.sample::jsonb, 0, 0
 FROM (VALUES
  ('Jumlah Penduduk per Kecamatan 2025','jumlah-penduduk-per-kecamatan-2025','Jumlah penduduk menurut jenis kelamin di 7 kecamatan Kabupaten Buton Selatan.','disdukcapil','kependudukan','CSV','CC-BY 4.0','Semesteran',ARRAY['penduduk','kecamatan'],
   '{"columns":["Kecamatan","Laki-laki","Perempuan","Total"],"rows":[["Batauga",9120,9384,18504],["Sampolawa",8210,8455,16665],["Lapandewa",3105,3240,6345],["Kadatua",4420,4598,9018],["Siompu",4010,4190,8200],["Siompu Barat",3390,3502,6892],["Batu Atas",2215,2290,4505]]}',412,1530),
