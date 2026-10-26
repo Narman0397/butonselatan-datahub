@@ -92,7 +92,7 @@ function Home() {
           </div>
           <form
             className="animate-rise mt-8 flex w-full max-w-2xl gap-2 rounded-full bg-card p-1.5 shadow-floating ring-4 ring-ocean-foreground/10 focus-within:ring-accent/40"
-            onSubmit={(e) => { e.preventDefault(); navigate({ to: "/dataset", search: { kataKunci } }); }}
+            onSubmit={(e) => { e.preventDefault(); navigate({ to: "/dataset", search: { q: kataKunci } }); }}
           >
             <div className="relative min-w-0 flex-1">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />

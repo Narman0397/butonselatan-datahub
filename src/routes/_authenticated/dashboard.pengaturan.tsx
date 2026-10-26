@@ -68,7 +68,7 @@ function Settings() {
     setSedangMenyimpan(true);
     const text = Object.fromEntries(TEXT_KEYS.map((k) => [k, k === "portal_name" ? f[k].trim() : f[k].trim() || null]));
     if (!text["portal_name"]) { toast.error("Nama portal wajib diisi"); setSedangMenyimpan(false); return; }
-    const { error } = await supabase.from("portal_settings").update({ ...text, ...imgs, updated_at: new Date().toISOString() } as never).eq("id", 1);
+    const { error } = await supabase.from("portal_settings").update({ ...text, ...gambar, updated_at: new Date().toISOString() } as never).eq("id", 1);
     setSedangMenyimpan(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Pengaturan disimpan");

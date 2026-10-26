@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user,
     profile,
     roles,
-    sedangMemuat,
+    loading: sedangMemuat,
     hasRole: (r) => roles.includes(r),
     refresh: async () => {
       const { data } = await supabase.auth.getUser();
