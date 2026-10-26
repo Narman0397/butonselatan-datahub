@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, StatusBadge } from "@/components/dataset-bits";
 import { DatasetForm, type EditableDataset } from "@/components/dataset-form";
-import { formatDate, openDatasetFile, type DatasetStatus } from "@/lib/data";
+import { formatTanggal, bukaBerkasDataset, type DatasetStatus } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/dataset")({
   head: () => ({ meta: [{ title: "Dataset Saya — Satu Data Buton Selatan" }, { name: "description", content: "Kelola dataset OPD di portal Satu Data Buton Selatan." }, { property: "og:title", content: "Dataset Saya — Satu Data Buton Selatan" }, { property: "og:description", content: "Kelola dataset OPD di portal Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -106,11 +106,11 @@ function MyDatasets() {
                 <TableCell className="hidden md:table-cell">{d.organizations?.acronym}</TableCell>
                 <TableCell className="hidden sm:table-cell"><FormatBadge format={d.format} /></TableCell>
                 <TableCell><StatusBadge status={d.status} /></TableCell>
-                <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{formatDate(d.updated_at)}</TableCell>
+                <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{formatTanggal(d.updated_at)}</TableCell>
                 <TableCell>
                   <div className="flex justify-end gap-1">
                     {d.file_url && (
-                      <Button size="icon" variant="ghost" title="Unduh berkas" onClick={() => openDatasetFile(d.file_url!, d.file_name, "download").catch((e) => toast.error(e.message))}><Download className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="ghost" title="Unduh berkas" onClick={() => bukaBerkasDataset(d.file_url!, d.file_name, "download").catch((e) => toast.error(e.message))}><Download className="h-4 w-4" /></Button>
                     )}
                     {d.status === "published" && (
                       <Button size="icon" variant="ghost" asChild title="Lihat"><Link to="/dataset/$slug" params={{ slug: d.slug }}><ExternalLink className="h-4 w-4" /></Link></Button>

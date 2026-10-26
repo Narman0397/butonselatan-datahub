@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormatBadge, SampleTable, StatusBadge } from "@/components/dataset-bits";
-import { DATASET_FIELDS, formatDate, licenseLabel, openDatasetFile, type DatasetStatus, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, formatTanggal, labelSifatData, bukaBerkasDataset, type DatasetStatus, type SampleData } from "@/lib/data";
 import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/_authenticated/dashboard/verifikasi")({
@@ -82,7 +82,7 @@ function Verify() {
                 <TableCell className="max-w-xs"><div className="truncate font-medium">{d.title}</div><div className="text-xs text-muted-foreground">{d.topics?.name}</div></TableCell>
                 <TableCell className="hidden md:table-cell">{d.organizations?.acronym}</TableCell>
                 <TableCell className="hidden sm:table-cell"><FormatBadge format={d.format} /></TableCell>
-                <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{formatDate(d.updated_at)}</TableCell>
+                <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{formatTanggal(d.updated_at)}</TableCell>
                 <TableCell className="text-right">
                   <Button size="sm" variant={tab === "pending" ? "default" : "outline"} onClick={() => { setOpenId(d.id); setNote(d.review_note ?? ""); }}>
                     <Eye className="h-4 w-4" /> Tinjau
@@ -106,14 +106,14 @@ function Verify() {
               <p className="text-sm text-muted-foreground">{current.description}</p>
               <dl className="grid grid-cols-2 gap-3 rounded-lg bg-muted p-4 text-sm sm:grid-cols-4">
                 <div><dt className="text-xs text-muted-foreground">Topik</dt><dd>{current.topics?.name ?? "-"}</dd></div>
-                <div><dt className="text-xs text-muted-foreground">Sifat Data</dt><dd>{licenseLabel(current.license)}</dd></div>
+                <div><dt className="text-xs text-muted-foreground">Sifat Data</dt><dd>{labelSifatData(current.license)}</dd></div>
                 <div><dt className="text-xs text-muted-foreground">Frekuensi</dt><dd>{current.frequency}</dd></div>
                 <div><dt className="text-xs text-muted-foreground">File</dt><dd className="truncate">{current.file_name ?? "-"}</dd></div>
               </dl>
               {current.file_url ? (
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" onClick={() => openDatasetFile(current.file_url!, current.file_name, "open").catch((e) => toast.error(e.message))}><ExternalLink className="h-4 w-4" /> Buka berkas</Button>
-                  <Button size="sm" variant="outline" onClick={() => openDatasetFile(current.file_url!, current.file_name, "download").catch((e) => toast.error(e.message))}><Download className="h-4 w-4" /> Unduh</Button>
+                  <Button size="sm" variant="outline" onClick={() => bukaBerkasDataset(current.file_url!, current.file_name, "open").catch((e) => toast.error(e.message))}><ExternalLink className="h-4 w-4" /> Buka berkas</Button>
+                  <Button size="sm" variant="outline" onClick={() => bukaBerkasDataset(current.file_url!, current.file_name, "download").catch((e) => toast.error(e.message))}><Download className="h-4 w-4" /> Unduh</Button>
                 </div>
               ) : <p className="text-sm text-muted-foreground">Tidak ada berkas terlampir.</p>}
               {sample ? <div className="max-h-64 overflow-auto"><SampleTable data={sample} max={20} /></div> : <p className="text-sm text-muted-foreground">Tidak ada pratinjau data.</p>}

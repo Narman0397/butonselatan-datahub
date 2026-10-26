@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { DATASET_FIELDS, LICENSE_INFO, buildCitation, downloadDataset, formatDate, licenseLabel, type SampleData } from "@/lib/data";
+import { DATASET_FIELDS, LICENSE_INFO, buatSitasi, unduhDataset, formatTanggal, labelSifatData, type SampleData } from "@/lib/data";
 import { DatasetHistory } from "@/components/activity-bits";
 
 export const Route = createFileRoute("/dataset/$slug")({
@@ -74,10 +74,10 @@ function Detail() {
   const meta = [
     { icon: Building2, k: "Produsen data", v: ds.organizations?.name },
     { icon: Tag, k: "Topik", v: ds.topics?.name ?? "-" },
-    { icon: Scale, k: "Sifat Data", v: licenseLabel(ds.license) },
+    { icon: Scale, k: "Sifat Data", v: labelSifatData(ds.license) },
     { icon: RefreshCw, k: "Frekuensi", v: ds.frequency },
-    { icon: Calendar, k: "Diterbitkan", v: formatDate(ds.published_at) },
-    { icon: Calendar, k: "Diperbarui", v: formatDate(ds.updated_at) },
+    { icon: Calendar, k: "Diterbitkan", v: formatTanggal(ds.published_at) },
+    { icon: Calendar, k: "Diperbarui", v: formatTanggal(ds.updated_at) },
   ];
 
   return (
@@ -101,7 +101,7 @@ function Detail() {
               (hasFeature("data_requests") ? <Button size="lg" className="w-full rounded-full sm:w-auto" onClick={() => setReqOpen(true)}><Lock className="h-4 w-4" /> Ajukan Permohonan Data</Button> : <Button size="lg" className="w-full rounded-full sm:w-auto" disabled><Lock className="h-4 w-4" /> Akses Terbatas</Button>)
             ) : (
               <Button size="lg" className="w-full rounded-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
-                onClick={async () => { await downloadDataset(ds); qc.invalidateQueries({ queryKey: ["dataset", slug] }); }}>
+                onClick={async () => { await unduhDataset(ds); qc.invalidateQueries({ queryKey: ["dataset", slug] }); }}>
                 <Download className="h-4 w-4" /> Unduh {ds.file_url ? ds.format : "CSV"}
               </Button>
             )}
@@ -147,12 +147,12 @@ function Detail() {
             </dl>
           </div>
           <div className="rounded-2xl border bg-card shadow-soft p-5 space-y-3">
-            <h3 className="font-semibold">Sifat Data: {licenseLabel(ds.license)}</h3>
+            <h3 className="font-semibold">Sifat Data: {labelSifatData(ds.license)}</h3>
             <LicenseInfoBox license={ds.license} />
             {hasFeature("citation") && <div>
               <p className="mb-1 text-xs font-medium text-muted-foreground">Sitasi</p>
-              <p className="rounded-lg bg-muted p-2 text-xs break-words">{buildCitation(ds, typeof window === "undefined" ? "" : window.location.origin)}</p>
-              <Button size="sm" variant="outline" className="mt-2 w-full" onClick={() => { navigator.clipboard.writeText(buildCitation(ds, window.location.origin)); toast.success("Sitasi disalin"); }}><Copy className="h-3.5 w-3.5" /> Salin sitasi</Button>
+              <p className="rounded-lg bg-muted p-2 text-xs break-words">{buatSitasi(ds, typeof window === "undefined" ? "" : window.location.origin)}</p>
+              <Button size="sm" variant="outline" className="mt-2 w-full" onClick={() => { navigator.clipboard.writeText(buatSitasi(ds, window.location.origin)); toast.success("Sitasi disalin"); }}><Copy className="h-3.5 w-3.5" /> Salin sitasi</Button>
             </div>}
           </div>
           {hasFeature("audit_history") && <div className="rounded-2xl border bg-card shadow-soft p-5"><DatasetHistory datasetId={ds.id} /></div>}

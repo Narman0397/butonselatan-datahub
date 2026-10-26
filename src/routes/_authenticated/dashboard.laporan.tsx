@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { PageHeader, NoAccess } from "@/components/dash-bits";
 import { Button } from "@/components/ui/button";
-import { STATUS_LABEL, licenseLabel, type DatasetStatus } from "@/lib/data";
+import { STATUS_LABEL, labelSifatData, type DatasetStatus } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/laporan")({
   head: () => ({ meta: [{ title: "Laporan Statistik — Satu Data Buton Selatan" }, { name: "description", content: "Rekapitulasi statistik dataset sektoral untuk pimpinan dan Bappeda." }, { property: "og:title", content: "Laporan Statistik — Satu Data Buton Selatan" }, { property: "og:description", content: "Rekapitulasi statistik dataset sektoral untuk pimpinan dan Bappeda." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -43,7 +43,7 @@ function Report() {
   const byOrg = group((d) => d.organizations?.name ?? "Tanpa OPD");
   const byTopic = group((d) => d.topics?.name ?? "Tanpa topik");
   const byFormat = group((d) => d.format);
-  const byLicense = group((d) => licenseLabel(d.license));
+  const byLicense = group((d) => labelSifatData(d.license));
   const total = group(() => "Total")[0] ?? blank("Total");
   const today = new Date().toLocaleDateString("id-ID", { dateStyle: "long" });
 

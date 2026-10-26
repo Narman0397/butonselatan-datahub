@@ -6,7 +6,7 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "rec
 import { useState } from "react";
 import { CheckCircle2, Info, Lock } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LICENSE_INFO, STATUS_LABEL, numericColumns, type DatasetStatus, type SampleData } from "@/lib/data";
+import { LICENSE_INFO, STATUS_LABEL, kolomNumerik, type DatasetStatus, type SampleData } from "@/lib/data";
 
 const FORMAT_CLASS: Record<string, string> = {
   CSV: "bg-success/15 text-success border-success/30",
@@ -109,7 +109,7 @@ export function SampleTable({ data, max = 100 }: { data: SampleData; max?: numbe
 }
 
 export function chartSpec(data: SampleData) {
-  const nums = numericColumns(data);
+  const nums = kolomNumerik(data);
   const category = data.columns.find((c) => !nums.includes(c)) ?? data.columns[0] ?? "";
   const series = nums.filter((c) => c !== category).slice(0, 3);
   const rows = data.rows.map((r) => Object.fromEntries(data.columns.map((c, i) => [c, r[i]])));
