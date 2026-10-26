@@ -59,7 +59,7 @@ Sesuaikan nama domain di `pdn/nginx-satudata.conf` bila berbeda.
 ```sh
 cd /opt/satudata-backend
 docker compose exec db psql -U postgres -c \
- "insert into public.user_roles(user_id, role) select id, 'super_admin' from auth.users where email='admin@butonselatankab.go.id' on conflict do nothing;"
+ "insert into public.user_roles(user_id, role) select id, 'admin' from auth.users where email='admin@butonselatankab.go.id' on conflict do nothing;"
 ```
 
 ## Email (lupa sandi & konfirmasi akun)
