@@ -477,3 +477,8 @@ CREATE TRIGGER gate_user_roles BEFORE INSERT OR UPDATE OR DELETE ON public.user_
 CREATE TRIGGER gate_organizations BEFORE INSERT OR UPDATE OR DELETE ON public.organizations FOR EACH ROW EXECUTE FUNCTION public.feature_block_write('org_management');
 CREATE TRIGGER gate_topics BEFORE INSERT OR UPDATE OR DELETE ON public.topics FOR EACH ROW EXECUTE FUNCTION public.feature_block_write('org_management');
 CREATE TRIGGER gate_portal_settings BEFORE UPDATE ON public.portal_settings FOR EACH ROW EXECUTE FUNCTION public.feature_block_write('portal_settings');
+-- ===== Tempat penyimpanan berkas privat =====
+INSERT INTO storage.buckets (id, name, public) VALUES
+  ('dataset-files', 'dataset-files', false),
+  ('portal-assets', 'portal-assets', false)
+ON CONFLICT (id) DO NOTHING;
