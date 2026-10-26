@@ -9,7 +9,7 @@ import { PageHeader, NoAccess } from "@/components/dash-bits";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatDate } from "@/lib/data";
+import { formatTanggal } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/permohonan")({
   head: () => ({ meta: [{ title: "Permohonan Data — Satu Data Buton Selatan" }, { name: "description", content: "Tinjau permohonan akses dataset bersifat terbatas." }, { property: "og:title", content: "Permohonan Data — Satu Data Buton Selatan" }, { property: "og:description", content: "Tinjau permohonan akses dataset bersifat terbatas." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -65,7 +65,7 @@ function Requests() {
                 <p className="font-semibold break-words">{r.datasets?.title}</p>
                 <p className="text-sm text-muted-foreground break-words">{r.name} · {r.email}{r.institution ? ` · ${r.institution}` : ""}</p>
               </div>
-              <Badge variant="outline">{formatDate(r.created_at)}</Badge>
+              <Badge variant="outline">{formatTanggal(r.created_at)}</Badge>
             </div>
             <p className="mt-2 whitespace-pre-wrap break-words text-sm">{r.purpose}</p>
             {r.review_note && <p className="mt-2 text-xs text-destructive">Catatan: {r.review_note}</p>}

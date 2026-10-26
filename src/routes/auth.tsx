@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/auth")({
@@ -63,10 +62,6 @@ function AuthPage() {
     toast.success("Jika email terdaftar, tautan pemulihan telah dikirim.");
     setResetOpen(false);
   }
-  async function google() {
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
-    if (r.error) toast.error("Gagal masuk dengan Google");
-  }
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
@@ -104,8 +99,6 @@ function AuthPage() {
               </form>
             </TabsContent>
           </Tabs>
-          <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />atau<span className="h-px flex-1 bg-border" /></div>
-          <Button variant="outline" className="w-full" onClick={google}>Lanjutkan dengan Google</Button>
           <Dialog open={resetOpen} onOpenChange={setResetOpen}>
             <DialogContent>
               <DialogHeader>

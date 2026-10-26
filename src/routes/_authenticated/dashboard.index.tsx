@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth, ROLE_LABEL } from "@/lib/auth";
 import { PageHeader } from "@/components/dash-bits";
 import { StatusBadge } from "@/components/dataset-bits";
-import { formatDate, type DatasetStatus } from "@/lib/data";
+import { formatTanggal, type DatasetStatus } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   head: () => ({ meta: [{ title: "Ringkasan Dashboard — Satu Data Buton Selatan" }, { name: "description", content: "Ringkasan pengelolaan dataset Satu Data Buton Selatan." }, { property: "og:title", content: "Ringkasan Dashboard — Satu Data Buton Selatan" }, { property: "og:description", content: "Ringkasan pengelolaan dataset Satu Data Buton Selatan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }] }),
@@ -66,7 +66,7 @@ function Overview() {
             <li key={d.id} className="flex items-center justify-between gap-4 px-5 py-3 text-sm">
               <div className="min-w-0">
                 <div className="truncate font-medium">{d.title}</div>
-                <div className="text-xs text-muted-foreground">{d.organizations?.acronym} · {formatDate(d.updated_at)}</div>
+                <div className="text-xs text-muted-foreground">{d.organizations?.acronym} · {formatTanggal(d.updated_at)}</div>
               </div>
               <StatusBadge status={d.status} />
             </li>

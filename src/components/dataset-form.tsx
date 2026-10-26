@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { FORMATS, FREQUENCIES, LICENSES, licenseLabel, openDatasetFile, orgsQuery, parseCsv, parseXlsx, slugify, topicsQuery, type SampleData } from "@/lib/data";
+import { FORMATS, FREQUENCIES, LICENSES, labelSifatData, bukaBerkasDataset, orgsQuery, uraiCsv, uraiXlsx, buatSlug, topicsQuery, type SampleData } from "@/lib/data";
 import { DatasetChart, LicenseInfoBox, SampleTable } from "@/components/dataset-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -58,8 +58,8 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
     const ext = fl.name.split(".").pop()?.toUpperCase();
     if (ext && (FORMATS as readonly string[]).includes(ext)) up("format", ext);
     try {
-      if (ext === "CSV") setSample(parseCsv(await fl.text()));
-      else if (ext === "XLSX" || ext === "XLS") setSample(await parseXlsx(await fl.arrayBuffer()));
+      if (ext === "CSV") setSample(uraiCsv(await fl.text()));
+      else if (ext === "XLSX" || ext === "XLS") setSample(await uraiXlsx(await fl.arrayBuffer()));
     } catch { toast.error("Gagal membaca pratinjau file"); }
   }
 
@@ -93,7 +93,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
       };
       const { error } = initial
         ? await supabase.from("datasets").update(payload).eq("id", initial.id)
-        : await supabase.from("datasets").insert({ ...payload, slug: slugify(f.title) });
+        : await supabase.from("datasets").insert({ ...payload, slug: buatSlug(f.title) });
       if (error) throw error;
       toast.success(submit ? "Dataset diajukan untuk verifikasi" : "Draft disimpan");
       onDone();
@@ -139,7 +139,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
           <Label>Sifat Data</Label>
           <Select value={f.license} onValueChange={(v) => up("license", v)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>{LICENSES.map((x) => <SelectItem key={x} value={x}>{licenseLabel(x)}</SelectItem>)}</SelectContent>
+            <SelectContent>{LICENSES.map((x) => <SelectItem key={x} value={x}>{labelSifatData(x)}</SelectItem>)}</SelectContent>
           </Select>
         </div>
         <div className="sm:col-span-2"><LicenseInfoBox license={f.license} /></div>
@@ -162,7 +162,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
         {initial?.file_url && (
           <div className="flex flex-wrap items-center gap-2 rounded-lg bg-muted p-2 text-xs">
             <span className="min-w-0 flex-1 truncate">Berkas tersimpan: <b>{initial.file_name}</b>{file ? " — akan diganti berkas baru" : " — tetap dipakai bila tidak diganti"}</span>
-            <Button type="button" size="sm" variant="outline" onClick={() => openDatasetFile(initial.file_url!, initial.file_name, "open").catch((e) => toast.error(e.message))}><ExternalLink className="h-3.5 w-3.5" /> Buka</Button>
+            <Button type="button" size="sm" variant="outline" onClick={() => bukaBerkasDataset(initial.file_url!, initial.file_name, "open").catch((e) => toast.error(e.message))}><ExternalLink className="h-3.5 w-3.5" /> Buka</Button>
           </div>
         )}
         <p className="text-xs text-muted-foreground">File CSV dan XLSX otomatis menghasilkan pratinjau tabel untuk publik.</p>
@@ -170,7 +170,7 @@ export function DatasetForm({ initial, onDone }: { initial?: EditableDataset | u
       {(f.format === "PDF" || !sample) && (
         <div className="space-y-1.5">
           <Label>Tabel sampel manual {f.format === "PDF" ? "(untuk berkas PDF)" : "(opsional)"}</Label>
-          <Textarea rows={4} value={manual} placeholder={"Tempel dari Excel atau ketik CSV, contoh:\nKecamatan;Jumlah\nBatauga;12.345"} onChange={(e) => { setManual(e.target.value); const s = e.target.value.trim() ? parseCsv(e.target.value.replace(/\t/g, ";")) : null; setSample(s && s.columns.length ? s : null); }} />
+          <Textarea rows={4} value={manual} placeholder={"Tempel dari Excel atau ketik CSV, contoh:\nKecamatan;Jumlah\nBatauga;12.345"} onChange={(e) => { setManual(e.target.value); const s = e.target.value.trim() ? uraiCsv(e.target.value.replace(/\t/g, ";")) : null; setSample(s && s.columns.length ? s : null); }} />
           <p className="text-xs text-muted-foreground">Baris pertama = judul kolom. Pemisah koma, titik koma, atau tab. Data ini menjadi pratinjau tabel & grafik publik.</p>
         </div>
       )}

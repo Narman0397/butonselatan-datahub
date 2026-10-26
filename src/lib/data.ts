@@ -74,7 +74,7 @@ export const leaderPhotosQuery = queryOptions({
   },
 });
 
-export function slugify(s: string) {
+export function buatSlug(s: string) {
   return (
     s
       .toLowerCase()
@@ -88,7 +88,7 @@ export function slugify(s: string) {
   );
 }
 
-export function parseCsv(text: string, maxRows = 50): SampleData {
+export function uraiCsv(text: string, maxRows = 50): SampleData {
   const lines = text.replace(/\r/g, "").split("\n").filter((l) => l.trim().length);
   const split = (line: string) => {
     const out: string[] = [];
@@ -107,12 +107,12 @@ export function parseCsv(text: string, maxRows = 50): SampleData {
   const [head, ...body] = lines;
   const columns = head ? split(head) : [];
   const rows = body.slice(0, maxRows).map((l) =>
-    split(l).map(normalizeCell),
+    split(l).map(normalisasiSel),
   );
   return { columns, rows };
 }
 
-export function toCsv(s: SampleData) {
+export function keCsv(s: SampleData) {
   const esc = (v: unknown) => {
     const t = v == null ? "" : String(v);
     return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
@@ -120,7 +120,7 @@ export function toCsv(s: SampleData) {
   return [s.columns.map(esc).join(","), ...s.rows.map((r) => r.map(esc).join(","))].join("\n");
 }
 
-export async function downloadDataset(ds: {
+export async function unduhDataset(ds: {
   id: string;
   slug: string;
   file_url: string | null;
@@ -139,7 +139,7 @@ export async function downloadDataset(ds: {
   }
   const sample = ds.sample_data as SampleData | null;
   if (!sample) return;
-  const blob = new Blob([toCsv(sample)], { type: "text/csv;charset=utf-8" });
+  const blob = new Blob([keCsv(sample)], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = `${ds.slug}.csv`;
@@ -148,7 +148,7 @@ export async function downloadDataset(ds: {
 }
 
 /** Open (inline, new tab) or download a private dataset file via short-lived signed URL. */
-export async function openDatasetFile(path: string, fileName: string | null, mode: "open" | "download") {
+export async function bukaBerkasDataset(path: string, fileName: string | null, mode: "open" | "download") {
   const win = mode === "open" ? window.open("", "_blank") : null;
   const { data, error } = await supabase.storage
     .from("dataset-files")
@@ -161,21 +161,20 @@ export async function openDatasetFile(path: string, fileName: string | null, mod
   else window.location.href = data.signedUrl;
 }
 
-export async function parseXlsx(buf: ArrayBuffer, maxRows = 50): Promise<SampleData> {
+export async function uraiXlsx(buf: ArrayBuffer, maxRows = 50): Promise<SampleData> {
   const XLSX = await import("xlsx");
   const wb = XLSX.read(buf, { type: "array" });
   const ws = wb.Sheets[wb.SheetNames[0]!];
   if (!ws) return { columns: [], rows: [] };
   const all = XLSX.utils.sheet_to_json<(string | number | null)[]>(ws, { header: 1, defval: null, blankrows: false });
-  // Header = baris dengan sel terisi terbanyak di 10 baris pertama (melewati judul tabel Excel)
   let hi = 0, best = -1;
   all.slice(0, 10).forEach((r, i) => { const n = r.filter((v) => v != null && String(v).trim() !== "").length; if (n > best) { best = n; hi = i; } });
   const head = all[hi] ?? [];
   const body = all.slice(hi + 1).filter((r) => r.some((v) => v != null && String(v).trim() !== ""));
-  return { columns: head.map((h, i) => String(h ?? `Kolom ${i + 1}`).trim()), rows: body.slice(0, maxRows).map((r) => head.map((_, j) => normalizeCell(r[j]))) };
+  return { columns: head.map((h, i) => String(h ?? `Kolom ${i + 1}`).trim()), rows: body.slice(0, maxRows).map((r) => head.map((_, j) => normalisasiSel(r[j]))) };
 }
 
-export function formatDate(d: string | null) {
+export function formatTanggal(d: string | null) {
   if (!d) return "-";
   return new Date(d).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
 }
@@ -183,7 +182,7 @@ export function formatDate(d: string | null) {
 const EMPTY = new Set(["", "-", "–", "n/a", "na", "null", "nan", "#n/a", "tidak ada"]);
 
 /** Parser angka cerdas: format Indonesia (1.234,56), internasional (1,234.56), persen, Rp; nilai kosong -> null. */
-export function parseNum(raw: unknown): number | null {
+export function uraiAngka(raw: unknown): number | null {
   if (typeof raw === "number") return Number.isFinite(raw) ? raw : null;
   if (raw == null) return null;
   let t = String(raw).trim().replace(/^rp\.?\s*/i, "").replace(/%$/, "").replace(/\s/g, "");
@@ -201,15 +200,15 @@ export function parseNum(raw: unknown): number | null {
   return Number.isFinite(n) ? n : NaN;
 }
 
-export function normalizeCell(v: unknown): string | number | null {
-  const n = parseNum(v);
+export function normalisasiSel(v: unknown): string | number | null {
+  const n = uraiAngka(v);
   if (n === null) return null;
   if (Number.isNaN(n)) return String(v).trim();
   return n;
 }
 
 /** Kolom numerik: semua nilai non-kosong angka, minimal satu angka. */
-export function numericColumns(s: SampleData) {
+export function kolomNumerik(s: SampleData) {
   return s.columns.filter((_, i) => {
     const vals = s.rows.map((r) => r[i]).filter((v) => v != null && v !== "");
     return vals.length > 0 && vals.every((v) => typeof v === "number");
@@ -224,7 +223,7 @@ export const LICENSE_LABEL: Record<string, string> = {
   Terbatas: "Data Terbatas",
 };
 
-export function licenseLabel(code: string) {
+export function labelSifatData(code: string) {
   return LICENSE_LABEL[normalize(code)] ?? code;
 }
 
@@ -237,7 +236,7 @@ export const LICENSE_INFO: Record<string, LicenseInfo> = new Proxy(INFO, {
   get: (t, k) => (typeof k === "string" ? t[normalize(k)] : undefined),
 });
 
-export function buildCitation(ds: { title: string; license: string; slug: string; published_at: string | null; organizations: { name: string } | null }, origin: string) {
+export function buatSitasi(ds: { title: string; license: string; slug: string; published_at: string | null; organizations: { name: string } | null }, origin: string) {
   const year = ds.published_at ? new Date(ds.published_at).getFullYear() : new Date().getFullYear();
-  return `${ds.organizations?.name ?? "Pemerintah Kabupaten Buton Selatan"} (${year}). ${ds.title}. Portal Satu Data Kabupaten Buton Selatan. Sifat Data: ${licenseLabel(ds.license)}. ${origin}/dataset/${ds.slug}`;
+  return `${ds.organizations?.name ?? "Pemerintah Kabupaten Buton Selatan"} (${year}). ${ds.title}. Portal Satu Data Kabupaten Buton Selatan. Sifat Data: ${labelSifatData(ds.license)}. ${origin}/dataset/${ds.slug}`;
 }
