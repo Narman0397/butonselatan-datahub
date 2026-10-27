@@ -42,8 +42,8 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
         ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
         ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
       ];
-      const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
-      console.error(`[Supabase] ${message}`);
+      const message = `Konfigurasi server basis data belum lengkap (${missing.join(", ")}). Periksa variabel lingkungan server.`;
+      console.error(`[Basis Data] ${message}`);
       throw new Error(message);
     }
     
